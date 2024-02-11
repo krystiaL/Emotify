@@ -4,7 +4,7 @@ from Music_Selector_Project.params import *
 
 def generate_playlist(df):
     '''This function will access Spotify API and add playlist to your account.
-    The songs will be chosen randomly from the df.'''
+    The songs will be chosen randomly from the provided df.'''
 
     sp = spotipy.Spotify(
         auth_manager=SpotifyOAuth(
