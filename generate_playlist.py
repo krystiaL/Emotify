@@ -2,7 +2,7 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from Music_Selector_Project.params import *
 
-def generate_playlist(df):
+def generate_playlist(df,emotion:str):
     '''This function will access Spotify API and add playlist to your account.
     The songs will be chosen randomly from the provided df.'''
 
@@ -20,13 +20,13 @@ def generate_playlist(df):
 
     user_id = sp.current_user()["id"]
 
-    new_playlist = sp.user_playlist_create(user=user_id, name="Test_Playlist", public=True,
+    new_playlist = sp.user_playlist_create(user=user_id, name=f"{emotion.upper()}_Playlist", public=True,
                                       description=None)
     new_playlist_id = new_playlist["id"]
 
     # Select some music from df.
 
-    title_list_sample = list(df.sample(20)['track_name'])
+    title_list_sample = list(df.sample(20)['name'])
 
     uri_list = []
     for value in range(20):
