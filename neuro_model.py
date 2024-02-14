@@ -8,7 +8,8 @@ def create_model():
     '''This function returns a neuro network model trained on a labeled dataset
     Returns a model.'''
     #Import dataset which already has emotion label.
-    df_686 = pd.read_csv('raw_data/mood+music686.csv').drop(columns={'release_date'})
+
+    df_686 = pd.read_csv('Music_Selector_Project/raw_data/mood+music686.csv').drop(columns={'release_date'})
 
     #Create a Deep Learning model based on this df.
     #Encode the target column.

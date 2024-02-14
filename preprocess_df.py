@@ -4,7 +4,7 @@ def kaggle_preprocess(model,scaler):
     '''This function takes neuro network model and preprocess kaggle df.
     Returns a dataframe that feeds generate_playlist.py'''
 
-    kaggle_df = pd.read_csv('raw_data/spotify_dataset.csv')
+    kaggle_df = pd.read_csv('Music_Selector_Project/raw_data/spotify_dataset.csv')
     kaggle_df = kaggle_df.rename(columns={'track_id':'id','artists':'artist','album_name':'album',
                           'track_name':'name','duration_ms':'length'})
 
