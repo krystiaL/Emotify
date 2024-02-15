@@ -27,6 +27,7 @@ with st.sidebar:
     #take a video of your current emotions (change this when incorporating a webcam instead )
 
     uploaded_file = st.sidebar.file_uploader("Upload a picture of your face", type=["png", "jpeg", "jpg"])
+    #can add more file type
 
     if uploaded_file is not None:
         st.sidebar.image(uploaded_file)
