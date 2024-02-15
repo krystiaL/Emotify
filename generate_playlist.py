@@ -7,7 +7,9 @@ from neuro_model import create_model
 def tailor_df(emotion:str):
     '''This function takes emotion input from facial recognition
     and outputs a dataframe tailored for that emotion'''
-    df = kaggle_preprocess(model=create_model()[0],scaler=create_model()[1])
+    model = create_model()
+    df = kaggle_preprocess(model=model[0],scaler=model[1])
+
     if emotion == 'anger' or 'disgust' or 'fear':
         mood_df = df.sort_values('mood_Calm',ascending=False).head(200)
         mood_df = mood_df.sort_values('mood_Energetic',ascending=True).head(100).sample(10)
@@ -64,25 +66,27 @@ def generate_playlist(emotion:str,account_name):
             uri_list.append(result_uri)
 
     sp.user_playlist_add_tracks(user=user_id, playlist_id=new_playlist_id, tracks=uri_list)
-    return title
+    return title,sp
 
 def send_playlist_id(emotion:str,account_name):
 
-    sp = spotipy.Spotify(
-        auth_manager=SpotifyOAuth(
-            scope="playlist-read-private",
-            redirect_uri=REDIRECT_URI,
-            client_id=SPOTIFY_CLIENT_ID,
-            client_secret=SPOTIFY_SECRET,
-            show_dialog=True,
-            cache_path="token.txt",
-            username=SPOTIFY_USERNAME,
-        )
-    )
+    #try replacing with same sp as generate_playlist?
+    # sp = spotipy.Spotify(
+    #     auth_manager=SpotifyOAuth(
+    #         scope="playlist-read-private",
+    #         redirect_uri=REDIRECT_URI,
+    #         client_id=SPOTIFY_CLIENT_ID,
+    #         client_secret=SPOTIFY_SECRET,
+    #         show_dialog=True,
+    #         cache_path="token.txt",
+    #         username=SPOTIFY_USERNAME,
+    #     )
+    # )
 
     # Replace 'your_playlist_name' with the name of your playlist
-    playlist_name = generate_playlist(emotion=emotion,account_name=account_name)
-
+    playlist_object = generate_playlist(emotion=emotion,account_name=account_name)
+    playlist_name = playlist_object[0]
+    sp = playlist_object[1]
     # Get the user's playlists
     playlists = sp.current_user_playlists()
 
@@ -103,4 +107,5 @@ def send_playlist_id(emotion:str,account_name):
 
     return playlist_url
 
-send_playlist_id(emotion='Happy',account_name='Test')
+if __name__=="__main__":
+    send_playlist_id(emotion='Happy',account_name='Test2')
