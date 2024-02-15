@@ -26,9 +26,10 @@ def tailor_df(emotion:str):
 
     return mood_df
 
-def generate_playlist(emotion:str):
-    '''This function will access Spotify API and add playlist to your account.
-    The songs will be chosen randomly from the provided df.'''
+def generate_playlist(emotion:str,account_name):
+    '''This function will access Spotify API and add playlist to the developer's account.
+    -The songs will be chosen randomly from the provided df.
+    -ID of the playlist will be fed to send_playlist_id function'''
 
     sp = spotipy.Spotify(
         auth_manager=SpotifyOAuth(
@@ -43,8 +44,9 @@ def generate_playlist(emotion:str):
     )
 
     user_id = sp.current_user()["id"]
+    title = f"{emotion.capitalize()} playlist for you, {account_name}!"
 
-    new_playlist = sp.user_playlist_create(user=user_id, name=f"{emotion.capitalize()}_Playlist", public=True,
+    new_playlist = sp.user_playlist_create(user=user_id, name=title, public=True,
                                       description=None)
     new_playlist_id = new_playlist["id"]
 
@@ -62,5 +64,43 @@ def generate_playlist(emotion:str):
             uri_list.append(result_uri)
 
     sp.user_playlist_add_tracks(user=user_id, playlist_id=new_playlist_id, tracks=uri_list)
+    return title
 
-generate_playlist(emotion='Sad')
+def send_playlist_id(emotion:str,account_name):
+
+    sp = spotipy.Spotify(
+        auth_manager=SpotifyOAuth(
+            scope="playlist-read-private",
+            redirect_uri=REDIRECT_URI,
+            client_id=SPOTIFY_CLIENT_ID,
+            client_secret=SPOTIFY_SECRET,
+            show_dialog=True,
+            cache_path="token.txt",
+            username=SPOTIFY_USERNAME,
+        )
+    )
+
+    # Replace 'your_playlist_name' with the name of your playlist
+    playlist_name = generate_playlist(emotion=emotion,account_name=account_name)
+
+    # Get the user's playlists
+    playlists = sp.current_user_playlists()
+
+    # Search for the playlist by name
+    playlist_id = None
+    for playlist in playlists['items']:
+        if playlist['name'] == playlist_name:
+            playlist_id = playlist['id']
+            break
+
+    playlist_url = f"https://open.spotify.com/playlist/{playlist_id}"
+    # Print the playlist ID
+    if playlist_id:
+        print(f"The ID of the playlist '{playlist_name}' is: {playlist_id}n\
+            The url is {playlist_url}")
+    else:
+        print(f"Playlist '{playlist_name}' not found in your account.")
+
+    return playlist_url
+
+send_playlist_id(emotion='Happy',account_name='Test')
