@@ -1,0 +1,7 @@
+streamlit
+requests
+numpy
+pandas
+datetime
+folium
+branca==0.3.1
