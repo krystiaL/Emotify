@@ -4,7 +4,7 @@ from params import *
 from preprocess_df import kaggle_preprocess
 from neuro_model import create_model
 
-def tailor_df(emotion:str):
+def tailor_df(emotion):
     '''This function takes emotion input from facial recognition
     and outputs a dataframe tailored for that emotion'''
     model = create_model()
@@ -28,10 +28,11 @@ def tailor_df(emotion:str):
 
     return mood_df
 
-def generate_playlist(emotion:str,account_name):
+def generate_playlist(emotion,account_name):
     '''This function will access Spotify API and add playlist to the developer's account.
     -The songs will be chosen randomly from the provided df.
-    -ID of the playlist will be fed to send_playlist_id function'''
+    -ID of the playlist will be fed to send_playlist_id function
+    -title_list will be fed to UX module.'''
 
     sp = spotipy.Spotify(
         auth_manager=SpotifyOAuth(
@@ -52,12 +53,12 @@ def generate_playlist(emotion:str,account_name):
                                       description=None)
     new_playlist_id = new_playlist["id"]
 
-    # Select some music from df.
-    title_list_sample = list(tailor_df(emotion=emotion).sample(10)['name'])
+    # Randomly select music from tailored df.
+    title_list = list(tailor_df(emotion=emotion).sample(10)['name'])
 
     uri_list = []
     for value in range(10):
-        spotify_result = sp.search(q=f"track:{title_list_sample[value]}",type="track", market="US")
+        spotify_result = sp.search(q=f"track:{title_list[value]}",type="track", market="US")
         try:
             result_uri = spotify_result["tracks"]["items"][0]["uri"]
         except IndexError:
@@ -66,24 +67,12 @@ def generate_playlist(emotion:str,account_name):
             uri_list.append(result_uri)
 
     sp.user_playlist_add_tracks(user=user_id, playlist_id=new_playlist_id, tracks=uri_list)
-    return title,sp
+    return title,sp,title_list
 
-def send_playlist_id(emotion:str,account_name):
+def send_playlist_id(emotion,account_name):
+    '''This function returns the url of the generated playlist on Spotify webpage.
+    -The url will be fed to UX module.'''
 
-    #try replacing with same sp as generate_playlist?
-    # sp = spotipy.Spotify(
-    #     auth_manager=SpotifyOAuth(
-    #         scope="playlist-read-private",
-    #         redirect_uri=REDIRECT_URI,
-    #         client_id=SPOTIFY_CLIENT_ID,
-    #         client_secret=SPOTIFY_SECRET,
-    #         show_dialog=True,
-    #         cache_path="token.txt",
-    #         username=SPOTIFY_USERNAME,
-    #     )
-    # )
-
-    # Replace 'your_playlist_name' with the name of your playlist
     playlist_object = generate_playlist(emotion=emotion,account_name=account_name)
     playlist_name = playlist_object[0]
     sp = playlist_object[1]
@@ -108,4 +97,6 @@ def send_playlist_id(emotion:str,account_name):
     return playlist_url
 
 if __name__=="__main__":
-    send_playlist_id(emotion='Happy',account_name='Test2')
+    # Account_name will be fed from UX module.
+    # Emotion will be fed from Facial Recognition module.
+    send_playlist_id(emotion='Happy',account_name='Test_Name')
