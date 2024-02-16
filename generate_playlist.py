@@ -84,8 +84,8 @@ def send_playlist_id(emotion,account_name):
         if playlist['name'] == playlist_name:
             playlist_id = playlist['id']
             break
+    playlist_url = f"https://open.spotify.com/embed/playlist/{playlist_id}?utm_source=generator"
 
-    playlist_url = f"https://open.spotify.com/playlist/{playlist_id}"
     # Print the playlist ID
     if playlist_id:
         print(f"{playlist_name} Here is the link:{playlist_url}")
