@@ -2,8 +2,6 @@ import spotipy
 import pandas as pd
 from spotipy.oauth2 import SpotifyOAuth
 from params import *
-from preprocess_df import kaggle_preprocess
-from neuro_model import create_model
 
 def tailor_df(emotion):
     '''This function takes emotion input from facial recognition
