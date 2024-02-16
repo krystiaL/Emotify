@@ -169,3 +169,5 @@ dmypy.json
 
 # Custom
 *.mp4
+
+/music_label/
