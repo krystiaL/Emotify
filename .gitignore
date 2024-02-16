@@ -1,0 +1,4 @@
+.env
+.envrc
+*.txt
+__pychache__

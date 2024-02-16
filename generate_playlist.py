@@ -1,4 +1,5 @@
 import spotipy
+import pandas as pd
 from spotipy.oauth2 import SpotifyOAuth
 from params import *
 from preprocess_df import kaggle_preprocess
@@ -7,8 +8,8 @@ from neuro_model import create_model
 def tailor_df(emotion):
     '''This function takes emotion input from facial recognition
     and outputs a dataframe tailored for that emotion'''
-    model = create_model()
-    df = kaggle_preprocess(model=model[0],scaler=model[1])
+
+    df = pd.read_csv('raw_data/kaggle_df_labeled.csv')
 
     if emotion == 'anger' or 'disgust' or 'fear':
         mood_df = df.sort_values('mood_Calm',ascending=False).head(200)
@@ -89,8 +90,7 @@ def send_playlist_id(emotion,account_name):
     playlist_url = f"https://open.spotify.com/playlist/{playlist_id}"
     # Print the playlist ID
     if playlist_id:
-        print(f"The ID of the playlist '{playlist_name}' is: {playlist_id}n\
-            The url is {playlist_url}")
+        print(f"{playlist_name} Here is the link:{playlist_url}")
     else:
         print(f"Playlist '{playlist_name}' not found in your account.")
 
