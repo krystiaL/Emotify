@@ -1,4 +1,6 @@
 import streamlit as st
+import cv2
+import tempfile
 import time
 
 
@@ -16,11 +18,13 @@ moods = {
 }
 
 def dummy_text_function():
+    #this is a dummy function for back-up text input
     st.subheader(f"Here's a {mood.lower()} playlist for you!")
     for playlist in moods[mood]:
         return st.write(playlist)
 
 def dummy_image_function():
+
     st.subheader(f"Here's a <identified emotion> playlist for you!")
     st.write("imagine this is a list of songs")
 
@@ -36,18 +40,13 @@ st.title("<Music Selector Project>") #official name still hasn't been decided
 st.write(" ")
 
 col3, col4 = st.columns([1.5,3])
-with col3:
-    st.subheader("Tune in your Emotions, Transform out your Playlist!")
-    st.subheader(" ")
-    st.image("images/instruction_flow_2.png")
-    # col3_1, col3_2 = col3.columns(2)
-    # col3_1.image("images/upload_icon.png")
-
-    #caption="1. Upload your photo/ video of your face.")
-    #"2. Click the submit button to start the process.")
-    #caption="3. Please give the application some time identify the emotion to be used.")
-    #caption="4. After emotion recognition, the application will start generating the playlist based on the extracted emotion from the image/video.")
-    #caption="5. Play the generated playlist from the website and/ save it to your Spo.")
+col3.subheader("Tune in your Emotions, Transform out your Playlist!")
+col3.subheader(" ")
+col3.write("1. some graphic instructions here")
+col3.write(" ")
+col3.write("2. some graphic instructions here")
+col3.write(" ")
+col3.write("3. some graphic instructions here")
 
 col3.title(" ")
 col3.write("Some disclaimer here: data scope, accuracy etc.")
@@ -99,7 +98,7 @@ with col1:
 with col1:
     #video input form
     st.write(" ")
-    st.subheader("Upload a video of your face showing how you currently feel")
+    st.subheader("Upload a 10 second video of your face showing how you currently feel")
     with st.form("video_input"):
         uploaded_video = st.file_uploader("Choose a video:", type=["mp4"])
         st.session_state["uploaded_video"] = None
@@ -119,11 +118,10 @@ with col3:
             time.sleep(5)  # simulate playlist generation time
         dummy_text_function()
 
-        #embeded link to spotify
+        #link to spotify
         st.write("Add this playlist to your Spotify library!")
         st.markdown('<iframe src="https://open.spotify.com/embed/playlist/0HI7czcgdxj4bPu3eRlc2C?utm_source=generator"\
         width="500" height="400"></iframe>', unsafe_allow_html=True)
-        #change with dynamic link
 
     elif st.session_state.get("uploaded_image"):
         uploaded_image = st.session_state["uploaded_image"]
@@ -134,9 +132,7 @@ with col3:
 
         #link to spotify
         st.write("Add this playlist to your Spotify library!")
-        st.markdown('<iframe src="https://open.spotify.com/embed/playlist/0HI7czcgdxj4bPu3eRlc2C?utm_source=generator"\
-        width="500" height="400"></iframe>', unsafe_allow_html=True)
-        #change with dynamic link
+        st.link_button("share to library", "https://docs.streamlit.io/library/api-reference/widgets/st.link_button")
 
     elif st.session_state.get("uploaded_video"):
         uploaded_video = st.session_state["uploaded_video"]
@@ -147,19 +143,39 @@ with col3:
 
         #link to spotify
         st.write("Add this playlist to your Spotify library!")
-        st.markdown('<iframe src="https://open.spotify.com/embed/playlist/0HI7czcgdxj4bPu3eRlc2C?utm_source=generator"\
-        width="500" height="400"></iframe>', unsafe_allow_html=True)
-        #change with dynamic link
+        st.link_button("share to library", "https://docs.streamlit.io/library/api-reference/widgets/st.link_button")
 
     else:
         st.subheader(" ")
         st.caption("                 Please Choose your preferred input type to generate the playlist.")
-        # st.image("/root/code/Atsuto-T/Music_Selector_Project/music-selector/interface/images/World Emoji Day-bro.png", width=400)
-        #attribute: <a href="https://storyset.com/technology">Technology illustrations by Storyset</a>
-# st.subheader(" ")
-# col5, col6 = st.columns(2)
-# col6.write("Add this playlist to your Spotify library!")
+st.title("Play Uploaded File")
 
-# col7, col8, col9, col0 = st.columns([2,2,2,2])
-# col9.link_button("share to library", "https://docs.streamlit.io/library/api-reference/widgets/st.link_button")
-# col0.link_button("re-generate playlist", "https://docs.streamlit.io/library/api-reference/widgets/st.link_button")
+uploaded_file = st.file_uploader("Choose a video...", type=["mp4"])
+temporary_location = False
+
+if uploaded_file is not None:
+    temporary_location = write_to_disk(uploaded_file)
+
+if temporary_location:
+    video_stream = cv2.VideoCapture(temporary_location)
+    # Check if camera opened successfully
+    if (video_stream.isOpened() == False):
+        print("Error opening video  file")
+    else:
+        # Read until video is completed
+        while (video_stream.isOpened()):
+            # Capture frame-by-frame
+            ret, image = video_stream.read()
+            if ret:
+                # Display the resulting frame
+                st.image(image, channels="BGR", use_column_width=True)
+            else:
+                break
+        video_stream.release()
+        cv2.destroyAllWindows()
+
+def write_to_disk(uploaded_file):
+    """Writes an uploaded video file to disk and returns the file path."""
+    with tempfile.NamedTemporaryFile(delete=False) as out:
+        out.write(uploaded_file.read())
+        return out.name

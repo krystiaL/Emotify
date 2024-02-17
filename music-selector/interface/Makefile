@@ -22,6 +22,8 @@ install_requirements:
 streamlit:
 	-@streamlit run ux.py
 
+streamlit_video:
+	-@streamlit run ux_video.py
 
 # ----------------------------------
 #    LOCAL INSTALL COMMANDS
