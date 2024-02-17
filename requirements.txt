@@ -2,3 +2,24 @@ spotipy
 os
 pandas
 tensorflow
+
+
+#########################
+#------------------------
+# emotion detection model
+os
+cv2
+mediapipe
+math
+numpy
+time
+
+warnings
+
+torch
+torch.nn
+torch.nn.functional
+PIL
+torchvision
+#------------------------
+#########################
