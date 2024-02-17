@@ -1,5 +1,5 @@
 import pandas as pd
-from neuro_model import create_model
+from playlist_module.neuro_model import create_model
 
 def kaggle_preprocess():
     '''This function takes neuro network model and preprocess kaggle df.

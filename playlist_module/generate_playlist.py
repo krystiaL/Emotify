@@ -1,7 +1,7 @@
 import spotipy
 import pandas as pd
 from spotipy.oauth2 import SpotifyOAuth
-from params import *
+from playlist_module.params import *
 
 def tailor_df(emotion):
     '''This function takes emotion input from facial recognition

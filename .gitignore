@@ -1,4 +1,4 @@
 .env
 .envrc
 token.txt
-__pychache__/
+playlist_module/__pychache__/
