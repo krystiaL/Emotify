@@ -36,21 +36,15 @@ st.title("<Music Selector Project>") #official name still hasn't been decided
 st.write(" ")
 
 col3, col4 = st.columns([1.5,3])
+col3.title(" ")
 with col3:
     st.subheader("Tune in your Emotions, Transform out your Playlist!")
     st.subheader(" ")
-    st.image("images/instruction_flow_2.png")
-    # col3_1, col3_2 = col3.columns(2)
-    # col3_1.image("images/upload_icon.png")
-
-    #caption="1. Upload your photo/ video of your face.")
-    #"2. Click the submit button to start the process.")
-    #caption="3. Please give the application some time identify the emotion to be used.")
-    #caption="4. After emotion recognition, the application will start generating the playlist based on the extracted emotion from the image/video.")
-    #caption="5. Play the generated playlist from the website and/ save it to your Spo.")
+    col3_1, col3_2, col3_3 = col3.columns([0.5,1,0.5])
+    col3_2.image("images/inst_flow1_hd.png")
 
 col3.title(" ")
-col3.write("Some disclaimer here: data scope, accuracy etc.")
+col3.caption("Application Accuracy: <80.56%>")
 col4.image("/root/code/Atsuto-T/Music_Selector_Project/music-selector/interface/images/Playlist-amico (1).png")
 #image attribute: <a href="https://storyset.com/app">App illustrations by Storyset</a>
 st.subheader(" ")
@@ -58,13 +52,60 @@ st.subheader(" ")
 #---------------------------------------------------------------
 
 # Sidebar
-st.sidebar.title("About <Music Selector>") #change to official name
-st.sidebar.image("/root/code/Atsuto-T/Music_Selector_Project/music-selector/interface/images/Music-cuate.png")
-#attribute: <a href="https://storyset.com/app">App illustrations by Storyset</a>
-st.sidebar.subheader("I. How to generate your playlist?")
-st.sidebar.subheader("II. How to add the playlist to your Spotify library?")
-st.sidebar.subheader("II. How to reset the playlist generation?")
-st.sidebar.subheader("III. Meet the Team")
+
+with st.sidebar:
+    st.title("About <Music Selector>") #change to official name
+    st.image("/root/code/Atsuto-T/Music_Selector_Project/music-selector/interface/images/Music-cuate.png")
+    #attribute: <a href="https://storyset.com/app">App illustrations by Storyset</a>
+
+    instructions = {
+        2: "Click the submit button to start the process.",
+        3: "Please give the application some time identify the emotion to be used.",
+        4: "After emotion recognition, the application will start generating the playlist based on the extracted emotion from the image/video.",
+        5: "Play the generated playlist from the website and/ save it to your Spo."
+    }
+
+    with st.expander("How to generate your playlist?"):
+        col_ex1, col_ex2 = st.columns([0.5, 2])
+        #step 1
+        col_ex1.write(" ")
+        col_ex1.image("images/upload_icon.png")
+        col_ex2.write("Upload a photo or video showing your face.")
+        #step 2
+        col_ex1.subheader(" ")
+        col_ex1.image("images/click_submit_icon.png")
+        col_ex2.write("Click the submit button to start the emotion extraction process.")
+        #step 3
+        col_ex1.title(" ")
+        col_ex1.subheader(" ")
+        col_ex1.image("images/emoji_icons.png")
+        col_ex2.write("Please give the application some time to identify the emotion from the image or video file.")
+        #step 4
+        col_ex1.title(" ")
+        col_ex1.title(" ")
+        col_ex1.subheader(" ")
+        col_ex1.image("images/processing_icon.png")
+        col_ex2.write("After emotion recognition, the application will start generating the playlist based on the extracted emotion from the image/video.")
+        #step 5
+        col_ex1.title(" ")
+        col_ex1.title(" ")
+        col_ex1.subheader(" ")
+        col_ex1.image("images/musical_notes_icon.png")
+        col_ex2.write("Play the generated playlist from the website and/or save it to your Spotify account library.")
+
+
+    with st.expander("How to add the playlist to your Spotify library?"):
+        st.write('''
+                dummy text
+                 ''')
+    with st.expander("How to reset the generation process"):
+        st.write('''
+                 dummy text
+                 ''')
+    with st.expander("Meet the Team!"):
+        st.write('''
+                 dummy text
+                 ''')
 
 #---------------------------------------------------------------
 
