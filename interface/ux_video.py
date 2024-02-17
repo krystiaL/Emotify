@@ -73,6 +73,7 @@ with st.sidebar:
         #step 1
         col_ex1.write(" ")
         col_ex1.image("images/upload_icon.png")
+        col_ex2.write(" ")
         col_ex2.write("Upload a photo or video showing your face.")
         #step 2
         col_ex1.subheader(" ")
@@ -119,14 +120,14 @@ col1, col2,  col3 = st.columns([3, 0.8, 4])
 with col1:
     #image input form
     st.write(" ")
-    st.subheader("Take a selfie showing how you currently feel.")
+    st.subheader("       Take a selfie!")
 
 
     with st.form("image_input"):
         # # Initialize camera state variable
         # if "image_captured" not in st.session_state:
 
-        image_captured = st.camera_input("Take a picture")
+        image_captured = st.camera_input("Take a picture of your face showing how you feel")
         st.session_state["image_captured"] = None
         uploaded_image = st.file_uploader("Or choose a picture:", type=["png", "jpeg", "jpg"])
         st.session_state["uploaded_image"] = None
@@ -143,7 +144,7 @@ with col1:
 with col1:
     #video input form
     st.write(" ")
-    st.subheader("Upload a video of your face showing how you currently feel")
+    st.subheader("Take a short video!")
     with st.form("video_input"):
         uploaded_video = st.file_uploader("Choose a video:", type=["mp4"])
         st.session_state["uploaded_video"] = None
@@ -154,7 +155,7 @@ with col1:
 
 with col1:
     # text input form
-    st.subheader("Select your current mood")
+    st.subheader("Select a mood!")
     with st.form("text_input"):
         mood = st.selectbox("Choose an emotion:", list(moods.keys()))
         st.session_state["mood"] = None
