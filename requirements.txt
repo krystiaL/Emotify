@@ -1,0 +1,4 @@
+spotipy
+os
+pandas
+tensorflow
