@@ -1,4 +1,4 @@
 .env
 .envrc
-*.txt
-__pychache__
+token.txt
+__pychache__/
