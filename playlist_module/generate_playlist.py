@@ -10,20 +10,20 @@ def tailor_df(emotion):
     df = pd.read_csv('raw_data/kaggle_df_labeled.csv')
 
     if emotion == 'anger' or 'disgust' or 'fear':
-        mood_df = df.sort_values('mood_Calm',ascending=False).head(200)
-        mood_df = mood_df.sort_values('mood_Energetic',ascending=True).head(100).sample(10)
+        mood_df = df.sort_values('mood_Calm',ascending=False).head(500)
+        mood_df = mood_df.sort_values('mood_Energetic',ascending=True).head(300)
 
     elif emotion == 'enthusiasm':
-        mood_df = df.sort_values('mood_Energetic',ascending=False).head(200)
-        mood_df = mood_df.sort_values('mood_Calm',ascending=True).head(100).sample(10)
+        mood_df = df.sort_values('mood_Energetic',ascending=False).head(500)
+        mood_df = mood_df.sort_values('mood_Calm',ascending=True).head(300)
 
     elif emotion == 'happiness' or 'neutral':
-        mood_df = df.sort_values('mood_Happy',ascending=False).head(200)
-        mood_df = mood_df.sort_values('mood_Sad',ascending=True).head(100).sample(10)
+        mood_df = df.sort_values('mood_Happy',ascending=False).head(500)
+        mood_df = mood_df.sort_values('mood_Sad',ascending=True).head(300)
 
     else:
-        mood_df = df.sort_values('mood_Sad',ascending=False).head(200)
-        mood_df = mood_df.sort_values('mood_Happy',ascending=True).head(100).sample(10)
+        mood_df = df.sort_values('mood_Sad',ascending=False).head(500)
+        mood_df = mood_df.sort_values('mood_Happy',ascending=True).head(300)
 
     return mood_df
 

@@ -1,5 +1,6 @@
 import pandas as pd
 from playlist_module.neuro_model import create_model
+from playlist_module.genre import get_genre
 
 def kaggle_preprocess():
     '''This function takes neuro network model and preprocess kaggle df.
@@ -26,17 +27,22 @@ def kaggle_preprocess():
     #Drop duplicated rows from kaggle_df
     kaggle_df = kaggle_df.drop_duplicates(subset='name')
 
-    #Drop songs that don't match the goal of this project
-    kaggle_df = kaggle_df[(kaggle_df['speechiness']>0.33) & (kaggle_df['speechiness']<0.50)]
-    kaggle_df = kaggle_df[kaggle_df['liveness']<0.8]
-    kaggle_df = kaggle_df[kaggle_df['instrumentalness']<0.9]
+    #Drop tracks which have outlier features.
+    kaggle_df = kaggle_df[kaggle_df['length']<400000]
+    kaggle_df = kaggle_df[kaggle_df['liveness']<0.3]
+    kaggle_df = kaggle_df[kaggle_df['loudness']>-30]
+    kaggle_df = kaggle_df[kaggle_df['speechiness']<0.1]
 
-    genres_to_exclude = {'grunge','guitar','gospel','anime','children','brazil','german',
+    #Select genres that user likes
+    user_genre = get_genre()
+
+    genre_to_exclude = {'grunge','guitar','gospel','anime','children','brazil','german',
                          'kids','malay','opera','mandopop','iranian','comedy','cantopop'
                         'pagode','piano','salsa','samba','sertanejo','sleep','tango','turkish',
                         'world-music','folk','classical','indian','study','forro','j-idol','pop-film'}
 
-    kaggle_df = kaggle_df[~kaggle_df['track_genre'].isin(genres_to_exclude)]
+    kaggle_df = kaggle_df[kaggle_df['track_genre'].isin(user_genre)]
+    kaggle_df = kaggle_df[~kaggle_df['track_genre'].isin(genre_to_exclude)]
 
     #Scale the dataframe
     kaggle_df_scaled = scaler.transform(kaggle_df[['length', 'danceability',
@@ -46,4 +52,5 @@ def kaggle_preprocess():
     kaggle_mood = model.predict(kaggle_df_scaled)
     kaggle_df[['mood_Calm', 'mood_Energetic', 'mood_Happy', 'mood_Sad']] = kaggle_mood
 
+    print(kaggle_df.shape)
     kaggle_df.to_csv('raw_data/kaggle_df_labeled.csv')
