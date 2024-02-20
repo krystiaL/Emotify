@@ -1,4 +1,0 @@
-spotipy
-os
-pandas
-tensorflow
