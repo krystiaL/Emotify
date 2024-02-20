@@ -10,6 +10,10 @@ st.set_page_config(page_title="<Music Selector Name>", page_icon=":musical_note:
 #Default moods and corresponding songs
 # note: change this into the working code
 
+#---------------------------------------------------
+#             FUNCTIONS
+#---------------------------------------------------
+
 moods = {
     "Happy": ["song 1", "song 2", "song 3", "song 4", "song 5"],
     "Sad": ["song 1", "song 2", "song 3", "song 4", "song 5"],
@@ -30,10 +34,20 @@ def dummy_video_function():
     st.subheader(f"Here's a <identified emotion> playlist for you!")
     st.write("imagine this is a list of songs")
 
+def process_file(file):
+    if file.type.startswith('image'):
+        # process image
+        st.image(file)
+    elif file.type.startswith('video'):
+        # process video
+        st.video(file)
+    else:
+        st.write("Unsupported file type")
 
-#---------------------------------------------------------------
+#------------------------------------
+#      HEADER AND DESCRIPTION
+#------------------------------------
 
-# Header and Description
 st.title("<Music Selector Project>") #official name still hasn't been decided
 st.write(" ")
 
@@ -43,12 +57,12 @@ with col3:
     st.subheader("Tune in your Emotions, Transform out your Playlist!")
     st.subheader(" ")
     col3_1, col3_2, col3_3 = col3.columns([0.5,1,0.5])
-    col3_2.image("images/inst_flow1_hd.png")
+    col3_2.image("interface/images/inst_flow1_hd.png")
 
 
 col3.title(" ")
 col3.caption("Application Accuracy: <80.56%>")
-col4.image("images/Playlist-amico (1).png")
+col4.image("interface/images/Playlist-amico (1).png")
 #image attribute: <a href="https://storyset.com/app">App illustrations by Storyset</a>
 st.subheader(" ")
 
@@ -58,7 +72,7 @@ st.subheader(" ")
 
 with st.sidebar:
     st.title("About <Music Selector>") #change to official name
-    st.image("images/Music-cuate.png")
+    st.image("interface/images/Music-cuate.png")
     #attribute: <a href="https://storyset.com/app">App illustrations by Storyset</a>
 
     instructions = {
@@ -72,29 +86,29 @@ with st.sidebar:
         col_ex1, col_ex2 = st.columns([0.5, 2])
         #step 1
         col_ex1.write(" ")
-        col_ex1.image("images/upload_icon.png")
+        col_ex1.image("interface/images/upload_icon.png")
         col_ex2.write(" ")
         col_ex2.write("Upload a photo or video showing your face.")
         #step 2
         col_ex1.subheader(" ")
-        col_ex1.image("images/click_submit_icon.png")
+        col_ex1.image("interface/images/click_submit_icon.png")
         col_ex2.write("Click the submit button to start the emotion extraction process.")
         #step 3
         col_ex1.title(" ")
         col_ex1.subheader(" ")
-        col_ex1.image("images/emoji_icons.png")
+        col_ex1.image("interface/images/emoji_icons.png")
         col_ex2.write("Please give the application some time to identify the emotion from the image or video file.")
         #step 4
         col_ex1.title(" ")
         col_ex1.title(" ")
         col_ex1.subheader(" ")
-        col_ex1.image("images/processing_icon.png")
+        col_ex1.image("interface/images/processing_icon.png")
         col_ex2.write("After emotion recognition, the application will start generating the playlist based on the extracted emotion from the image/video.")
         #step 5
         col_ex1.title(" ")
         col_ex1.title(" ")
         col_ex1.subheader(" ")
-        col_ex1.image("images/musical_notes_icon.png")
+        col_ex1.image("interface/images/musical_notes_icon.png")
         col_ex2.write("Play the generated playlist from the website and/or save it to your Spotify account library.")
 
 
@@ -129,29 +143,20 @@ with col1:
 
         image_captured = st.camera_input("Take a picture of your face showing how you feel")
         st.session_state["image_captured"] = None
-        uploaded_image = st.file_uploader("Or choose a picture:", type=["png", "jpeg", "jpg"])
-        st.session_state["uploaded_image"] = None
+
+        uploaded_file = st.file_uploader("Choose a file", type=["image/jpeg", "image/png", "video/mp4"])
+        st.session_state["uploaded_file"] = None
+        if uploaded_file is not None:
+            input_file = process_file(uploaded_file)
 
         submit_button = st.form_submit_button("Submit Image", args=[image_captured])
         if submit_button:
-            if uploaded_image:
+            if input_file:
                 st.session_state["uploaded_image"] = uploaded_image
                 st.write("Image upload detected")
             elif image_captured:
                 st.session_state["image_captured"] = image_captured
                 st.write("Camera image detected")
-
-with col1:
-    #video input form
-    st.write(" ")
-    st.subheader("Take a short video!")
-    with st.form("video_input"):
-        uploaded_video = st.file_uploader("Choose a video:", type=["mp4"])
-        st.session_state["uploaded_video"] = None
-        submit_button = st.form_submit_button("Submit Video")
-        if submit_button:
-            st.write("Video input detected")
-            st.session_state["uploaded_video"] = uploaded_video
 
 with col1:
     # text input form
