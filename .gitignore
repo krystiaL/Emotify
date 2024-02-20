@@ -2,3 +2,4 @@
 .envrc
 token.txt
 playlist_module/__pychache__/
+.streamlit

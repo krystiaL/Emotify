@@ -2,3 +2,10 @@ spotipy
 os
 pandas
 tensorflow
+streamlit
+requests
+numpy
+datetime
+folium
+branca==0.3.1
+opencv-python
