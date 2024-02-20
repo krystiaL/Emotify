@@ -20,21 +20,22 @@ moods = {
     "Excited": ["song 1", "song 2", "song 3", "song 4", "song 5"],
     "Relaxed": ["song 1", "song 2", "song 3", "song 4", "song 5"]
 }
+#a dummy dictionary for text-based input (back-up)
 
 def dummy_text_function():
+    #This dummy function takes the text as input and returns the playlist
     st.subheader(f"Here's a {mood.lower()} playlist for you!")
     for playlist in moods[mood]:
         return st.write(playlist)
 
-def dummy_image_function():
-    st.subheader(f"Here's a <identified emotion> playlist for you!")
-    st.write("imagine this is a list of songs")
-
-def dummy_video_function():
+def dummy_img_and_vid_function():
+    #This dummy function takes the either image or video files as input and returns the playlist
     st.subheader(f"Here's a <identified emotion> playlist for you!")
     st.write("imagine this is a list of songs")
 
 def process_file(file):
+    #This function takes one required argument which is either an image or a video file from the file_uploader forms
+    #and returns the corresponding file type after user input.
     if file.type.startswith('image'):
         # process image
         st.image(file)
@@ -43,6 +44,7 @@ def process_file(file):
         st.video(file)
     else:
         st.write("Unsupported file type")
+        #default if the file submitted is not among the required file types
 
 #------------------------------------
 #      HEADER AND DESCRIPTION
@@ -66,9 +68,9 @@ col4.image("interface/images/Playlist-amico (1).png")
 #image attribute: <a href="https://storyset.com/app">App illustrations by Storyset</a>
 st.subheader(" ")
 
-#---------------------------------------------------------------
-
-# Sidebar
+#----------------------------------
+#       SIDEBAR
+#----------------------------------
 
 with st.sidebar:
     st.title("About <Music Selector>") #change to official name
@@ -125,24 +127,23 @@ with st.sidebar:
                  dummy text
                  ''')
 
-#---------------------------------------------------------------
-
+#--------------------------------------------
 #configure page layout
-# three columns for inputs
 col1, col2,  col3 = st.columns([3, 0.8, 4])
 
+#-------------------------------------------
+
 with col1:
-    #image input form
     st.write(" ")
-    st.subheader("       Take a selfie!")
+    st.subheader("Take a selfie or a video capture!")
+    st.caption("or upload an image or video")
 
-
-    with st.form("image_input"):
-        # # Initialize camera state variable
-        # if "image_captured" not in st.session_state:
+    with st.form("collective_input"):
 
         image_captured = st.camera_input("Take a picture of your face showing how you feel")
+        # camera widget; will return a jpeg file once image is taken.
         st.session_state["image_captured"] = None
+        # Initialized camera state variable
 
         uploaded_file = st.file_uploader("Choose a file", type=["image/jpeg", "image/png", "video/mp4"])
         st.session_state["uploaded_file"] = None
