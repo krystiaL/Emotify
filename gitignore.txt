@@ -1,4 +1,0 @@
-.env
-.envrc
-token.txt
-Playlist_module/__pychache__/
