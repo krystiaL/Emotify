@@ -24,11 +24,11 @@ generate:
 #   added by: Krystia 02/20/2024
 # ----------------------------------
 
-streamlit:
-	-@streamlit run ux.py
+streamlit_upload:
+	@streamlit run /interface/ux_upload.py
 
 streamlit_video:
-	-@streamlit run ux_video.py
+	@streamlit run /interface/ux_video.py
 
 # ----------------------------------
 #    LOCAL INSTALL COMMANDS
