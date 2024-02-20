@@ -22,29 +22,62 @@ moods = {
 }
 #a dummy dictionary for text-based input (back-up)
 
+
 def dummy_text_function():
     #This dummy function takes the text as input and returns the playlist
     st.subheader(f"Here's a {mood.lower()} playlist for you!")
     for playlist in moods[mood]:
         return st.write(playlist)
 
+
+
 def dummy_img_and_vid_function():
     #This dummy function takes the either image or video files as input and returns the playlist
     st.subheader(f"Here's a <identified emotion> playlist for you!")
     st.write("imagine this is a list of songs")
 
+
 def process_file(file):
     #This function takes one required argument which is either an image or a video file from the file_uploader forms
-    #and returns the corresponding file type after user input.
+    #and process the corresponding file type after user input.
     if file.type.startswith('image'):
         # process image
         st.image(file)
+        return file
     elif file.type.startswith('video'):
         # process video
         st.video(file)
+        return file
     else:
         st.write("Unsupported file type")
         #default if the file submitted is not among the required file types
+
+
+def save_video(frames, fps):
+    # Function to save the recorded video
+    height, width, layers = frames[0].shape
+    size = (width, height)
+    out = cv2.VideoWriter('output.avi', cv2.VideoWriter_fourcc(*'DIVX'), fps, size)
+
+    for frame in frames:
+        out.write(frame)
+
+    out.release()
+
+
+def start_stop_recording():
+    # Function to start/stop recording
+    global recording, frames
+
+    if record:
+        recording = not recording
+
+        if recording:
+            st.write('Recording...')
+        else:
+            st.write('Stopped')
+            save_video(frames, 20)  # Save the recorded video with 20 fps
+            frames = []  # Clear the frames list
 
 #------------------------------------
 #      HEADER AND DESCRIPTION
@@ -136,28 +169,55 @@ col1, col2,  col3 = st.columns([3, 0.8, 4])
 with col1:
     st.write(" ")
     st.subheader("Take a selfie or a video capture!")
-    st.caption("or upload an image or video")
+    st.write("Take a picture or a short video recording of your face showing how your current emotion.")
 
     with st.form("collective_input"):
 
-        image_captured = st.camera_input("Take a picture of your face showing how you feel")
+        form_1, form_2 = st.columns(2)
+
+        #--------------Camera Image---------------#
+        image_captured = form_1.camera_input("click on \"Take Photo\" ")
         # camera widget; will return a jpeg file once image is taken.
         st.session_state["image_captured"] = None
         # Initialized camera state variable
 
-        uploaded_file = st.file_uploader("Choose a file", type=["image/jpeg", "image/png", "video/mp4"])
+        #------------Camera Recoding-------------#
+        run = form_2.checkbox('Run Webcam')
+        FRAME_WINDOW = form_2.image([])
+        webcam = cv2.VideoCapture(0)
+
+        #Button to start/stop recording
+        record = form_2.button('Start Recording')
+        # Variables to manage recording
+        recording = False
+        frames = []
+
+        camera_rec = form_2.cv2.VideoCapture(0)
+        #main camera for recording
+
+        while run:
+            _, frame = camera_rec.read()
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            FRAME_WINDOW.image(frame)
+
+            if recording:
+                frames.append(frame)
+
+            start_stop_recording()
+
+        uploaded_file = st.file_uploader("or upload an image or a video", type=["image/jpeg", "image/png", "video/mp4"])
         st.session_state["uploaded_file"] = None
         if uploaded_file is not None:
             input_file = process_file(uploaded_file)
 
-        submit_button = st.form_submit_button("Submit Image", args=[image_captured])
+        submit_button = st.form_submit_button("Extract Emotion from File", args=[image_captured])
         if submit_button:
             if input_file:
-                st.session_state["uploaded_image"] = uploaded_image
-                st.write("Image upload detected")
+                st.session_state["uploaded_file"] = input_file
+                st.write("Reading emotion from image file...")
             elif image_captured:
-                st.session_state["image_captured"] = image_captured
-                st.write("Camera image detected")
+                st.session_state["image_captured"] = input_file
+                st.write("Reading emotion from video file...")
 
 with col1:
     # text input form
