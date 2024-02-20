@@ -31,7 +31,7 @@ def kaggle_preprocess():
     kaggle_df = kaggle_df[kaggle_df['length']<400000]
     kaggle_df = kaggle_df[kaggle_df['liveness']<0.3]
     kaggle_df = kaggle_df[kaggle_df['loudness']>-30]
-    kaggle_df = kaggle_df[kaggle_df['speechiness']<0.1]
+    kaggle_df = kaggle_df[kaggle_df['speechiness']>0.1]
 
     #Select genres that user likes
     user_genre = get_genre()

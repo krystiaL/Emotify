@@ -2,6 +2,7 @@ import spotipy
 import pandas as pd
 from spotipy.oauth2 import SpotifyOAuth
 from playlist_module.params import *
+#from face_detect_module.read_video_file_ok import *
 
 def tailor_df(emotion):
     '''This function takes emotion input from facial recognition
@@ -67,6 +68,20 @@ def generate_playlist(emotion,account_name):
 
     sp.user_playlist_add_tracks(user=user_id, playlist_id=new_playlist_id, tracks=uri_list)
     return title,sp,title_list
+
+def process_emotion():
+    '''This function imports emotion_weights from face_detect_module and outputs
+    which emotion was dominant in the video clip.'''
+    import_emotion = {'Anger': [0.2, 0.2, 0.2, 0.2, 0.21, 0.21, 0.21, 0.21, 0.2, 0.2, 0.21, 0.2, 0.2, 0.18, 0.18, 0.18],
+                    'Sadness': [0.19, 0.2, 0.21, 0.21, 0.2, 0.21, 0.24, 0.23, 0.24, 0.24, 0.24, 0.25, 0.24, 0.22, 0.2,\
+                        0.24, 0.26, 0.29, 0.27, 0.27, 0.27, 0.25, 0.28, 0.32, 0.36, 0.4, 0.43, 0.44, 0.45, 0.43, 0.42, 0.38, 0.34, 0.31, 0.27, 0.24, 0.23, 0.23],
+                    'Happiness': [0.22, 0.23, 0.24, 0.24, 0.23, 0.22, 0.22, 0.2, 0.19, 0.2, 0.22, 0.24, 0.26, 0.28, 0.3, 0.3, 0.28, 0.27, 0.24, 0.29, 0.29, 0.29, 0.28, 0.27],
+                    'Neutral': [0.19, 0.18]}
+    user_emotion = {key:value.max() for (key,value) in import_emotion}
+    dominant_emotion =
+
+    return user_emotion,dominant_emotion
+
 
 def send_playlist_id(emotion,account_name):
     '''This function returns the url of the generated playlist on Spotify webpage.
