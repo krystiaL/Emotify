@@ -3,8 +3,9 @@
 #---------------------------------------------------
 import streamlit as st
 import cv2
-import tempfile
 import time
+import os
+
 
 import instructions
 import regarding_spotify_interact
@@ -13,34 +14,26 @@ import about_us
 #---------------------------------------------------
 #          PAGE CONFIGURATIONS ETC.
 #---------------------------------------------------
-# Page title and icon
+
 st.set_page_config(page_title="<Music Selector Name>", page_icon=":musical_note:", layout="wide")
+
+#---------------------------------------------------
+#          DEFAULT DOWNLOAD PATH
+#---------------------------------------------------
+
+# Get the path of the downloads folder
+downloads_path = os.path.join(os.path.expanduser("~"), "Downloads")
+
+# Set the downloads_path as an environment variable
+os.environ["DOWNLOADS_PATH"] = downloads_path
 
 #---------------------------------------------------
 #             FUNCTIONS
 #---------------------------------------------------
 
-moods = {
-    "Happy": ["song 1", "song 2", "song 3", "song 4", "song 5"],
-    "Sad": ["song 1", "song 2", "song 3", "song 4", "song 5"],
-    "Excited": ["song 1", "song 2", "song 3", "song 4", "song 5"],
-    "Relaxed": ["song 1", "song 2", "song 3", "song 4", "song 5"]
-}
-#a dummy dictionary for text-based input (back-up)
-
-
-def dummy_text_function():
-    #This dummy function takes the text as input and returns the playlist
-    st.subheader(f"Here's a {mood.lower()} playlist for you!")
-    for playlist in moods[mood]:
-        return st.write(playlist)
-
-
-
 def dummy_img_and_vid_function():
     #This dummy function takes the either image or video files as input and returns the playlist
     st.subheader(f"Here's a <identified emotion> playlist for you!")
-    st.write("imagine this is a list of songs")
 
 
 def process_file(file):
@@ -60,43 +53,71 @@ def process_file(file):
         #default if the file submitted is not among the required file types
 
 
-def save_video(frames, fps):
-    # Function to save the recorded video
-    height, width, layers = frames[0].shape
-    size = (width, height)
-    out = cv2.VideoWriter('output.avi', cv2.VideoWriter_fourcc(*'DIVX'), fps, size)
 
-    for frame in frames:
+# Define codec and create VideoWriter object
+fourcc = cv2.VideoWriter_fourcc(*'XVID')
+out = cv2.VideoWriter('{VIDEO_PATH}/output.avi', fourcc, 20.0, (640, 480))
+
+def record_video():
+    #Function to start the recording
+    global webcam, out
+    if not webcam.isOpened():
+        st.write("Error: Camera not found or already in use.")
+        return
+
+    while True:
+        ret, frame = webcam.read()
+        if not ret:
+            break
         out.write(frame)
+        cv2.imshow('Video', frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
 
+    webcam.release()
     out.release()
+    cv2.destroyAllWindows()
 
 
-def start_stop_recording():
-    # Function to start/stop recording
-    global recording, frames
+# def save_video(frames, fps):
+#     # Function to save the recorded video
+#     height, width, layers = frames[0].shape
+#     size = (width, height)
+#     out = cv2.VideoWriter('output.avi', cv2.VideoWriter_fourcc(*'DIVX'), fps, size)
 
-    if record:
-        recording = not recording
+#     for frame in frames:
+#         out.write(frame)
 
-        if recording:
-            st.write('Recording...')
-        else:
-            st.write('Stopped')
-            save_video(frames, 20)  # Save the recorded video with 20 fps
-            frames = []  # Clear the frames list
+#     out.release()
+
+
+# def start_stop_recording():
+#     # Function to start/stop recording
+#     global recording, frames
+
+#     if record:
+#         recording = not recording
+
+#         if recording:
+#             st.write('Recording...')
+#         else:
+#             st.write('Stopped')
+#             save_video(frames, 20)  # Save the recorded video with 20 fps
+#             frames = []  # Clear the frames list
 
 #------------------------------------
 #      HEADER AND DESCRIPTION
 #------------------------------------
 
-st.title("<Music Selector Project>") #official name still hasn't been decided
+st.markdown("""
+<h1 style="font-size: 80px;">Music Selector Project</h1>
+""", unsafe_allow_html=True) #official name still hasn't been decided
 st.write(" ")
 
-col3, col4 = st.columns([1.5,3])
+col3, col4 = st.columns([2,3])
 col3.title(" ")
 with col3:
-    st.subheader("Tune in your Emotions, Transform out your Playlist!")
+    st.title("Tune in your Emotions, Transform out your Playlist!")
     st.subheader(" ")
     col3_1, col3_2, col3_3 = col3.columns([0.5,1,0.5])
     col3_2.image("interface/images/inst_flow1_hd.png")
@@ -145,13 +166,11 @@ col1, col2,  col3 = st.columns([3.5, 0.5, 4])
 with col1:
     st.write(" ")
     st.subheader("Take a selfie or a video capture!")
-    st.write("Take a picture or a short video recording of your face showing how your current emotion.")
 
     container = st.container(border=True)
-    col_form = st.form("collective_input")
+    container.write("Take a picture or a short video recording of your face showing how your current emotion.")
 
-    row1_col1, row1_col2 = st.columns(2)
-    row_2 = st.columns(1)
+    row1_col1, row1_col2 = container.columns(2)
 
     with row1_col1:
     #--------------Camera Image---------------#
@@ -162,62 +181,63 @@ with col1:
 
     with row1_col2:
     #------------Camera Recoding-------------#
-        run = st.checkbox('Run Webcam')
-        FRAME_WINDOW = st.image([])
+        st.subheader(" ")
         webcam = cv2.VideoCapture(0)
 
-        #Button to start/stop recording
-        record = st.button('Start Recording')
-        # Variables to manage recording
-        recording = False
-        frames = []
+        #create start and stop buttons in seprate colums
+        start = st.button('Start Recording')
+        stop = st.button('Stop Recording')
 
-        camera_rec = st.cv2.VideoCapture(0)
-        #main camera for recording
+        #progress bar to show start and stop of video recording
+        progress_bar = st.progress(0)
 
-        while run:
-            _, frame = camera_rec.read()
-            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            FRAME_WINDOW.image(frame)
+        # Add a button to start recording
+        if start:
+            #Initialize start time
+            start_time = time.time()
 
-            if recording:
-                frames.append(frame)
+            #Start recording
+            while True:
+                # Do some heavy processing here
+                time.sleep(1)  # replace this with your actual processing
 
-            start_stop_recording()
+                # Calculate the progress
+                elapsed_time = time.time() - start_time
+                progress = int(elapsed_time / 10 * 100)  # assuming the progress should increase every 10 seconds
 
-    with row1_col2:
+                # Update the progress bar
+                progress_bar.progress(progress)
+
+                # Check if the user wants to stop recording
+                if stop:
+                    break
+
+            # Stop recording
+            progress_bar.empty()
+
+    with container.form("collective_input", border=False):
         uploaded_file = st.file_uploader("or upload an image or a video", type=["image/jpeg", "image/png", "video/mp4"])
         st.session_state["uploaded_file"] = None
         if uploaded_file is not None:
             input_file = process_file(uploaded_file)
 
-    submit_button = col_form.form_submit_button("Extract Emotion from File", args=[image_captured])
-    if submit_button:
-        if input_file:
-            st.session_state["uploaded_file"] = input_file
-            if input_file.type.startswith('image'):
-                st.write("Reading emotion from image file...")
-            elif input_file.type.startswith('video'):
-                st.write("Reading emotion from video file...")
-
-with col1:
-    # text input form
-    st.subheader("Select a mood!")
-    with st.form("text_input"):
-        mood = st.selectbox("Choose an emotion:", list(moods.keys()))
-        st.session_state["mood"] = None
-        submit_button= st.form_submit_button("Submit Emotion")
+        submit_button = st.form_submit_button("Extract Emotion from File", args=[image_captured])
         if submit_button:
-            st.write("Emotion selected")
-            st.session_state["mood"] = mood
+            if input_file:
+                st.session_state["uploaded_file"] = input_file
+                if input_file.type.startswith('image'):
+                    st.write("Reading emotion from image file...")
+                elif input_file.type.startswith('video'):
+                    st.write("Reading emotion from video file...")
+
 
 # Display generated playlist based on input
 with col3:
     st.write(" ")
-    if st.session_state.get("uploaded_image"):
+    if st.session_state.get("collective_input"):
         uploaded_image = st.session_state["uploaded_image"]
         st.write("Image input detected")
-        with st.spinner("Transforming Emotions into Melodies..."):
+        with st.spinner("Transforming Emotions into Melodies..."): #change into progress bar
             time.sleep(5)  # simulate playlist generation time
         dummy_img_and_vid_function()
 
