@@ -1,14 +1,20 @@
+#---------------------------------------------------
+#          LIBRARY AND MODULE IMPORTS
+#---------------------------------------------------
 import streamlit as st
 import cv2
 import tempfile
 import time
 
+import instructions
+import regarding_spotify_interact
+import about_us
 
+#---------------------------------------------------
+#          PAGE CONFIGURATIONS ETC.
+#---------------------------------------------------
 # Page title and icon
 st.set_page_config(page_title="<Music Selector Name>", page_icon=":musical_note:", layout="wide")
-
-#Default moods and corresponding songs
-# note: change this into the working code
 
 #---------------------------------------------------
 #             FUNCTIONS
@@ -50,6 +56,7 @@ def process_file(file):
         return file
     else:
         st.write("Unsupported file type")
+        return None
         #default if the file submitted is not among the required file types
 
 
@@ -110,59 +117,28 @@ with st.sidebar:
     st.image("interface/images/Music-cuate.png")
     #attribute: <a href="https://storyset.com/app">App illustrations by Storyset</a>
 
-    instructions = {
-        2: "Click the submit button to start the process.",
-        3: "Please give the application some time identify the emotion to be used.",
-        4: "After emotion recognition, the application will start generating the playlist based on the extracted emotion from the image/video.",
-        5: "Play the generated playlist from the website and/ save it to your Spo."
-    }
+    st.subheader("For questions about application usage:")
+    page = st.selectbox("choose a query", ["How to generate your playlist?",
+                                                  "How to add playlist to your Spotify library?",
+                                                 ])
+    #drop down option for Q&As
 
-    with st.expander("How to generate your playlist?"):
-        col_ex1, col_ex2 = st.columns([0.5, 2])
-        #step 1
-        col_ex1.write(" ")
-        col_ex1.image("interface/images/upload_icon.png")
-        col_ex2.write(" ")
-        col_ex2.write("Upload a photo or video showing your face.")
-        #step 2
-        col_ex1.subheader(" ")
-        col_ex1.image("interface/images/click_submit_icon.png")
-        col_ex2.write("Click the submit button to start the emotion extraction process.")
-        #step 3
-        col_ex1.title(" ")
-        col_ex1.subheader(" ")
-        col_ex1.image("interface/images/emoji_icons.png")
-        col_ex2.write("Please give the application some time to identify the emotion from the image or video file.")
-        #step 4
-        col_ex1.title(" ")
-        col_ex1.title(" ")
-        col_ex1.subheader(" ")
-        col_ex1.image("interface/images/processing_icon.png")
-        col_ex2.write("After emotion recognition, the application will start generating the playlist based on the extracted emotion from the image/video.")
-        #step 5
-        col_ex1.title(" ")
-        col_ex1.title(" ")
-        col_ex1.subheader(" ")
-        col_ex1.image("interface/images/musical_notes_icon.png")
-        col_ex2.write("Play the generated playlist from the website and/or save it to your Spotify account library.")
+    if page == "How to generate your playlist?":
+        instructions.instructions_page()
+    if page == "How to add playlist to your Spotify library?":
+        regarding_spotify_interact.spotify_page()
+    #link selectbox to indiv .py file (==individual page)
 
+    st.subheader("Know more about the creators:")
+    about_us_page = st.button("About Us")
+    #link page button to the individual .py file (==individual page)
+    if about_us_page:
+        about_us.about_us()
 
-    with st.expander("How to add the playlist to your Spotify library?"):
-        st.write('''
-                dummy text
-                 ''')
-    with st.expander("How to reset the generation process"):
-        st.write('''
-                 dummy text
-                 ''')
-    with st.expander("Meet the Team!"):
-        st.write('''
-                 dummy text
-                 ''')
 
 #--------------------------------------------
 #configure page layout
-col1, col2,  col3 = st.columns([3, 0.8, 4])
+col1, col2,  col3 = st.columns([3.5, 0.5, 4])
 
 #-------------------------------------------
 
@@ -171,28 +147,32 @@ with col1:
     st.subheader("Take a selfie or a video capture!")
     st.write("Take a picture or a short video recording of your face showing how your current emotion.")
 
-    with st.form("collective_input"):
+    container = st.container(border=True)
+    col_form = st.form("collective_input")
 
-        form_1, form_2 = st.columns(2)
+    row1_col1, row1_col2 = st.columns(2)
+    row_2 = st.columns(1)
 
-        #--------------Camera Image---------------#
-        image_captured = form_1.camera_input("click on \"Take Photo\" ")
+    with row1_col1:
+    #--------------Camera Image---------------#
+        image_captured = st.camera_input("click on \"Take Photo\" ")
         # camera widget; will return a jpeg file once image is taken.
         st.session_state["image_captured"] = None
         # Initialized camera state variable
 
-        #------------Camera Recoding-------------#
-        run = form_2.checkbox('Run Webcam')
-        FRAME_WINDOW = form_2.image([])
+    with row1_col2:
+    #------------Camera Recoding-------------#
+        run = st.checkbox('Run Webcam')
+        FRAME_WINDOW = st.image([])
         webcam = cv2.VideoCapture(0)
 
         #Button to start/stop recording
-        record = form_2.button('Start Recording')
+        record = st.button('Start Recording')
         # Variables to manage recording
         recording = False
         frames = []
 
-        camera_rec = form_2.cv2.VideoCapture(0)
+        camera_rec = st.cv2.VideoCapture(0)
         #main camera for recording
 
         while run:
@@ -205,18 +185,19 @@ with col1:
 
             start_stop_recording()
 
+    with row1_col2:
         uploaded_file = st.file_uploader("or upload an image or a video", type=["image/jpeg", "image/png", "video/mp4"])
         st.session_state["uploaded_file"] = None
         if uploaded_file is not None:
             input_file = process_file(uploaded_file)
 
-        submit_button = st.form_submit_button("Extract Emotion from File", args=[image_captured])
-        if submit_button:
-            if input_file:
-                st.session_state["uploaded_file"] = input_file
+    submit_button = col_form.form_submit_button("Extract Emotion from File", args=[image_captured])
+    if submit_button:
+        if input_file:
+            st.session_state["uploaded_file"] = input_file
+            if input_file.type.startswith('image'):
                 st.write("Reading emotion from image file...")
-            elif image_captured:
-                st.session_state["image_captured"] = input_file
+            elif input_file.type.startswith('video'):
                 st.write("Reading emotion from video file...")
 
 with col1:
@@ -238,7 +219,7 @@ with col3:
         st.write("Image input detected")
         with st.spinner("Transforming Emotions into Melodies..."):
             time.sleep(5)  # simulate playlist generation time
-        dummy_image_function()
+        dummy_img_and_vid_function()
 
         #link to spotify
         st.write("Add this playlist to your Spotify library!")
@@ -251,7 +232,7 @@ with col3:
         st.write("Camera Image detected")
         with st.spinner("Transforming Emotions into Melodies..."):
             time.sleep(5)  # simulate playlist generation time
-        dummy_image_function()
+        dummy_img_and_vid_function()
 
         #link to spotify
         st.write("Add this playlist to your Spotify library!")
@@ -264,7 +245,7 @@ with col3:
         st.write("Video input detected")
         with st.spinner("Transforming Emotions into Melodies..."):
             time.sleep(5)  # simulate playlist generation time
-        dummy_video_function()
+        dummy_img_and_vid_function()
 
         #link to spotify
         st.write("Add this playlist to your Spotify library!")

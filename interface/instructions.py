@@ -1,8 +1,6 @@
 import streamlit as st
 
 def instructions_page():
-    st.title("How to use this application:")
-
     col_ex1, col_ex2 = st.columns([0.5, 2])
     #step 1
     col_ex1.write(" ")

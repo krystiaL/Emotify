@@ -25,10 +25,10 @@ generate:
 # ----------------------------------
 
 streamlit_upload:
-	@streamlit run /interface/ux_upload.py
+	@streamlit run interface/ux_upload.py
 
 streamlit_video:
-	@streamlit run /interface/ux_video.py
+	@streamlit run interface/ux_video.py
 
 # ----------------------------------
 #    LOCAL INSTALL COMMANDS
