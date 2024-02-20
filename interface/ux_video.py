@@ -48,7 +48,7 @@ with col3:
 
 col3.title(" ")
 col3.caption("Application Accuracy: <80.56%>")
-col4.image("/root/code/Atsuto-T/Music_Selector_Project/music-selector/interface/images/Playlist-amico (1).png")
+col4.image("images/Playlist-amico (1).png")
 #image attribute: <a href="https://storyset.com/app">App illustrations by Storyset</a>
 st.subheader(" ")
 
@@ -58,7 +58,7 @@ st.subheader(" ")
 
 with st.sidebar:
     st.title("About <Music Selector>") #change to official name
-    st.image("/root/code/Atsuto-T/Music_Selector_Project/music-selector/interface/images/Music-cuate.png")
+    st.image("images/Music-cuate.png")
     #attribute: <a href="https://storyset.com/app">App illustrations by Storyset</a>
 
     instructions = {
