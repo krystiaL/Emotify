@@ -2,3 +2,4 @@ spotipy
 os
 pandas
 tensorflow
+functools

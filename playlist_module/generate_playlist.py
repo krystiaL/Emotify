@@ -2,13 +2,29 @@ import spotipy
 import pandas as pd
 from spotipy.oauth2 import SpotifyOAuth
 from playlist_module.params import *
+from playlist_module.genre import get_genre
 #from face_detect_module.read_video_file_ok import *
 
 def tailor_df(emotion):
     '''This function takes emotion input from facial recognition
     and outputs a dataframe tailored for that emotion'''
 
-    df = pd.read_csv('raw_data/kaggle_df_labeled.csv')
+    df = pd.read_csv('raw_data/new_df_labeled.csv')
+
+    #Select genres that user likes
+    # user_genre = get_genre()
+
+    # def check_genre(list,set=user_genre):
+    #     boolean_list=[]
+    #     for element in list:
+    #         if not element:
+    #             boolean_list.append(element in set)
+    #     if sum(boolean_list) >= 1:
+    #         return True
+
+    # df = df[df['track_genre_split'].apply(check_genre)]
+
+    # print(df.shape)
 
     if emotion == 'anger' or 'disgust' or 'fear':
         mood_df = df.sort_values('mood_Calm',ascending=False).head(500)
@@ -47,7 +63,7 @@ def generate_playlist(emotion,account_name):
     )
 
     user_id = sp.current_user()["id"]
-    title = f"{emotion.capitalize()} playlist for you, {account_name}!"
+    title = f"{emotion[0].capitalize()} playlist for you, {account_name}!"
 
     new_playlist = sp.user_playlist_create(user=user_id, name=title, public=True,
                                       description=None)
@@ -77,19 +93,20 @@ def process_emotion():
                         0.24, 0.26, 0.29, 0.27, 0.27, 0.27, 0.25, 0.28, 0.32, 0.36, 0.4, 0.43, 0.44, 0.45, 0.43, 0.42, 0.38, 0.34, 0.31, 0.27, 0.24, 0.23, 0.23],
                     'Happiness': [0.22, 0.23, 0.24, 0.24, 0.23, 0.22, 0.22, 0.2, 0.19, 0.2, 0.22, 0.24, 0.26, 0.28, 0.3, 0.3, 0.28, 0.27, 0.24, 0.29, 0.29, 0.29, 0.28, 0.27],
                     'Neutral': [0.19, 0.18]}
-    user_emotion = {key:value.max() for (key,value) in import_emotion}
-    dominant_emotion =
 
-    return user_emotion,dominant_emotion
+    user_emotion = {key:len(value) for key,value in import_emotion.items()}
+    user_emotion = {key:value/sum(user_emotion.values()) for key,value in user_emotion.items()}
+    dominant_emotion = [key for key,val in user_emotion.items() if val==max(user_emotion.values())]
+    return dominant_emotion,user_emotion
 
-
-def send_playlist_id(emotion,account_name):
+def send_playlist_id(account_name):
     '''This function returns the url of the generated playlist on Spotify webpage.
     -The url will be fed to UX module.'''
 
-    playlist_object = generate_playlist(emotion=emotion,account_name=account_name)
+    playlist_object = generate_playlist(emotion=process_emotion()[0],account_name=account_name)
     playlist_name = playlist_object[0]
     sp = playlist_object[1]
+
     # Get the user's playlists
     playlists = sp.current_user_playlists()
 
@@ -112,4 +129,4 @@ def send_playlist_id(emotion,account_name):
 if __name__=="__main__":
     # Account_name will be fed from UX module.
     # Emotion will be fed from Facial Recognition module.
-    send_playlist_id(emotion='Happy',account_name='Test_Name')
+    send_playlist_id(account_name='Test_Name')
