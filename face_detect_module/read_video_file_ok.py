@@ -141,7 +141,6 @@ class ResNet(nn.Module):
 def ResNet50(num_classes, channels=3):
     return ResNet(Bottleneck, [3,4,6,3], num_classes, channels)
 
-
 class LSTMPyTorch(nn.Module):
     def __init__(self):
         super(LSTMPyTorch, self).__init__()
@@ -158,13 +157,13 @@ class LSTMPyTorch(nn.Module):
         x = self.softmax(x)
         return x
 
-
 #-----------------------------------------------------------------------#
 #########################################################################
 #|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||#
 #########################################################################
 #-----------------------------------------------------------------------#
 # Sub functions
+
 def pth_processing(fp):
     class PreprocessInput(torch.nn.Module):
         def init(self):
@@ -295,14 +294,11 @@ def display_FPS(img, text, margin=1.0, box_scale=1.0):  # frame = display_FPS(fr
 # Testing Models:
 
 
-# From_Krystia_Streamlit_image_or_video
-    # image:
-        # variable name: image_file
-        # contents:
-            # ① image_captured = camera_input
-            # ② uploaded_image = image upload from user
-        # video:
-        # variable name: video_file
+# From_Krystia_Streamlit_image_or_video:
+    # variable name: input_file
+    # content: photo or video
+        # ① captured = camera_input
+        # ② upload = browse (drag-drop)
 
 mp_face_mesh = mp.solutions.face_mesh
 
@@ -345,8 +341,8 @@ DICT_EMO = {
 ######################################################
 #----------------------------------------------------#
 
-
-input_file = image_file
+input_file = 'facess.png'  # 'face.tif'  # 'face.jpg'  # 'face.png'  # 'IMG_5221.MOV'  # IMG_0509.MOV  # image_file
+input_file = input_file
 dot_locate = input_file.find('.')
 
 
@@ -360,121 +356,22 @@ readable_imgs = [
     # Raster and Vector geospatial data supported by GDAL
 ]
 
-# If input is an picture:
+lstm_features = []
+
+# If input is a picture:
 if input_file[dot_locate:] in readable_imgs:
-    #
-    # https://www.geeksforgeeks.org/reading-image-opencv-using-python/
-
-    # assign an image array to img variable
-    cap_file = cv2.imread(input_file, cv2.IMREAD_COLOR)
-
-    # print(cap_file.shape) # image shape attribute
-
-    # Displaying the image:
-    # Creating GUI window to display an image on screen
-    # cv2.imshow(<title:str>, <image_array>)
-    cv2.imshow('image', cap_file)
-
-    # To hold the window on screen, we use cv2.waitKey method
-    # Once it detected the close input, it will release the control
-    # To the next line
-    # First Parameter is for holding screen for specified milliseconds
-    # It should be positive integer. If 0, then it will
-    # hold the screen until user close it.
-    cv2.waitKey(0)
-
-    # cap = cap_file
-
-    ########################
-    #^^^^^^^^^^^^^^^^^^^^^^^
-    with mp_face_mesh.FaceMesh(
-    max_num_faces=1,
-    refine_landmarks=False,
-    min_detection_confidence=0.5,
-    min_tracking_confidence=0.5) as face_mesh:
-        print("Reading image started")
-
-        # while cap.isOpened():
-        #     print("Reading...")
-            # t1 = time.time()  #----------------------------------------------------# https://docs.python.org/3/library/time.htlm#time.time
-            # success, frame = cap.read()
-            # if frame is None: #break
-                ######################################################
-                #----------------------------------------------------#
-                # print("None: no webcam?")
-                #----------------------------------------------------#
-                ######################################################
-    # break
-    cap = cap_file
-
-            # frame_copy = frame.copy()
-            # frame_copy.flags.writeable = False
-    frame_copy = cv2.cvtColor(cap, cv2.COLOR_BGR2RGB)
-    results = face_mesh.process(frame_copy)
-    frame_copy.flags.writeable = True
-
-    if results.multi_face_landmarks:
-        for fl in results.multi_face_landmarks:
-            startX, startY, endX, endY  = get_box(fl, w, h)
-            cur_face = frame_copy[startY:endY, startX: endX]
-
-            cur_face = pth_processing(Image.fromarray(cur_face))
-            features = torch.nn.functional.relu(pth_backbone_model.extract_features(cur_face)).detach().numpy()
-
-            if len(lstm_features) == 0:
-                lstm_features = [features]*10
-            else:
-                lstm_features = lstm_features[1:] + [features]
-
-            lstm_f = torch.from_numpy(np.vstack(lstm_features))
-            lstm_f = torch.unsqueeze(lstm_f, 0)
-            output = pth_LSTM_model(lstm_f).detach().numpy()
-
-            cl = np.argmax(output)
-            label = DICT_EMO[cl]
-
-            ######################################################
-            #----------------------------------------------------#
-            # dictionary histogram of the indentified face emotion
-            video_emotions[label] = video_emotions.get(label, 0) + 1
-
-            # average the ??probability?? of emotion
-            emotions_weight[label] = emotions_weight.get(label, []) + [round(output[0][cl], 2)]
-            print(label)
-            #----------------------------------------------------#
-            ######################################################
-
-            frame = display_EMO_PRED(frame, (startX, startY, endX, endY), label+' {0:.1%}'.format(output[0][cl]), line_width=3)
-
-        t2 = time.time()  #----------------------------------------------------# https://docs.python.org/3/library/time.htlm#time.time
-
-        # frame = display_FPS(frame, 'FPS: {0:.1f}'.format(1 / (t2 - t1)), box_scale=.5)  # Upper right corner tag display "FPS: x.x"
+    img_array = []
+    img = cv2.imread(input_file)
+    height, width, layers = img.shape
+    size = (width,height)
+    img_array.append(img)
+    input_file = None  # reset variable
+    out = cv2.VideoWriter('project.avi',cv2.VideoWriter_fourcc(*'DIVX'), 15, size)
+    for i in range(len(img_array)):
+        out.write(img_array[i])
+    out.release()
 
 
-        vid_writer.write(frame)
-
-        cv2.imshow('Webcam', frame)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            #----------------------------------------------------# print("quit")
-            break
-
-    ######################################################
-    #----------------------------------------------------#
-    print("Streaming ended")
-    print(f"video_emotions:\n{video_emotions}")
-    print(f"emotions_weight:\n{emotions_weight}")
-    for k,v in emotions_weight.items():
-        print(k, v)
-        print(f'Max emotion weight: {max(v)}')
-    #----------------------------------------------------#
-    ######################################################
-
-    vid_writer.release()
-    cap.release()
-    cv2.destroyAllWindows()
-
-    #_______________________
-    ########################
 #-----------------------------------------------------------------------#
 #########################################################################
 #|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||#
@@ -483,93 +380,32 @@ if input_file[dot_locate:] in readable_imgs:
 # Testing Models by video file
 
 # If input is an video:
-else:
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    # Daisuke (Feb. 15, 2024)
+if f'project.avi' in os.listdir():
+    input_file = 'project.avi'
     time_limit = 10  # seconds
     start_time = time.time()
-    #________________________________________
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-######################################################
-#----------------------------------------------------#
-
-    # video_file = 'IMG_0535.MOV'  # 'daijoubu-nihongo.mov'  # 'Replay.mov'  'IMG_5221.MOV'
-    cap_file = cv2.VideoCapture(video_file)
-    print(type(cap_file)) # <class 'cv2.VideoCapture'>
-
-    print(cap_file.isOpened())
-    # should return True
-
-    # get the size (width and height), FPS (frames per second), and total number of frames:
-    print('Frame width:', cap_file.get(cv2.CAP_PROP_FRAME_WIDTH))
-    # Frame width: 720.0
-    print('Frame height:', cap_file.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    # Frame height: 1280.0
-    print('Frames Per Second:', cap_file.get(cv2.CAP_PROP_FPS))
-    # Frames Per Second: 30.03824313361919
-    print('Frame count:', cap_file.get(cv2.CAP_PROP_FRAME_COUNT))
-    # Frame count: 432.0
-
-    # calculate the playback time of the video in seconds with Total frames / FPS
-    print('playback time:', cap_file.get(cv2.CAP_PROP_FRAME_COUNT) / cap_file.get(cv2.CAP_PROP_FPS))
-    # playback time: 14.381666666666668
-
-
-    # or webcam
-    # cap = cv2.VideoCapture(0)
-    cap = cap_file
-#----------------------------------------------------#
-######################################################
+    cap = cv2.VideoCapture(input_file)
 
     w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = np.round(cap.get(cv2.CAP_PROP_FPS))
 
-    # ######################################################
-    # #----------------------------------------------------#
-    # # to save video file serially, run the following if statement instead of 【path_save_video = 'result.mp4'】
-    # if 'result.mp4' in os.listdir():
-    #     video_file_vers = 0
-    #     for i in os.listdir():
-    #         if i.startswith('result'):
-    #             video_file_vers += 1
-
-    #     path_save_video = f'result-{name_LSTM_model}-{video_file_vers}.mp4'
-    # # path_save_video = f'result-{name_LSTM_model}.mp4'
-    # #----------------------------------------------------#
-    # ######################################################
-
-    # vid_writer = cv2.VideoWriter(path_save_video, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h))
-
-    lstm_features = []
-
-    ######################################################
-    #----------------------------------------------------#
-    # dictionary histogram of the indentified face emotion
+    # for Atsuto: dictionary histogram of the indentified face emotion
     video_emotions = {}
     emotions_weight = {}
-    #----------------------------------------------------#
-    ######################################################
 
     with mp_face_mesh.FaceMesh(
     max_num_faces=1,
     refine_landmarks=False,
     min_detection_confidence=0.5,
     min_tracking_confidence=0.5) as face_mesh:
-        print("Streaming started")
-        while cap.isOpened():
-            print("Streaming...")
-            t1 = time.time()  #----------------------------------------------------# https://docs.python.org/3/library/time.htlm#time.time
+        while cap.isOpened() and (time.time() - start_time) < time_limit:
+            t1 = time.time()
             success, frame = cap.read()
-            if frame is None: #break
-                ######################################################
-                #----------------------------------------------------#
-                print("None: no webcam?")
-                #----------------------------------------------------#
-                ######################################################
+
+            if frame is None:
+                print("Ended: No more frame to process.")
                 break
 
             frame_copy = frame.copy()
@@ -582,7 +418,6 @@ else:
                 for fl in results.multi_face_landmarks:
                     startX, startY, endX, endY  = get_box(fl, w, h)
                     cur_face = frame_copy[startY:endY, startX: endX]
-
                     cur_face = pth_processing(Image.fromarray(cur_face))
                     features = torch.nn.functional.relu(pth_backbone_model.extract_features(cur_face)).detach().numpy()
 
@@ -598,34 +433,25 @@ else:
                     cl = np.argmax(output)
                     label = DICT_EMO[cl]
 
-                    ######################################################
-                    #----------------------------------------------------#
                     # dictionary histogram of the indentified face emotion
                     video_emotions[label] = video_emotions.get(label, 0) + 1
-
-                    # average the ??probability?? of emotion
+                    # list emotion weight for each frame/picture
                     emotions_weight[label] = emotions_weight.get(label, []) + [round(output[0][cl], 2)]
-                    print(label)
-                    #----------------------------------------------------#
-                    ######################################################
 
                     frame = display_EMO_PRED(frame, (startX, startY, endX, endY), label+' {0:.1%}'.format(output[0][cl]), line_width=3)
 
-            t2 = time.time()  #----------------------------------------------------# https://docs.python.org/3/library/time.htlm#time.time
+            t2 = time.time()
 
-            # frame = display_FPS(frame, 'FPS: {0:.1f}'.format(1 / (t2 - t1)), box_scale=.5)  # Upper right corner tag display "FPS: x.x"
-
-
-            vid_writer.write(frame)
+            frame = display_FPS(frame, 'FPS: {0:.1f}'.format(1 / (t2 - t1)), box_scale=.5)  # Upper right corner tag display "FPS: x.x"
 
             cv2.imshow('Webcam', frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):
-                #----------------------------------------------------# print("quit")
+                print("quit")
                 break
 
         ######################################################
         #----------------------------------------------------#
-        print("Streaming ended")
+        print("Ended successfully")
         print(f"video_emotions:\n{video_emotions}")
         print(f"emotions_weight:\n{emotions_weight}")
         for k,v in emotions_weight.items():
@@ -634,7 +460,6 @@ else:
         #----------------------------------------------------#
         ######################################################
 
-        vid_writer.release()
         cap.release()
         cv2.destroyAllWindows()
 

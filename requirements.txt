@@ -6,8 +6,8 @@ tensorflow
 
 #########################
 #------------------------
-# emotion detection model
-os
+# for the face_detect_module
+# os
 cv2
 mediapipe
 math
