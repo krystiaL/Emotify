@@ -2,16 +2,18 @@
 #          LIBRARY AND MODULE IMPORTS
 #---------------------------------------------------
 import streamlit as st
-import cv2
 import time
 import os
 import tempfile
 
+import cv2
+from threading import Thread
 
 import instructions
 import regarding_spotify_interact
 import about_us
 
+from webcam import WebcamRecorder, webcam_thread
 #---------------------------------------------------
 #          PAGE CONFIGURATIONS ETC.
 #---------------------------------------------------
@@ -72,47 +74,6 @@ def dummy_img_and_vid_function():
     st.markdown('<iframe src="https://open.spotify.com/embed/playlist/0HI7czcgdxj4bPu3eRlc2C?utm_source=generator"\
     width="500" height="400"></iframe>', unsafe_allow_html=True)
     #change with generated playlist link
-
-
-def process_file(file):
-    #This function takes one required argument which is either an image or a video file from the file_uploader forms
-    #and process the corresponding file type after user input.
-    if file.type.startswith('image'):
-        # process image
-        image_file = st.image(file)
-        return image_file
-    elif file.type.startswith('video'):
-        # process video
-        video_file = st.video(file)
-        return video_file
-    else:
-        st.write("Unsupported file type")
-        #default if the file submitted is not among the required file types
-
-
-# Define codec and create VideoWriter object
-fourcc = cv2.VideoWriter_fourcc(*'XVID')
-out = cv2.VideoWriter('video_file.mp4', fourcc, 20.0, (640, 480))
-
-def record_video():
-    #Function to start the recording; might consider making this into an independent module
-    global webcam, out
-    if not webcam.isOpened():
-        st.write("Error: Camera not found or already in use.")
-        return
-
-    while True:
-        ret, frame = webcam.read()
-        if not ret:
-            break
-        out.write(frame)
-        cv2.imshow('Video', frame)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-
-    webcam.release()
-    out.release()
-    cv2.destroyAllWindows()
 
 
 #------------------------------------
@@ -221,13 +182,6 @@ with col3:
             time.sleep(5)  # simulate playlist generation time
         dummy_img_and_vid_function()
 
-    # elif st.session_state.get("recording"):
-    #     #playlist generation for camera capture
-    #     with st.spinner("Transforming Emotions into Melodies..."):
-    #         # to improve: change into progress bar/ specify state after merging other functions
-    #         time.sleep(5)  # simulate playlist generation time
-    #     dummy_img_and_vid_function()
-
     else:
         st.subheader(" ")
         col3.image("interface/images/Playlist-amico (1).png")
@@ -251,78 +205,55 @@ col1.write(" ") #line break
 #       VIDEO TAB, COLUMN 1 ELEMENTS
 #--------------------------------------------
 with col1_vid:
-    st.write(" ")
-    #contains application tagline and the user input panel
-    st.markdown("""
-    <h1 style="font-size: 40px; text-align: center">
-    🤗😭😌🤩  ➫  💽
-    </h1>
-    """, unsafe_allow_html=True)
-    # st.title("🤗😭😌🤩  ➫  💽🎧")
-    st.markdown("""
-    <h1 style="font-size: 30px; text-align: center; color: #faaa0b">
-    Tune in your Emotions, Transform out your Playlist!
-    </h1>
-    """, unsafe_allow_html=True)
-    st.subheader(" ")
 
-    st.subheader("Take a selfie!")
+    st.subheader("Take a face recording!")
     #user input panel subheader
 
-    container = st.container(border=True)
-    container.markdown("""
-    <h1 style="font-weight: lighter; font-size: 20px; text-align: center">
-    Take a picture of your face showing your current emotion
-    </h1>
-    """, unsafe_allow_html=True)
+    #------------Camera Recoding-------------#
+    st.caption("Record a short video of your face showing your current emotion")
 
-    #--------------Camera Image---------------#
-    with st.form("video_input"):
-   #------------Camera Recoding-------------#
-        st.caption("for face(video) recording:")
+    global frame
+    frame = None
+    recorder = WebcamRecorder()
 
-        webcam = cv2.VideoCapture(0)
-        #main camera; unable to show cam stream >>> st.camera_input is in use
+    # Start webcam thread
+    webcam_thread_instance = Thread(target=webcam_thread)
+    webcam_thread_instance.daemon = True
+    webcam_thread_instance.start()
 
-        #create start and stop buttons in seprate colums
-        start = st.button('🟢 Start Face Recording',
+    #create start and stop buttons in seprate colums
+    start = st.button('🟢 Start Face Recording',
                                    use_container_width=True)
-        stop = st.button('🔴 Stop Face Recording',
+    stop = st.button('🔴 Stop Face Recording',
                                   use_container_width=True)
 
-        #progress bar to show start and stop of video recording
-        progress_bar = st.progress(0)
+    #progress bar to show start and stop of video recording
+    progress_bar = st.progress(0)
 
-        #--------------------------------------#
-        #           RECORDING LOOP
-        #--------------------------------------#
-        if start:
-            #Initialize start time
-            start_time = time.time()
-            #Start recording
-            record_video()
+    #--------------------------------------#
+    #           RECORDING LOOP
+    #--------------------------------------#
+    st.write("## Webcam Recording with OpenCV")
 
-            while True:
-                # Do some heavy processing here
-                time.sleep(5)
-                # to do: replace this with actual processing time
+    if start:
+        start_time = time.time()
+        recorder.start_recording()
 
-                # Calculate the progress
-                elapsed_time = time.time() - start_time
-                progress = int(elapsed_time / 1 * 10)
-                # assuming the progress should increase every 1 second
-                # to do: replace with actual progress
+    if stop:
+        recorder.stop_recording()
+        progress_bar.empty()
 
-                # Update the progress bar
-                progress_bar.progress(progress)
+    if frame is not None:
+        st.image(frame, channels="BGR")
 
-                # Check if the user wants to stop recording
-                if stop:
-                    break
+    if recorder.frames:
+        st.write("## Recorded Frames")
+        for i, frame in enumerate(recorder.frames):
+            st.write(f"Frame {i}")
+            st.image(frame, channels="BGR")
 
-            # Stop recording
-            progress_bar.empty()
-
+    #------------video file submission-------------#
+    with st.form("video_input"):
         uploaded_video = st.file_uploader("Choose a video:", type=["mp4"])
         st.session_state["uploaded_video"] = None
 
@@ -330,10 +261,10 @@ with col1_vid:
         #submit button as entry for file extraction to image/video model pipe
         #to do: figure out the return file for webcam face recording function
         if submit_button:
-            if webcam:
-                st.write("Reading emotion from face recording...")
+            # if webcam:
+            #     st.write("Reading emotion from face recording...")
 
-            elif uploaded_video:
+            if uploaded_video:
                 st.write("Reading emotion from video file...")
                 st.session_state["uploaded_video"] = uploaded_video
 
