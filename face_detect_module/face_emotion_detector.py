@@ -480,8 +480,6 @@ if __name__ == '__main__': # To do later on...
 #########################################################################
 #-----------------------------------------------------------------------#
 
-
-
     # From_Krystia_Streamlit_image_or_video:
         # variable name: input_file
         # content: photo or video
@@ -491,7 +489,9 @@ if __name__ == '__main__': # To do later on...
     # DETERMINE input_file type:
 
     ## test files: # for delete later on...
-    input_file = 'IMG_0535.mov'  # 'facess.png'  # 'face.tif'  # 'face.jpg'  # 'face.png'  # 'IMG_5221.MOV'  # IMG_0509.MOV  # image_file
+    # to access the file, please refer to code/Atsuto-T/Music_Selector_Project/Music_Selector_Project/raw_data
+    # or you may use any face picture or video file you have
+    input_file = '../rawdata/IMG_0535.mov'  # 'facess.png'  # 'face.tif'  # 'face.jpg'  # 'face.png'  # 'IMG_5221.MOV'  # IMG_0509.MOV  # image_file
 
     # Received from Krystia's UI
     input_file = input_file
