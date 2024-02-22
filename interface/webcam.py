@@ -15,12 +15,16 @@ class WebcamRecorder:
         self.recording = True
         self.frames = []
         self.out = cv2.VideoWriter(self.output_file, self.fourcc, 20.0, (self.frame_width, self.frame_height))
+        # Reset session state output_vid_file
+        st.session_state.output_vid_file = None
 
     def stop_recording(self):
         self.recording = False
         if self.out is not None:
             self.out.release()
             self.out = None
+        # Reset session state output_vid_file
+        st.session_state.output_vid_file = None
 
     def record(self, frame):
         if self.recording:
