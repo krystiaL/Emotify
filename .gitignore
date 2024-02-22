@@ -2,3 +2,13 @@
 .envrc
 token.txt
 playlist_module/__pychache__/
+
+.ipynb_checkpoints/
+.python-version
+
+#########################
+#------------------------
+# data folders
+raw_data/
+#------------------------
+#########################
