@@ -3,3 +3,4 @@ os
 pandas
 tensorflow
 functools
+sklearn

@@ -9,18 +9,18 @@ def create_model():
     Returns a model.'''
     #Import dataset which already has emotion label.
 
-    df_686 = pd.read_csv('raw_data/mood+music686.csv').drop(columns={'release_date'})
+    df_trainset = pd.read_csv('raw_data/trainset_new.csv')
 
     #Create a Deep Learning model based on this df.
     #Encode the target column.
     oh_encoder = OneHotEncoder(sparse_output=False)
-    oh_encoder.fit(df_686[['mood']])
-    df_686[oh_encoder.get_feature_names_out()] = oh_encoder.transform(df_686[['mood']])
-    df_686.drop(columns=['mood'],inplace=True)
+    oh_encoder.fit(df_trainset[['mood']])
+    df_trainset[oh_encoder.get_feature_names_out()] = oh_encoder.transform(df_trainset[['mood']])
+    df_trainset.drop(columns=['mood'],inplace=True)
 
     #Split the dataframe
-    y = df_686[['mood_Calm','mood_Energetic','mood_Happy','mood_Sad']]
-    X = df_686[['length','danceability','acousticness','energy',
+    y = df_trainset[['mood_Calm','mood_Energetic','mood_Happy','mood_Sad']]
+    X = df_trainset[['length','danceability','acousticness','energy',
                 'instrumentalness','liveness','valence','loudness',
                 'speechiness','tempo','key','time_signature']]
     X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.3,random_state=42)
