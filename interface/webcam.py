@@ -18,7 +18,8 @@ class WebcamRecorder:
         if self.out is not None:
             self.out.release()
 
-    def record(self, frame):
+    def record(self, frame, progress_bar):
         if self.recording:
             self.frames.append(frame)
             self.out.write(cv2.cvtColor(frame, cv2.COLOR_RGB2BGR))
+            progress_bar.progress(len(self.frames) / 100)  # Update progress bar

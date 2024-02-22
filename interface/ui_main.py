@@ -213,21 +213,22 @@ with col1_vid:
     #------------Camera Recoding-------------#
     st.caption("Record a short video of your face showing your current emotion")
 
-    output_file_name = "recorded_video.avi"  # Define the output file name
-    recorder = WebcamRecorder(output_file_name)
+    # output_file_name = "recorded_video.avi"
+    # # Define the output file name; modify to accomodate emotion playlist name
+    recorder = WebcamRecorder()
 
     st.write("## Webcam Recording with WebRTC")
 
     ctx = webrtc_streamer(key="example")
 
     #create start and stop buttons in seprate colums
-    # start = st.button('🟢 Start Face Recording',
-    #                                use_container_width=True)
-    # stop = st.button('🔴 Stop Face Recording',
-    #                               use_container_width=True)
+    start = st.button('🟢 Start Face Recording',
+                                   use_container_width=True)
+    stop = st.button('🔴 Stop Face Recording',
+                                  use_container_width=True)
 
-    # #progress bar to show start and stop of video recording
-    # progress_bar = st.progress(0)
+    #progress bar to show start and stop of video recording
+    progress_bar = st.progress(0)
 
     #--------------------------------------#
     #           RECORDING LOOP
@@ -235,10 +236,10 @@ with col1_vid:
     if ctx.video_transformer:
         video_transformer = ctx.video_transformer
 
-    if st.button('🟢 Start Face Recording', key="start"):
+    if start:
         recorder.start_recording()
 
-    if st.button('🔴 Stop Face Recording', key="stop"):
+    if stop:
         recorder.stop_recording()
 
     if recorder.frames:
@@ -269,8 +270,8 @@ with col1_vid:
 # Display generated playlist
 with col3_vid:
     st.write(" ")
-    if st.session_state.get("output_vid_file"):
-        output_vid_file = st.session_state["output_vid_file"]
+    if st.session_state.get("recorder"):
+        st.session_state.recorder = recorder
         st.write("Emotion Extracted...")
         #playlist generation for camera capture
         with st.spinner("Transforming Emotions into Melodies..."):
