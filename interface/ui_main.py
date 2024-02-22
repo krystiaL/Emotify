@@ -137,7 +137,7 @@ with col1:
         # Initialized file uploader state variable
 
 
-        submit_button = st.form_submit_button("Extract Emotion from File", args=[image_captured, uploaded_image])
+        submit_button = st.form_submit_button("Generate Playlist", args=[image_captured, uploaded_image])
         #submit button as entry for file extraction to image/video model pipe
 
         if submit_button:
@@ -168,7 +168,7 @@ with col3:
     st.write(" ")
     if st.session_state.get("image_captured"):
         uploaded_image = st.session_state["image_captured"]
-        st.write("-Emotion Extracted-")
+        st.write("Emotion Extracted...")
         #playlist generation for camera capture
         with st.spinner("Transforming Emotions into Melodies..."):
             # to improve: change into progress bar/ specify state after merging other functions
@@ -177,7 +177,7 @@ with col3:
 
     elif st.session_state.get("uploaded_image"):
         uploaded_image = st.session_state["uploaded_image"]
-        st.write("Image input detected")
+        st.write("Emotion Extracted...")
         with st.spinner("Transforming Emotions into Melodies..."):
             time.sleep(5)  # simulate playlist generation time
         dummy_img_and_vid_function()
@@ -220,29 +220,27 @@ with col1_vid:
     ctx = webrtc_streamer(key="example")
 
     #create start and stop buttons in seprate colums
-    start = st.button('🟢 Start Face Recording',
-                                   use_container_width=True)
-    stop = st.button('🔴 Stop Face Recording',
-                                  use_container_width=True)
+    # start = st.button('🟢 Start Face Recording',
+    #                                use_container_width=True)
+    # stop = st.button('🔴 Stop Face Recording',
+    #                               use_container_width=True)
 
-    #progress bar to show start and stop of video recording
-    progress_bar = st.progress(0)
+    # #progress bar to show start and stop of video recording
+    # progress_bar = st.progress(0)
 
     #--------------------------------------#
     #           RECORDING LOOP
     #--------------------------------------#
-    st.write("## Webcam Recording with OpenCV")
-
     if ctx.video_transformer:
         video_transformer = ctx.video_transformer
 
-    if start:
-        start_time = time.time()
-        recorder.start_recording()
+    # if start:
+    #     start_time = time.time()
+    #     recorder.start_recording()
 
-    if stop:
-        recorder.stop_recording()
-        progress_bar.empty()
+    # if stop:
+    #     recorder.stop_recording()
+    #     progress_bar.empty()
 
     if recorder.frames:
         st.write("## Recorded Frames")
@@ -255,7 +253,7 @@ with col1_vid:
         uploaded_video = st.file_uploader("Choose a video:", type=["mp4"])
         st.session_state["uploaded_video"] = None
 
-        submit_button = st.form_submit_button("Submit Video", args=[uploaded_video])
+        submit_button = st.form_submit_button("Generate Playlist", args=[uploaded_video])
         #submit button as entry for file extraction to image/video model pipe
         #to do: figure out the return file for webcam face recording function
         if submit_button:
@@ -265,6 +263,40 @@ with col1_vid:
             if uploaded_video:
                 st.write("Reading emotion from video file...")
                 st.session_state["uploaded_video"] = uploaded_video
+
+#--------------------------------------------
+#       VIDEO TAB, COLUMN 3 ELEMENTS
+#--------------------------------------------
+
+# Display generated playlist
+with col3_vid:
+    st.write(" ")
+    if st.session_state.get("output_vid_file"):
+        output_vid_file = st.session_state["output_vid_file"]
+        st.write("Emotion Extracted...")
+        #playlist generation for camera capture
+        with st.spinner("Transforming Emotions into Melodies..."):
+            # to improve: change into progress bar/ specify state after merging other functions
+            time.sleep(5)  # simulate playlist generation time
+        dummy_img_and_vid_function()
+
+    elif st.session_state.get("uploaded_video"):
+        uploaded_video = st.session_state["uploaded_video"]
+        st.write("Emotion Extracted...")
+        with st.spinner("Transforming Emotions into Melodies..."):
+            time.sleep(5)  # simulate playlist generation time
+        dummy_img_and_vid_function()
+
+    else:
+        st.subheader(" ")
+        col3_vid.image("interface/images/Playlist-amico (1).png")
+        #image attribute: <a href="https://storyset.com/app">App illustrations by Storyset</a>
+
+        col3_vid.markdown("""
+        <h1 style="font-size: 20px; text-align: center; color: #faaa0b">
+        Just chillin' for now...
+        </h1>
+        """, unsafe_allow_html=True)
 
 
 
