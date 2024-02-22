@@ -1,36 +1,29 @@
 import streamlit as st
 import cv2
-from threading import Thread
 
 class WebcamRecorder:
-    def __init__(self):
+    def __init__(self, output_file):
         self.recording = False
         self.frames = []
+        self.output_file = output_file
+        self.frame_width = 640
+        self.frame_height = 480
+        self.fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        self.out = None
 
     def start_recording(self):
         self.recording = True
         self.frames = []
+        self.out = cv2.VideoWriter(self.output_file, self.fourcc, 20.0, (self.frame_width, self.frame_height))
 
     def stop_recording(self):
         self.recording = False
+        if self.out is not None:
+            self.out.release()
+            self.out = None
 
-    def record(self):
-        cap = cv2.VideoCapture(0)
-        while self.recording:
-            ret, frame = cap.read()
-            if not ret:
-                st.write("Error: Unable to capture frame")
-                break
+    def record(self, frame):
+        if self.recording:
             self.frames.append(frame)
-            # Display the frame (optional)
-            cv2.imshow('Webcam Recording', frame)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-        cap.release()
-        cv2.destroyAllWindows()
-
-class webcam_thread:
-    global frame
-    cap = cv2.VideoCapture(0)
-    while True:
-        ret, frame = cap.read()
+            if self.out is not None:
+                self.out.write(frame)

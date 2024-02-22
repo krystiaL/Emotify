@@ -3,3 +3,5 @@
 token.txt
 playlist_module/__pychache__/
 .streamlit
+interface/__pycache__/webcam.cpython-310.pyc
+recorded_video.avi

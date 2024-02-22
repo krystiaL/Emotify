@@ -7,13 +7,13 @@ import os
 import tempfile
 
 import cv2
-from threading import Thread
+from streamlit_webrtc import webrtc_streamer
 
 import instructions
 import regarding_spotify_interact
 import about_us
 
-from webcam import WebcamRecorder, webcam_thread
+from webcam import WebcamRecorder
 #---------------------------------------------------
 #          PAGE CONFIGURATIONS ETC.
 #---------------------------------------------------
@@ -212,14 +212,12 @@ with col1_vid:
     #------------Camera Recoding-------------#
     st.caption("Record a short video of your face showing your current emotion")
 
-    global frame
-    frame = None
-    recorder = WebcamRecorder()
+    output_vid_file = "recorded_video.avi"  # Define the output file name
+    recorder = WebcamRecorder(output_vid_file)
 
-    # Start webcam thread
-    webcam_thread_instance = Thread(target=webcam_thread)
-    webcam_thread_instance.daemon = True
-    webcam_thread_instance.start()
+    st.write("## Webcam Recording with WebRTC")
+
+    ctx = webrtc_streamer(key="example")
 
     #create start and stop buttons in seprate colums
     start = st.button('🟢 Start Face Recording',
@@ -235,6 +233,9 @@ with col1_vid:
     #--------------------------------------#
     st.write("## Webcam Recording with OpenCV")
 
+    if ctx.video_transformer:
+        video_transformer = ctx.video_transformer
+
     if start:
         start_time = time.time()
         recorder.start_recording()
@@ -242,9 +243,6 @@ with col1_vid:
     if stop:
         recorder.stop_recording()
         progress_bar.empty()
-
-    if frame is not None:
-        st.image(frame, channels="BGR")
 
     if recorder.frames:
         st.write("## Recorded Frames")
