@@ -95,7 +95,7 @@ fourcc = cv2.VideoWriter_fourcc(*'XVID')
 out = cv2.VideoWriter('video_file.mp4', fourcc, 20.0, (640, 480))
 
 def record_video():
-    #Function to start the recording
+    #Function to start the recording; might consider making this into an independent module
     global webcam, out
     if not webcam.isOpened():
         st.write("Error: Camera not found or already in use.")
@@ -118,23 +118,140 @@ def record_video():
 #------------------------------------
 #      HEADER AND DESCRIPTION
 #------------------------------------
-
 #custom title page using html for bigger font size
 st.markdown("""
-<h1 style="font-size: 80px; color: #E9FBFF">
+<h1 style="font-size: 80px; color: #E9FBFF; text-align: center">
 Music Selector Project &#9835
 </h1>
 """, unsafe_allow_html=True) #official name still hasn't been decided
 
-#split web layout
-col1, col2,  col3 = st.columns([2.8, 0.3, 3])
+st.write(" ")
+st.markdown("""
+    <h1 style="font-size: 40px; text-align: center">
+    🤗😭😌🤩  ➫  💽
+    </h1>
+    """, unsafe_allow_html=True)
+    # st.title("🤗😭😌🤩  ➫  💽🎧")
+st.markdown("""
+    <h1 style="font-size: 30px; text-align: center; color: #faaa0b">
+    Tune in your Emotions, Transform out your Playlist!
+    </h1>
+    """, unsafe_allow_html=True)
+st.subheader(" ")
+
+#--------------------------------------------------------------
+#    CREATE TABS SEPARATING IMAGE AND VIDEO INPUT INTERFACE
+#--------------------------------------------------------------
+
+image_tab, video_tab = st.tabs(["Face Capture", "Face Recording"])
+
+#--------------------##----------------------
+#    SPLIT TAB LAYOUT FOR CAMERA CAPTURE
+#--------------------------------------------
+
+col1, col2,  col3 = image_tab.columns([2.8, 0.3, 3])
 col1.write(" ") #line break
 
 #--------------------------------------------
-#            COLUMN 1 ELEMENTS
+#       IMAGE TAB, COLUMN 1 ELEMENTS
 #--------------------------------------------
 
 with col1:
+
+    st.subheader("Take a selfie!")
+    #user input panel subheader
+
+    #--------------Camera Image---------------#
+    with st.form("image_input"):
+        #form submission for image input
+
+        image_captured = st.camera_input("Take a picture of your face showing your current emotion")
+        # camera widget; will return a jpeg file once image is taken.
+        st.session_state["image_captured"] = None
+        # Initialized camera state variable
+
+        uploaded_image = st.file_uploader("or upload an image of your face:", type=["png", "jpeg", "jpg"])
+        #image_upload function using file_uploader widget
+        st.session_state["uploaded_image"] = None
+        # Initialized file uploader state variable
+
+
+        submit_button = st.form_submit_button("Extract Emotion from File", args=[image_captured, uploaded_image])
+        #submit button as entry for file extraction to image/video model pipe
+
+        if submit_button:
+            if uploaded_image:
+                st.session_state["uploaded_image"] = uploaded_image
+                st.write("Reading emotion from selfie...")
+                #entry point for model input;
+                # to do: add model function here
+
+            elif image_captured:
+                st.session_state["image_captured"] = image_captured
+                st.write("Reading emotion from image file...")
+                #entry point for model input;
+                # to do: add model function here
+            else:
+                st.write("No input detected 😵")
+                #default message when submit button was pressed but no file was fed.
+
+col1.caption("Application Accuracy: <80.56%>")
+#to do: change metric to appropriate score result
+
+#--------------------------------------------
+#       IMAGE TAB, COLUMN 3 ELEMENTS
+#--------------------------------------------
+
+# Display generated playlist
+with col3:
+    st.write(" ")
+    if st.session_state.get("image_captured"):
+        uploaded_image = st.session_state["image_captured"]
+        st.write("-Emotion Extracted-")
+        #playlist generation for camera capture
+        with st.spinner("Transforming Emotions into Melodies..."):
+            # to improve: change into progress bar/ specify state after merging other functions
+            time.sleep(5)  # simulate playlist generation time
+        dummy_img_and_vid_function()
+
+    elif st.session_state.get("uploaded_image"):
+        uploaded_image = st.session_state["uploaded_image"]
+        st.write("Image input detected")
+        with st.spinner("Transforming Emotions into Melodies..."):
+            time.sleep(5)  # simulate playlist generation time
+        dummy_img_and_vid_function()
+
+    # elif st.session_state.get("recording"):
+    #     #playlist generation for camera capture
+    #     with st.spinner("Transforming Emotions into Melodies..."):
+    #         # to improve: change into progress bar/ specify state after merging other functions
+    #         time.sleep(5)  # simulate playlist generation time
+    #     dummy_img_and_vid_function()
+
+    else:
+        st.subheader(" ")
+        col3.image("interface/images/Playlist-amico (1).png")
+        #image attribute: <a href="https://storyset.com/app">App illustrations by Storyset</a>
+
+        col3.markdown("""
+        <h1 style="font-size: 20px; text-align: center; color: #faaa0b">
+        Just chillin' for now...
+        </h1>
+        """, unsafe_allow_html=True)
+
+
+#--------------------##----------------------
+#    SPLIT TAB LAYOUT FOR CAMERA RECORDING
+#--------------------------------------------
+
+col1_vid, col2_vid, col3_vid = video_tab.columns([2.8, 0.3, 3])
+col1.write(" ") #line break
+
+#-------------------##-----------------------
+#       VIDEO TAB, COLUMN 1 ELEMENTS
+#--------------------------------------------
+with col1_vid:
+    st.write(" ")
     #contains application tagline and the user input panel
     st.markdown("""
     <h1 style="font-size: 40px; text-align: center">
@@ -149,43 +266,32 @@ with col1:
     """, unsafe_allow_html=True)
     st.subheader(" ")
 
-    st.subheader("Take a selfie or a video capture!")
+    st.subheader("Take a selfie!")
     #user input panel subheader
 
     container = st.container(border=True)
     container.markdown("""
-    <h1 style="font-size: 10px; text-align: center">
-    Take a picture or a short video recording of your face showing how your current emotion
+    <h1 style="font-weight: lighter; font-size: 20px; text-align: center">
+    Take a picture of your face showing your current emotion
     </h1>
     """, unsafe_allow_html=True)
-    # wraps boundery for user input
 
-    row1_col1, row1_col2 = container.columns(2)
-
-    with row1_col1:
     #--------------Camera Image---------------#
-        image_captured = st.camera_input("for face capture:")
-        # camera widget; will return a jpeg file once image is taken.
-        st.session_state["image_captured"] = None
-        # Initialized camera state variable
-
-    with row1_col2:
-    #------------Camera Recoding-------------#
+    with st.form("video_input"):
+   #------------Camera Recoding-------------#
         st.caption("for face(video) recording:")
-        container_1 = st.container(border=True)
-        container_1.subheader(" ")
-        container_1.subheader(" ")
-        #wraps boundery for face recording function
 
         webcam = cv2.VideoCapture(0)
         #main camera; unable to show cam stream >>> st.camera_input is in use
 
         #create start and stop buttons in seprate colums
-        start = container_1.button('Start Face Recording')
-        stop = container_1.button('Stop Face Recording')
+        start = st.button('🟢 Start Face Recording',
+                                   use_container_width=True)
+        stop = st.button('🔴 Stop Face Recording',
+                                  use_container_width=True)
 
         #progress bar to show start and stop of video recording
-        progress_bar = container_1.progress(0)
+        progress_bar = st.progress(0)
 
         #--------------------------------------#
         #           RECORDING LOOP
@@ -194,7 +300,7 @@ with col1:
             #Initialize start time
             start_time = time.time()
             #Start recording
-            recording = record_video()
+            record_video()
 
             while True:
                 # Do some heavy processing here
@@ -217,69 +323,20 @@ with col1:
             # Stop recording
             progress_bar.empty()
 
-    with container.form("collective_input", border=False):
-        #file uploader form; Takes
-        uploaded_file = st.file_uploader("or upload an image or a video",
-                                         type=["image/jpeg", "image/png", "video/mp4", "video/x-msvideo"],
-                                         )
-        st.session_state["uploaded_file"] = None
-        if uploaded_file is not None:
-            input_file = process_file(uploaded_file)
+        uploaded_video = st.file_uploader("Choose a video:", type=["mp4"])
+        st.session_state["uploaded_video"] = None
 
-        submit_button = st.form_submit_button("Extract Emotion from File", args=[image_captured, uploaded_file, recording])
+        submit_button = st.form_submit_button("Submit Video", args=[uploaded_video])
+        #submit button as entry for file extraction to image/video model pipe
+        #to do: figure out the return file for webcam face recording function
         if submit_button:
-            input_file = st.session_state.get("input_data")
-            if input_file:
-                st.session_state["uploaded_file"] = input_file
-                if input_file.type.startswith('image'):
-                    st.write("Reading emotion from image file...")
-                elif input_file.type.startswith('video'):
-                    st.write("Reading emotion from video file...")
+            if webcam:
+                st.write("Reading emotion from face recording...")
 
-col1.title(" ")
-col1.caption("Application Accuracy: <80.56%>")
-#to do: change metric to appropriate score result
+            elif uploaded_video:
+                st.write("Reading emotion from video file...")
+                st.session_state["uploaded_video"] = uploaded_video
 
-#--------------------------------------------
-#            COLUMN 3 ELEMENTS
-#--------------------------------------------
-
-# Display generated playlist based on input
-with col3:
-    st.write(" ")
-    if st.session_state.get("uploaded_file"):
-        #playlist generation for file_uploader
-        with st.spinner("Transforming Emotions into Melodies..."):
-            # to improve: change into progress bar/ specify state after merging other functions
-            time.sleep(5)  # simulate playlist generation time
-        dummy_img_and_vid_function()
-
-    elif st.session_state.get("image_captured"):
-        #playlist generation for camera capture
-        with st.spinner("Transforming Emotions into Melodies..."):
-            # to improve: change into progress bar/ specify state after merging other functions
-            time.sleep(5)  # simulate playlist generation time
-        dummy_img_and_vid_function()
-
-    elif st.session_state.get("recording"):
-        #playlist generation for camera capture
-        with st.spinner("Transforming Emotions into Melodies..."):
-            # to improve: change into progress bar/ specify state after merging other functions
-            time.sleep(5)  # simulate playlist generation time
-        dummy_img_and_vid_function()
-
-    else:
-        st.subheader(" ")
-        container.markdown("""
-        <h1 style="font-size: 10px; text-align: center">
-        Waiting for input file before emotion extraction and pplaylist generation...
-        </h1>
-        """, unsafe_allow_html=True)
-
-
-    col3.image("interface/images/Playlist-amico (1).png")
-    #image attribute: <a href="https://storyset.com/app">App illustrations by Storyset</a>
-    st.subheader(" ")
 
 
 ############################################

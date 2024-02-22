@@ -24,12 +24,17 @@ generate:
 #   added by: Krystia 02/20/2024
 # ----------------------------------
 
-streamlit_upload:
-	@streamlit run interface/ux_upload.py
+streamlit_upload_ui:
+	@streamlit run interface/ui_drafts/ux_upload.py
 
-streamlit_video:
-	@streamlit run interface/ux_video.py
+streamlit_img_vid:
+	@streamlit run interface/ui_drafts/ux_img_vid.py
 
+streamlit_sep_upload_ui:
+	@streamlit run interface/ui_drafts/ux_separate_submit.py
+
+streamlit_main_ui:
+	@streamlit run interface/ui_main.py
 # ----------------------------------
 #    LOCAL INSTALL COMMANDS
 #   added by: Krystia 02/20/2024
