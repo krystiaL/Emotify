@@ -2,11 +2,12 @@
 #          LIBRARY AND MODULE IMPORTS
 #---------------------------------------------------
 import streamlit as st
+import numpy as np
+
 import time
 import os
 import tempfile
 
-import cv2
 from streamlit_webrtc import webrtc_streamer
 
 import instructions
@@ -212,8 +213,8 @@ with col1_vid:
     #------------Camera Recoding-------------#
     st.caption("Record a short video of your face showing your current emotion")
 
-    output_vid_file = "recorded_video.avi"  # Define the output file name
-    recorder = WebcamRecorder(output_vid_file)
+    output_file_name = "recorded_video.avi"  # Define the output file name
+    recorder = WebcamRecorder(output_file_name)
 
     st.write("## Webcam Recording with WebRTC")
 
@@ -234,13 +235,11 @@ with col1_vid:
     if ctx.video_transformer:
         video_transformer = ctx.video_transformer
 
-    # if start:
-    #     start_time = time.time()
-    #     recorder.start_recording()
+    if st.button('🟢 Start Face Recording', key="start"):
+        recorder.start_recording()
 
-    # if stop:
-    #     recorder.stop_recording()
-    #     progress_bar.empty()
+    if st.button('🔴 Stop Face Recording', key="stop"):
+        recorder.stop_recording()
 
     if recorder.frames:
         st.write("## Recorded Frames")
@@ -250,7 +249,7 @@ with col1_vid:
 
     #------------video file submission-------------#
     with st.form("video_input"):
-        uploaded_video = st.file_uploader("Choose a video:", type=["mp4"])
+        uploaded_video = st.file_uploader("Choose a video:", type=["mp4", "avi"])
         st.session_state["uploaded_video"] = None
 
         submit_button = st.form_submit_button("Generate Playlist", args=[uploaded_video])
@@ -267,7 +266,6 @@ with col1_vid:
 #--------------------------------------------
 #       VIDEO TAB, COLUMN 3 ELEMENTS
 #--------------------------------------------
-
 # Display generated playlist
 with col3_vid:
     st.write(" ")
