@@ -8,7 +8,7 @@ tensorflow
 #------------------------
 # for the face_detect_module
 # os
-cv2
+opencv-python # cv2
 mediapipe
 math
 numpy

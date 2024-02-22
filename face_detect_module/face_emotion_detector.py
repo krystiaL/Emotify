@@ -442,63 +442,64 @@ def extract_emotion(input_file, pth_backbone_model, lstm_features):
 #########################################################################
 #-----------------------------------------------------------------------#
 
-mp_face_mesh = mp.solutions.face_mesh
+if __name__ == '__main__': # To do later on...
+    mp_face_mesh = mp.solutions.face_mesh
 
-name_backbone_model = 'FER_static_ResNet50_AffectNet.pt'
-# name_LSTM_model = 'IEMOCAP'
-# name_LSTM_model = 'CREMA-D'
-# name_LSTM_model = 'RAMAS'
-# name_LSTM_model = 'RAVDESS'
-# name_LSTM_model = 'SAVEE'
-name_LSTM_model = 'Aff-Wild2'
+    name_backbone_model = 'FER_static_ResNet50_AffectNet.pt'
+    # name_LSTM_model = 'IEMOCAP'
+    # name_LSTM_model = 'CREMA-D'
+    # name_LSTM_model = 'RAMAS'
+    # name_LSTM_model = 'RAVDESS'
+    # name_LSTM_model = 'SAVEE'
+    name_LSTM_model = 'Aff-Wild2'
 
-# torch
+    # torch
 
-pth_backbone_model = ResNet50(7, channels=3)
-pth_backbone_model.load_state_dict(torch.load(name_backbone_model))
-pth_backbone_model.eval()
+    pth_backbone_model = ResNet50(7, channels=3)
+    pth_backbone_model.load_state_dict(torch.load(name_backbone_model))
+    pth_backbone_model.eval()
 
-pth_LSTM_model = LSTMPyTorch()
-pth_LSTM_model.load_state_dict(torch.load('FER_dinamic_LSTM_{0}.pt'.format(name_LSTM_model)))
-pth_LSTM_model.eval()
+    pth_LSTM_model = LSTMPyTorch()
+    pth_LSTM_model.load_state_dict(torch.load('FER_dinamic_LSTM_{0}.pt'.format(name_LSTM_model)))
+    pth_LSTM_model.eval()
 
 
-DICT_EMO = {
-    0: 'Neutral',
-    1: 'Happiness',
-    2: 'Sadness',
-    3: 'Surprise',
-    4: 'Fear',
-    5: 'Disgust',
-    6: 'Anger'
-}
+    DICT_EMO = {
+        0: 'Neutral',
+        1: 'Happiness',
+        2: 'Sadness',
+        3: 'Surprise',
+        4: 'Fear',
+        5: 'Disgust',
+        6: 'Anger'
+    }
 
 #-----------------------------------------------------------------------#
 #########################################################################
 #|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||#
 #########################################################################
 #-----------------------------------------------------------------------#
-# if __name__ == '__main__': # To do later on...
 
 
-# From_Krystia_Streamlit_image_or_video:
-    # variable name: input_file
-    # content: photo or video
-        # ① captured = camera_input
-        # ② upload = browse (drag-drop)
 
-# DETERMINE input_file type:
+    # From_Krystia_Streamlit_image_or_video:
+        # variable name: input_file
+        # content: photo or video
+            # ① captured = camera_input
+            # ② upload = browse (drag-drop)
 
-## test files: # for delete later on...
-input_file = 'IMG_0535.mov'  # 'facess.png'  # 'face.tif'  # 'face.jpg'  # 'face.png'  # 'IMG_5221.MOV'  # IMG_0509.MOV  # image_file
+    # DETERMINE input_file type:
 
-# Received from Krystia's UI
-input_file = input_file
-lstm_features = []
+    ## test files: # for delete later on...
+    input_file = 'IMG_0535.mov'  # 'facess.png'  # 'face.tif'  # 'face.jpg'  # 'face.png'  # 'IMG_5221.MOV'  # IMG_0509.MOV  # image_file
 
-input_file = input_file_proc(input_file)  # video version of the photo or just the video input as is
+    # Received from Krystia's UI
+    input_file = input_file
+    lstm_features = []
 
-extract_emotion(input_file, pth_backbone_model, lstm_features)
+    input_file = input_file_proc(input_file)  # video version of the photo or just the video input as is
+
+    extract_emotion(input_file, pth_backbone_model, lstm_features)
 
 #-----------------------------------------------------------------------#
 #########################################################################
