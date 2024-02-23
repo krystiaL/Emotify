@@ -1,5 +1,16 @@
 .env
 .envrc
 token.txt
-playlist_module/__pycache__/
+playlist_module/__pychache__/
+
+.ipynb_checkpoints/
+.python-version
+
+.streamlit
+
+#########################
+#------------------------
+# data folders
 raw_data/
+#------------------------
+#########################

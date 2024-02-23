@@ -1,5 +1,3 @@
-.DEFAULT_GOAL := default
-
 default: pytest
 
 # default: pylint pytest
@@ -41,20 +39,3 @@ clean:
 	@rm -fr *.dist-info
 	@rm -fr *.egg-info
 	-@rm model.joblib
-
-
-###playlist_module start###
-#Extract user data
-get_genre:
-	python -c "from playlist_module.genre import get_genre; get_genre()"
-
-#Create a database labeled with emotions
-run_model:
-	python -c "from playlist_module.preprocess_df import df_preprocess; df_preprocess()"
-
-#Generate new playlist
-#emotion and username will be passed from other modules.Update required when they are ready.
-generate:
-	python -c "from playlist_module.generate_playlist import send_playlist_id; send_playlist_id(account_name='Test_function')"
-
-###playlist_module end###

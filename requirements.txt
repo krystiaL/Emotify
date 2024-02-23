@@ -1,6 +1,30 @@
 spotipy
 os
-pandas
 tensorflow
-functools
-sklearn
+streamlit
+requests
+pandas
+datetime
+folium
+branca==0.3.1
+opencv-python
+
+#########################
+#------------------------
+# for the face_detect_module
+# os
+cv2
+mediapipe
+math
+numpy
+time
+
+warnings
+
+torch
+torch.nn
+torch.nn.functional
+PIL
+torchvision
+#------------------------
+#########################
