@@ -9,7 +9,7 @@ def df_preprocess():
     model = model_object[0]
     scaler = model_object[1]
 
-    new_df = pd.read_csv('raw_data/top_10000_1960-now.csv')
+    new_df = pd.read_csv('raw_data/top_5340_2000-now.csv')
 
     #Drop unnecessary columns and clean up(These columns are not included in 686_df)
     new_df = new_df.drop(columns={'Artist URI(s)','Album URI', 'Album Artist URI(s)','Album Artist Name(s)',

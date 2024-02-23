@@ -2,7 +2,7 @@ import spotipy
 import pandas as pd
 from spotipy.oauth2 import SpotifyOAuth
 from playlist_module.params import *
-from functools import reduce
+#from functools import reduce
 
 def get_genre():
     '''This function accesses Spotify user data and collect

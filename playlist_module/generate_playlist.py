@@ -9,11 +9,11 @@ from sklearn.metrics import mean_squared_error
 def process_emotion():
     '''This function imports emotion_weights from face_detect_module and outputs
     which emotion was dominant in the video clip.'''
-    import_emotion = {'Anger': [0.2, 0.2, 0.2, 0.2, 0.21, 0.21, 0.21, 0.21, 0.2, 0.2, 0.21, 0.2, 0.2, 0.18, 0.18, 0.18],
-                    'Sadness': [0.19, 0.2, 0.21, 0.21, 0.2, 0.21, 0.24, 0.23, 0.24, 0.24, 0.24, 0.25, 0.24, 0.22, 0.2,\
+    import_emotion = {'Sadness': [0.2,1],
+                    'Surprise': [0.19, 0.2, 0.21, 0.21, 0.2, 0.21, 0.24, 0.23, 0.24, 0.24, 0.24, 0.25, 0.24, 0.22, 0.2,\
                         0.24, 0.26, 0.29, 0.27, 0.27, 0.27, 0.25, 0.28, 0.32, 0.36, 0.4, 0.43, 0.44, 0.45, 0.43, 0.42, 0.38, 0.34, 0.31, 0.27, 0.24, 0.23, 0.23],
-                    'Happiness': [0.22, 0.23, 0.24, 0.24, 0.23, 0.22, 0.22, 0.2, 0.19, 0.2, 0.22, 0.24, 0.26, 0.28, 0.3, 0.3, 0.28, 0.27, 0.24, 0.29, 0.29, 0.29, 0.28, 0.27],
-                    'Neutral': [0.19, 0.18]}
+                    'Anger': [0.21,1,1,1,1],
+                    'Neutral': [0.19,1,1,1,1,1,1,1,1,1,1,1,1]}
     imported_emotion = {key:len(value) for key,value in import_emotion.items()}
     imported_emotion = {key:value/sum(imported_emotion.values()) for key,value in imported_emotion.items()}
 
@@ -38,14 +38,15 @@ def tailor_df():
     and outputs a dataframe tailored for that emotion'''
 
     df = pd.read_csv('raw_data/new_df_labeled.csv')
-    emotion_target = process_emotion()[1].values()
+    user_emotion = process_emotion()[1]
+    emotion_target = user_emotion.values()
 
-    df['target_distance'] = 0
+    df['target_distance'] = 0.00
     for x in range(df.shape[0]):
-        df['target_distance'].iloc[x] = mean_squared_error(df[['mood_Calm', 'mood_Energetic', 'mood_Happy', 'mood_Sad']].iloc[x],list(emotion_target))
+        df.loc[x,'target_distance'] = float(mean_squared_error(df[['mood_Calm', 'mood_Energetic', 'mood_Happy', 'mood_Sad']].iloc[x],list(emotion_target)))
 
-    mood_df = df.sort_values('target_distance').head(200)
-    print(mood_df.head())
+    mood_df = df.sort_values('target_distance').head(50)
+    print(mood_df['name'].head())
 
     #Select genres that user likes
     # user_genre = get_genre()
@@ -62,9 +63,9 @@ def tailor_df():
 
     # print(df.shape)
 
-    return mood_df
+    return mood_df,user_emotion
 
-def generate_playlist(emotion,account_name):
+def generate_playlist(account_name):
     '''This function will access Spotify API and add playlist to the developer's account.
     -The songs will be chosen randomly from the provided df.
     -ID of the playlist will be fed to send_playlist_id function
@@ -83,14 +84,17 @@ def generate_playlist(emotion,account_name):
     )
 
     user_id = sp.current_user()["id"]
-    title = f"{emotion[0].capitalize()} playlist for you, {account_name}!"
+    tailor_object = tailor_df()
+    user_emotion = tailor_object[1]
+
+    title = f"Calm:{int(user_emotion['mood_Calm']*100)}% Energetic:{int(user_emotion['mood_Energetic']*100)}% Happy:{int(user_emotion['mood_Happy']*100)}% Sad:{int(user_emotion['mood_Sad']*100)}%"
 
     new_playlist = sp.user_playlist_create(user=user_id, name=title, public=True,
                                       description=None)
     new_playlist_id = new_playlist["id"]
 
     # Randomly select music from tailored df.
-    title_list = list(tailor_df().sample(10)['name'])
+    title_list = list(tailor_object[0].sample(10)['name'])
 
     uri_list = []
     for value in range(10):
@@ -109,7 +113,7 @@ def send_playlist_id(account_name):
     '''This function returns the url of the generated playlist on Spotify webpage.
     -The url will be fed to UX module.'''
 
-    playlist_object = generate_playlist(emotion=process_emotion()[0],account_name=account_name)
+    playlist_object = generate_playlist(account_name=account_name)
     playlist_name = playlist_object[0]
     sp = playlist_object[1]
 
