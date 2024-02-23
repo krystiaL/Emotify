@@ -445,13 +445,13 @@ def extract_emotion(input_file, pth_backbone_model, lstm_features):
 if __name__ == '__main__': # To do later on...
     mp_face_mesh = mp.solutions.face_mesh
 
-    name_backbone_model = 'FER_static_ResNet50_AffectNet.pt'
+    name_backbone_model = '../rawdata/FER_static_ResNet50_AffectNet.pt'
     # name_LSTM_model = 'IEMOCAP'
     # name_LSTM_model = 'CREMA-D'
     # name_LSTM_model = 'RAMAS'
     # name_LSTM_model = 'RAVDESS'
     # name_LSTM_model = 'SAVEE'
-    name_LSTM_model = 'Aff-Wild2'
+    name_LSTM_model = '../rawdata/Aff-Wild2'
 
     # torch
 
