@@ -73,10 +73,10 @@ with st.sidebar:
 # downloads_path = temp_file.name
 
 #---------------------------------------------------
-#             FUNCTIONS
+#             PLAYLIST FUNCTIONS
 #---------------------------------------------------
 
-def dummy_img_and_vid_function():
+def generate_playlist():
     #This dummy function takes the either image or video files as input and returns the playlist
     #to be omitted and replaced with the playlist generator functions
     st.subheader(f"Here's a <identified emotion> playlist for you!")
@@ -188,14 +188,14 @@ with col3:
         with st.spinner("Transforming Emotions into Melodies..."):
             # to improve: change into progress bar/ specify state after merging other functions
             time.sleep(5)  # simulate playlist generation time
-        dummy_img_and_vid_function()
+        generate_playlist()
 
     elif st.session_state.get("uploaded_image"):
         uploaded_image = st.session_state["uploaded_image"]
         st.write("Emotion Extracted...")
         with st.spinner("Transforming Emotions into Melodies..."):
             time.sleep(5)  # simulate playlist generation time
-        dummy_img_and_vid_function()
+        generate_playlist()
 
     else:
         st.subheader(" ")
@@ -291,14 +291,14 @@ with col3_vid:
         with st.spinner("Transforming Emotions into Melodies..."):
             # to improve: change into progress bar/ specify state after merging other functions
             time.sleep(5)  # simulate playlist generation time
-        dummy_img_and_vid_function()
+        generate_playlist()
 
     elif st.session_state.get("uploaded_video"):
         uploaded_video = st.session_state["uploaded_video"]
         st.write("Emotion Extracted...")
         with st.spinner("Transforming Emotions into Melodies..."):
             time.sleep(5)  # simulate playlist generation time
-        dummy_img_and_vid_function()
+        generate_playlist()
 
     else:
         st.subheader(" ")
