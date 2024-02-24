@@ -442,6 +442,7 @@ def extract_emotion(input_file, pth_backbone_model, lstm_features):
 #########################################################################
 #-----------------------------------------------------------------------#
 
+# if __name__ == '__main__': # To do later on...
 mp_face_mesh = mp.solutions.face_mesh
 
 name_backbone_model = 'FER_static_ResNet50_AffectNet.pt'
@@ -478,8 +479,6 @@ DICT_EMO = {
 #|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||#
 #########################################################################
 #-----------------------------------------------------------------------#
-# if __name__ == '__main__': # To do later on...
-
 
 # From_Krystia_Streamlit_image_or_video:
     # variable name: input_file
@@ -490,6 +489,8 @@ DICT_EMO = {
 # DETERMINE input_file type:
 
 ## test files: # for delete later on...
+# to access the file, please refer to code/Atsuto-T/Music_Selector_Project/Music_Selector_Project/raw_data
+# or you may use any face picture or video file you have
 input_file = 'IMG_0535.mov'  # 'facess.png'  # 'face.tif'  # 'face.jpg'  # 'face.png'  # 'IMG_5221.MOV'  # IMG_0509.MOV  # image_file
 
 # Received from Krystia's UI
@@ -505,3 +506,20 @@ extract_emotion(input_file, pth_backbone_model, lstm_features)
 #|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||#
 #########################################################################
 #-----------------------------------------------------------------------#
+###Edited by Atsuto-T###
+def export_emotion():
+    lstm_features = [] #Provided by UI module
+    input_file = 'model_files/IMG_0535.mov'
+    #picture
+    pth_backbone_model = ResNet50(7, channels=3)
+    pth_backbone_model.load_state_dict(torch.load('FER_static_ResNet50_AffectNet.pt'))
+    pth_backbone_model.eval()
+    #video
+    pth_LSTM_model = LSTMPyTorch()
+    pth_LSTM_model.load_state_dict(torch.load('FER_dinamic_LSTM_{0}.pt'.format(name_LSTM_model)))
+    pth_LSTM_model.eval()
+
+    input_file = input_file_proc(input_file=input_file) #provided by UI module
+
+    emotion_weight = extract_emotion(input_file=input_file, pth_backbone_model=pth_backbone_model, lstm_features=lstm_features)
+    return emotion_weight
