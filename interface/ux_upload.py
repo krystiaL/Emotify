@@ -1,6 +1,10 @@
 import streamlit as st
 import time
 
+###Edited by Atsuto-T###
+from playlist_module.generate_playlist import send_playlist_id
+playlist_url = send_playlist_id(account_name='Test')
+###End###
 
 # Page title and icon
 st.set_page_config(page_title="<Music Selector Name>", page_icon=":musical_note:", layout="wide")
@@ -162,7 +166,7 @@ with col3:
 
         #embeded link to spotify
         st.write("Add this playlist to your Spotify library!")
-        st.markdown('<iframe src="https://open.spotify.com/embed/playlist/0HI7czcgdxj4bPu3eRlc2C?utm_source=generator"\
+        st.markdown(f'<iframe src={playlist_url}\
         width="500" height="400"></iframe>', unsafe_allow_html=True)
         #change with dynamic link
 
@@ -175,7 +179,7 @@ with col3:
 
         #link to spotify
         st.write("Add this playlist to your Spotify library!")
-        st.markdown('<iframe src="https://open.spotify.com/embed/playlist/0HI7czcgdxj4bPu3eRlc2C?utm_source=generator"\
+        st.markdown(f'<iframe src={playlist_url}\
         width="500" height="400"></iframe>', unsafe_allow_html=True)
         #change with dynamic link
 
@@ -188,7 +192,7 @@ with col3:
 
         #link to spotify
         st.write("Add this playlist to your Spotify library!")
-        st.markdown('<iframe src="https://open.spotify.com/embed/playlist/0HI7czcgdxj4bPu3eRlc2C?utm_source=generator"\
+        st.markdown(f'<iframe src={playlist_url}\
         width="500" height="400"></iframe>', unsafe_allow_html=True)
         #change with dynamic link
 

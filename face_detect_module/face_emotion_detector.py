@@ -506,3 +506,20 @@ extract_emotion(input_file, pth_backbone_model, lstm_features)
 #|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||#
 #########################################################################
 #-----------------------------------------------------------------------#
+###Edited by Atsuto-T###
+def export_emotion():
+    lstm_features = [] #Provided by UI module
+    input_file = 'model_files/IMG_0535.mov'
+    #picture
+    pth_backbone_model = ResNet50(7, channels=3)
+    pth_backbone_model.load_state_dict(torch.load('FER_static_ResNet50_AffectNet.pt'))
+    pth_backbone_model.eval()
+    #video
+    pth_LSTM_model = LSTMPyTorch()
+    pth_LSTM_model.load_state_dict(torch.load('FER_dinamic_LSTM_{0}.pt'.format(name_LSTM_model)))
+    pth_LSTM_model.eval()
+
+    input_file = input_file_proc(input_file=input_file) #provided by UI module
+
+    emotion_weight = extract_emotion(input_file=input_file, pth_backbone_model=pth_backbone_model, lstm_features=lstm_features)
+    return emotion_weight
