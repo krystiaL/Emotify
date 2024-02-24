@@ -15,6 +15,10 @@ import regarding_spotify_interact
 import about_us
 
 from webcam import WebcamRecorder
+
+from face_detect_module.face_emotion_detector import input_file_proc, extract_emotion
+
+
 #---------------------------------------------------
 #          PAGE CONFIGURATIONS ETC.
 #---------------------------------------------------
@@ -51,15 +55,16 @@ with st.sidebar:
 #---------------------------------------------------
 #          PATHS AND TEMP FILES
 #---------------------------------------------------
+#not too sure about this
 
 # Get the path of the downloads folder
-downloads_path = os.path.join(os.path.expanduser("~"), "Downloads")
+# downloads_path = os.path.join(os.path.expanduser("~"), "Downloads")
 
-# # Set the downloads_path as an environment variable
-# os.environ["DOWNLOADS_PATH"] = downloads_path
+# # # Set the downloads_path as an environment variable
+# # os.environ["DOWNLOADS_PATH"] = downloads_path
 
-temp_file = tempfile.NamedTemporaryFile()
-downloads_path = temp_file.name
+# temp_file = tempfile.NamedTemporaryFile()
+# downloads_path = temp_file.name
 
 #---------------------------------------------------
 #             FUNCTIONS
@@ -145,8 +150,10 @@ with col1:
             if uploaded_image:
                 st.session_state["uploaded_image"] = uploaded_image
                 st.write("Reading emotion from selfie...")
-                #entry point for model input;
-                # to do: add model function here
+                #entry point for modesl input;
+                input_file = input_file_proc(input_file=image_captured)
+                # extract_emotion(input_file=input_file)
+                st.write(input_file)
 
             elif image_captured:
                 st.session_state["image_captured"] = image_captured
