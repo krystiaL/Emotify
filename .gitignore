@@ -6,6 +6,8 @@ playlist_module/__pychache__/
 .ipynb_checkpoints/
 .python-version
 
+.streamlit
+
 #########################
 #------------------------
 # data folders
