@@ -445,7 +445,7 @@ def extract_emotion(input_file, pth_backbone_model, lstm_features):
 # if __name__ == '__main__': # To do later on...
 mp_face_mesh = mp.solutions.face_mesh
 
-name_backbone_model = 'FER_static_ResNet50_AffectNet.pt'
+name_backbone_model = 'model_files/FER_static_ResNet50_AffectNet.pt'
 # name_LSTM_model = 'IEMOCAP'
 # name_LSTM_model = 'CREMA-D'
 # name_LSTM_model = 'RAMAS'
@@ -460,7 +460,7 @@ pth_backbone_model.load_state_dict(torch.load(name_backbone_model))
 pth_backbone_model.eval()
 
 pth_LSTM_model = LSTMPyTorch()
-pth_LSTM_model.load_state_dict(torch.load('FER_dinamic_LSTM_{0}.pt'.format(name_LSTM_model)))
+pth_LSTM_model.load_state_dict(torch.load('model_files/FER_dinamic_LSTM_{0}.pt'.format(name_LSTM_model)))
 pth_LSTM_model.eval()
 
 
@@ -512,11 +512,11 @@ def export_emotion():
     input_file = 'model_files/IMG_0535.mov'
     #picture
     pth_backbone_model = ResNet50(7, channels=3)
-    pth_backbone_model.load_state_dict(torch.load('FER_static_ResNet50_AffectNet.pt'))
+    pth_backbone_model.load_state_dict(torch.load('model_files/FER_static_ResNet50_AffectNet.pt'))
     pth_backbone_model.eval()
     #video
     pth_LSTM_model = LSTMPyTorch()
-    pth_LSTM_model.load_state_dict(torch.load('FER_dinamic_LSTM_{0}.pt'.format(name_LSTM_model)))
+    pth_LSTM_model.load_state_dict(torch.load('model_files/FER_dinamic_LSTM_{0}.pt'.format(name_LSTM_model)))
     pth_LSTM_model.eval()
 
     input_file = input_file_proc(input_file=input_file) #provided by UI module
