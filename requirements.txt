@@ -1,10 +1,28 @@
 spotipy
 os
-pandas
 tensorflow
 streamlit
 requests
-numpy
+pandas
 datetime
-opencv-python-headless
-streamlit-webrtc
+opencv-python
+
+#########################
+#------------------------
+# for the face_detect_module
+# os
+cv2
+mediapipe
+math
+numpy
+time
+
+warnings
+
+torch
+torch.nn
+torch.nn.functional
+PIL
+torchvision
+#------------------------
+#########################

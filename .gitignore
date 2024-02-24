@@ -2,6 +2,15 @@
 .envrc
 token.txt
 playlist_module/__pychache__/
+
+.ipynb_checkpoints/
+.python-version
+
 .streamlit
-interface/__pycache__/webcam.cpython-310.pyc
-recorded_video.avi
+
+#########################
+#------------------------
+# data folders
+raw_data/
+#------------------------
+#########################
