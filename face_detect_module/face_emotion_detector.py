@@ -442,6 +442,7 @@ def extract_emotion(input_file, pth_backbone_model, lstm_features):
 #########################################################################
 #-----------------------------------------------------------------------#
 
+# if __name__ == '__main__': # To do later on...
 mp_face_mesh = mp.solutions.face_mesh
 
 name_backbone_model = 'FER_static_ResNet50_AffectNet.pt'
@@ -478,8 +479,6 @@ DICT_EMO = {
 #|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||#
 #########################################################################
 #-----------------------------------------------------------------------#
-# if __name__ == '__main__': # To do later on...
-
 
 # From_Krystia_Streamlit_image_or_video:
     # variable name: input_file
@@ -490,6 +489,8 @@ DICT_EMO = {
 # DETERMINE input_file type:
 
 ## test files: # for delete later on...
+# to access the file, please refer to code/Atsuto-T/Music_Selector_Project/Music_Selector_Project/raw_data
+# or you may use any face picture or video file you have
 input_file = 'IMG_0535.mov'  # 'facess.png'  # 'face.tif'  # 'face.jpg'  # 'face.png'  # 'IMG_5221.MOV'  # IMG_0509.MOV  # image_file
 
 # Received from Krystia's UI
