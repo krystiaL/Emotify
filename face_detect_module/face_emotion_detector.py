@@ -15,7 +15,7 @@ warnings.simplefilter("ignore", UserWarning)
 import torch
 import torch.nn as  nn
 import torch.nn.functional as F
-from pillow import Image
+from PIL import Image
 from torchvision import transforms
 
 
