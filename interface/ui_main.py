@@ -17,7 +17,13 @@ import about_us
 from webcam import WebcamRecorder
 
 from face_detect_module.face_emotion_detector import input_file_proc, extract_emotion
+from playlist_module.generate_playlist import send_playlist_id
 
+#---------------------------------------------------
+#           PLAYLIST ELEMENT
+#---------------------------------------------------
+
+playlist_url = send_playlist_id(account_name='Test')
 
 #---------------------------------------------------
 #          PAGE CONFIGURATIONS ETC.
@@ -74,11 +80,12 @@ def dummy_img_and_vid_function():
     #This dummy function takes the either image or video files as input and returns the playlist
     #to be omitted and replaced with the playlist generator functions
     st.subheader(f"Here's a <identified emotion> playlist for you!")
+    #to do: change identified emotion to emotion returned from emotion_detect function
 
     #embedd to spotify interface; to do: check if there are other ways to do this
     st.write("Add this playlist to your Spotify library!")
-    st.markdown('<iframe src="https://open.spotify.com/embed/playlist/0HI7czcgdxj4bPu3eRlc2C?utm_source=generator"\
-    width="500" height="400"></iframe>', unsafe_allow_html=True)
+    st.markdown(f'<iframe src={playlist_url}\
+        width="500" height="400"></iframe>', unsafe_allow_html=True)
     #change with generated playlist link
 
 
