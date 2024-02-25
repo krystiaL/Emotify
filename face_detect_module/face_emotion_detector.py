@@ -337,8 +337,8 @@ def input_file_proc(input_file):
         return 'input_file.avi'
     else: return input_file
 
-def extract_emotion(input_file, pth_backbone_model, lstm_features):
-    """
+def extract_emotion(input_file):
+    """pth_backbone_model, lstm_features
     The input video is analyzed by the model detecting face emotion/s.
     Returns a tuple of dictionaries:
         video_emotions
@@ -445,7 +445,7 @@ def extract_emotion(input_file, pth_backbone_model, lstm_features):
 # if __name__ == '__main__': # To do later on...
 mp_face_mesh = mp.solutions.face_mesh
 
-name_backbone_model = 'model_files/FER_static_ResNet50_AffectNet.pt'
+name_backbone_model = 'face_detect_module/model_files/FER_static_ResNet50_AffectNet.pt'
 # name_LSTM_model = 'IEMOCAP'
 # name_LSTM_model = 'CREMA-D'
 # name_LSTM_model = 'RAMAS'
@@ -460,7 +460,7 @@ pth_backbone_model.load_state_dict(torch.load(name_backbone_model))
 pth_backbone_model.eval()
 
 pth_LSTM_model = LSTMPyTorch()
-pth_LSTM_model.load_state_dict(torch.load('model_files/FER_dinamic_LSTM_{0}.pt'.format(name_LSTM_model)))
+pth_LSTM_model.load_state_dict(torch.load('face_detect_module/model_files/FER_dinamic_LSTM_{0}.pt'.format(name_LSTM_model)))
 pth_LSTM_model.eval()
 
 
@@ -491,15 +491,15 @@ DICT_EMO = {
 ## test files: # for delete later on...
 # to access the file, please refer to code/Atsuto-T/Music_Selector_Project/Music_Selector_Project/raw_data
 # or you may use any face picture or video file you have
-input_file = 'IMG_0535.mov'  # 'facess.png'  # 'face.tif'  # 'face.jpg'  # 'face.png'  # 'IMG_5221.MOV'  # IMG_0509.MOV  # image_file
+# input_file = 'IMG_0535.mov'  # 'facess.png'  # 'face.tif'  # 'face.jpg'  # 'face.png'  # 'IMG_5221.MOV'  # IMG_0509.MOV  # image_file
 
-# Received from Krystia's UI
-input_file = input_file
-lstm_features = []
+# # Received from Krystia's UI
+# input_file = input_file
+# lstm_features = []
 
-input_file = input_file_proc(input_file)  # video version of the photo or just the video input as is
+# input_file = input_file_proc(input_file)  # video version of the photo or just the video input as is
 
-extract_emotion(input_file, pth_backbone_model, lstm_features)
+# extract_emotion(input_file, pth_backbone_model, lstm_features)
 
 #-----------------------------------------------------------------------#
 #########################################################################
@@ -512,11 +512,11 @@ def export_emotion():
     input_file = 'model_files/IMG_0535.mov'
     #picture
     pth_backbone_model = ResNet50(7, channels=3)
-    pth_backbone_model.load_state_dict(torch.load('model_files/FER_static_ResNet50_AffectNet.pt'))
+    pth_backbone_model.load_state_dict(torch.load('face_detect_module/model_files/FER_static_ResNet50_AffectNet.pt'))
     pth_backbone_model.eval()
     #video
     pth_LSTM_model = LSTMPyTorch()
-    pth_LSTM_model.load_state_dict(torch.load('model_files/FER_dinamic_LSTM_{0}.pt'.format(name_LSTM_model)))
+    pth_LSTM_model.load_state_dict(torch.load('face_detect_module/model_files/FER_dinamic_LSTM_{0}.pt'.format(name_LSTM_model)))
     pth_LSTM_model.eval()
 
     input_file = input_file_proc(input_file=input_file) #provided by UI module
