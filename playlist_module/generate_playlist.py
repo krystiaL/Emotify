@@ -105,7 +105,11 @@ def generate_playlist(emotion_df, account_name):
     tailor_object = emotion_df #tailor_df()
     user_emotion = tailor_object[1]
 
-    title = f"Calm:{int(user_emotion['mood_Calm']*100)}% Energetic:{int(user_emotion['mood_Energetic']*100)}% Happy:{int(user_emotion['mood_Happy']*100)}% Sad:{int(user_emotion['mood_Sad']*100)}%"
+    dominant_emotion = max(user_emotion, key=user_emotion.get)
+    dominant_percentage = int(user_emotion[dominant_emotion] * 100)
+
+    # title = f"Calm:{int(user_emotion['mood_Calm']*100)}% Energetic:{int(user_emotion['mood_Energetic']*100)}% Happy:{int(user_emotion['mood_Happy']*100)}% Sad:{int(user_emotion['mood_Sad']*100)}%"
+    title = f"TuneOut: {dominant_emotion}"
 
     new_playlist = sp.user_playlist_create(user=user_id, name=title, public=True,
                                       description=None)
@@ -125,15 +129,15 @@ def generate_playlist(emotion_df, account_name):
             uri_list.append(result_uri)
 
     sp.user_playlist_add_tracks(user=user_id, playlist_id=new_playlist_id, tracks=uri_list)
-    return title,sp,title_list
+    return [title, sp, title_list, dominant_emotion]
 
 # generate_playlist = generate_playlist(emotion_df=emotion_df, account_name=account_name)
 
-def send_playlist_id(generated_playlist, dominant_emotion, account_name):
+def send_playlist_id(generated_playlist, account_name):
     '''This function returns the url of the generated playlist on Spotify webpage.
     -The url will be fed to UX module.'''
     playlist_object = generated_playlist#generate_playlist(emotion_df=emotion_df, account_name=account_name)
-    playlist_name = dominant_emotion
+    playlist_name = playlist_object[0]
     sp = playlist_object[1]
 
     # Get the user's playlists

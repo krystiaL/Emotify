@@ -124,11 +124,13 @@ def gen_playlist_ui(mood_dict):
     st.markdown(f'<iframe src={playlist_url} width="500" height="400"></iframe>',
     unsafe_allow_html=True)
 
+    st.write(" ")
+
     #reset button for re-generation
     if 'reset_button' not in st.session_state:
         st.session_state['reset_button'] = False
 
-    if st.button('Reset', key='Restart Playlist Generation'):
+    if st.button('Re-generate Playlist', key='reset'):
         reset_app()
 
 #---------------------------------------------------
@@ -236,6 +238,7 @@ col1.caption("Application Accuracy: <80.56%>")
 #       IMAGE TAB, COLUMN 3 ELEMENTS
 #--------------------------------------------
 with col3:
+    st.subheader(" ")
 # Display generated playlist
     if image_captured or uploaded_image:
         # Assuming some functions like image_to_video and extract_emotion exist
@@ -254,7 +257,8 @@ with col3:
             emotion = extract_emotion(input_file=input_file)
 
             if emotion:
-                st.write(f"Emotion Extracted: {emotion[0].keys()}")
+                emo_key = next(iter(emotion[0]))
+                st.write(f"Emotion Extracted: {emo_key}")
 
             #playlist generation function
             with st.spinner("Transforming Emotions into Melodies..."):
