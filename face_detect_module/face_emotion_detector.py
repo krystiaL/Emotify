@@ -319,10 +319,12 @@ def input_file_proc(input_file):
     ]
 
     # Determine input file type (video or photo)
-    ## If input is a photo, convert to video and save as input_file.avi
-    if input_file[dot_locate:] in READABLE_IMGS:
+    # If input is a photo, convert to video and save as input_file.avi
+    if input_file[dot_locate:] in READABLE_IMGS :
+        # image = Image.open(input_file)
+        # image_array = np.array(image)
         img_array = []
-        img = cv2.imread(input_file)
+        img = cv2.imread(input_file) #cv2.imread(input_file, cv2.IMREAD_COLOR)
         height, width, layers = img.shape
         size = (width,height)
         img_array.append(img)
@@ -338,7 +340,7 @@ def input_file_proc(input_file):
     else: return input_file
 
 def extract_emotion(input_file):
-    """pth_backbone_model, lstm_features
+    """
     The input video is analyzed by the model detecting face emotion/s.
     Returns a tuple of dictionaries:
         video_emotions
@@ -413,10 +415,10 @@ def extract_emotion(input_file):
 
             frame = display_FPS(frame, 'FPS: {0:.1f}'.format(1 / (t2 - t1)), box_scale=.5)  # Upper right corner tag display "FPS: x.x"
 
-            cv2.imshow('Webcam', frame)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                print("quit")
-                break
+            # cv2.imshow('Webcam', frame)
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
+            #     print("quit")
+            #     break
 
         ######################################################
         ################ F O R    S A N I T Y ################
@@ -433,8 +435,8 @@ def extract_emotion(input_file):
         ######################################################
         ######################################################
 
-        cap.release()
-        cv2.destroyAllWindows()
+        # cap.release()
+        # cv2.destroyAllWindows()
     return video_emotions, emotions_weight
 #-----------------------------------------------------------------------#
 #########################################################################
@@ -491,7 +493,7 @@ DICT_EMO = {
 ## test files: # for delete later on...
 # to access the file, please refer to code/Atsuto-T/Music_Selector_Project/Music_Selector_Project/raw_data
 # or you may use any face picture or video file you have
-# input_file = 'IMG_0535.mov'  # 'facess.png'  # 'face.tif'  # 'face.jpg'  # 'face.png'  # 'IMG_5221.MOV'  # IMG_0509.MOV  # image_file
+# input_file = 'face_detect_module/model_files/IMG_0535.MOV'  # 'facess.png'  # 'face.tif'  # 'face.jpg'  # 'face.png'  # 'IMG_5221.MOV'  # IMG_0509.MOV  # image_file
 
 # # Received from Krystia's UI
 # input_file = input_file
@@ -509,7 +511,7 @@ DICT_EMO = {
 ###Edited by Atsuto-T###
 def export_emotion():
     lstm_features = [] #Provided by UI module
-    input_file = 'model_files/IMG_0535.mov'
+    input_file = 'face_detect_module/model_files/IMG_0535.mov'
     #picture
     pth_backbone_model = ResNet50(7, channels=3)
     pth_backbone_model.load_state_dict(torch.load('face_detect_module/model_files/FER_static_ResNet50_AffectNet.pt'))

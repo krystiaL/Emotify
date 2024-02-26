@@ -1,6 +1,13 @@
 import streamlit as st
 
+instructions = [
+                    {1:"interface/images/upload_icon.png", "step_1": "Upload a photo or video showing your face."}
+
+                    ]
+
 def instructions_page():
+
+
     col_ex1, col_ex2 = st.columns([0.5, 2])
     #step 1
     col_ex1.write(" ")

@@ -2,10 +2,12 @@ spotipy
 # os
 tensorflow
 streamlit
+streamlit-webrtc
 requests
 pandas
 datetime
 opencv-python
+xdg-utils
 
 #########################
 #------------------------

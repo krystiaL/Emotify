@@ -28,7 +28,7 @@ streamlit_video:
 	-@streamlit run ux_video.py
 
 streamlit_main_ui:
-	-@streamlit run interface/ui_main.py --server.address=localhost --server.port=8502
+	-@streamlit run interface/ui_main.py --server.port 8503
 
 # ----------------------------------
 #    LOCAL INSTALL COMMANDS
