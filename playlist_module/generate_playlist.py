@@ -6,18 +6,25 @@ from playlist_module.genre import get_genre
 from sklearn.metrics import mean_squared_error
 # from face_detect_module.face_emotion_detector import export_emotion
 
-emotion = {'Sadness': [0.2,1],
-                    'Surprise': [0.19, 0.2, 0.21, 0.21, 0.2, 0.21, 0.24, 0.23, 0.24, 0.24, 0.24, 0.25, 0.24, 0.22, 0.2,\
-                        0.24, 0.26, 0.29, 0.27, 0.27, 0.27, 0.25, 0.28, 0.32, 0.36, 0.4, 0.43, 0.44, 0.45, 0.43, 0.42, 0.38, 0.34, 0.31, 0.27, 0.24, 0.23, 0.23],
-                    'Anger': [0.21,1,1,1,1],
-                    'Neutral': [0.19,1,1,1,1,1,1,1,1,1,1,1,1]}
+# emotion = {'Sadness': [0.2,1],
+#                     'Surprise': [0.19, 0.2, 0.21, 0.21, 0.2, 0.21, 0.24, 0.23, 0.24, 0.24, 0.24, 0.25, 0.24, 0.22, 0.2,\
+#                         0.24, 0.26, 0.29, 0.27, 0.27, 0.27, 0.25, 0.28, 0.32, 0.36, 0.4, 0.43, 0.44, 0.45, 0.43, 0.42, 0.38, 0.34, 0.31, 0.27, 0.24, 0.23, 0.23],
+#                     'Anger': [0.21,1,1,1,1],
+#                     'Neutral': [0.19,1,1,1,1,1,1,1,1,1,1,1,1]}
 
 def process_emotion(emotion):
     '''This function imports emotion_weights from face_detect_module and outputs
     which emotion was dominant in the video clip.'''
-    import_emotion = emotion # to do: add export_emotion() function once face module is fixed
+    import_emotion = emotion
 
-    imported_emotion = {key:len(value) for key,value in import_emotion.items()}
+    # imported_emotion = {key:len(value) for key,value in import_emotion.items()}
+    imported_emotion = {}
+    for dictionary in import_emotion:
+        for key, value in dictionary.items():
+            if isinstance(value, list):
+                imported_emotion[key] = len(value)
+            else:
+                imported_emotion[key] = value
     imported_emotion = {key:value/sum(imported_emotion.values()) for key,value in imported_emotion.items()}
 
     emotion_variation = ['Neutral','Happiness','Sadness','Surprise','Fear','Disgust','Anger']
@@ -36,7 +43,7 @@ def process_emotion(emotion):
 
     return dominant_emotion,user_emotion
 
-process_emo = process_emotion(emotion=emotion)
+# process_emo = process_emotion(emotion=emotion)
 
 def tailor_df(process_emo_out):
     '''This function takes emotion input from facial recognition
@@ -70,8 +77,8 @@ def tailor_df(process_emo_out):
 
     return mood_df,user_emotion
 
-emotion_df = tailor_df(process_emo_out=process_emo)
-account_name = "test"
+# emotion_df = tailor_df(process_emo_out=process_emo)
+# account_name = "test"
 
 def generate_playlist(emotion_df, account_name):
     '''This function will access Spotify API and add playlist to the developer's account.
@@ -120,13 +127,13 @@ def generate_playlist(emotion_df, account_name):
     sp.user_playlist_add_tracks(user=user_id, playlist_id=new_playlist_id, tracks=uri_list)
     return title,sp,title_list
 
-generate_playlist = generate_playlist(emotion_df=emotion_df, account_name=account_name)
+# generate_playlist = generate_playlist(emotion_df=emotion_df, account_name=account_name)
 
-def send_playlist_id(generated_playlist, account_name):
+def send_playlist_id(generated_playlist, dominant_emotion, account_name):
     '''This function returns the url of the generated playlist on Spotify webpage.
     -The url will be fed to UX module.'''
     playlist_object = generated_playlist#generate_playlist(emotion_df=emotion_df, account_name=account_name)
-    playlist_name = playlist_object[0]
+    playlist_name = dominant_emotion
     sp = playlist_object[1]
 
     # Get the user's playlists
@@ -149,8 +156,8 @@ def send_playlist_id(generated_playlist, account_name):
     return playlist_url
 
 
-if __name__=="__main__":
+# if __name__=="__main__":
 
-    # Account_name will be fed from UX module.
-    # Emotion will be fed from Facial Recognition module.
-    send_playlist_id(generated_playlist=generate_playlist, account_name=account_name)
+#     # Account_name will be fed from UX module.
+#     # Emotion will be fed from Facial Recognition module.
+#     send_playlist_id(generated_playlist=generate_playlist, account_name=account_name)
