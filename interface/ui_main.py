@@ -5,8 +5,8 @@ import streamlit as st
 # import numpy as np
 
 import time
+import os
 # import base64
-# import os
 # import tempfile
 
 from streamlit_webrtc import webrtc_streamer
@@ -18,11 +18,11 @@ import about_us
 from webcam import WebcamRecorder
 
 from face_detect_module.face_emotion_detector import extract_emotion
-# from playlist_module.generate_playlist import send_playlist_id
-# from playlist_module.generate_playlist import process_emotion, tailor_df
-# from playlist_module.generate_playlist import generate_playlist, send_playlist_id
 
-from alternative_input_preproc import is_image, process_media_file, image_to_video
+from playlist_module.generate_playlist import process_emotion, tailor_df
+from playlist_module.generate_playlist import generate_playlist, send_playlist_id
+
+from alternative_input_preproc import is_image, image_to_video
 #---------------------------------------------------
 #           PLAYLIST ELEMENT
 #---------------------------------------------------
@@ -82,40 +82,72 @@ with st.sidebar:
 
 output_video_path = "/root/code/Atsuto-T/Music_Selector_Project/interface/vid_recs"
 duration = 10
+
 #---------------------------------------------------
-#             PLAYLIST FUNCTIONS
+#            PLAYLIST GENERATION FUNCTION
 #---------------------------------------------------
 
 def gen_playlist_ui(mood_dict):
     #This function takes the extracted emotion dictionary and uses the generate_playlist
     #module for the playlist generation process of the application
 
-    st.subheader(f"Here's a <identified emotion> playlist for you!")
+    #------------emotions-------------------
+    user_emotion = {
+        'mood_Calm': "Serene",
+        'mood_Energetic': "Dynamic",
+        'mood_Happy': "Blissful",
+        'mood_Sad': "Melancholic"
+        }
+#-------------------------------------------
+    emotion_out = process_emotion(mood_dict)
+    #variable storing the dominant emotion of the file;
+
+    emotion_df = tailor_df(emotion_out)
+    #variable storing the created emotion dataframe;
+
+    account_name = "emo_play"
+
+    playlist = generate_playlist(emotion_df=emotion_df, account_name=account_name)
+    #variable storing the generated playlist;
+
+    playlist_url = send_playlist_id(generated_playlist=playlist, account_name=account_name)
+    #variable storing the playlist url from spotify api to be embedded in webpage
+
+    dominant_emotion = playlist[3]
+    emotion_title = user_emotion.get(dominant_emotion, "Unknown Emotion")
+    st.subheader(f"Here's a {emotion_title} playlist for you!")
     #to do: change identified emotion to emotion returned from emotion_detect function
 
     #embedd to spotify interface; to do: check if there are other ways to do this
     st.write("Add this playlist to your Spotify library!")
 
-    # emotion_out = process_emotion(mood_dict)
-    # #variable storing the dominant emotion of the file;
-    # st.write(emotion_out)
-
-    # emotion_df = tailor_df(emotion_out)
-    # #variable storing the created emotion dataframe;
-    # st.write(emotion_df)
-
-    # playlist = generate_playlist(emotion_df=emotion_df, account_name="test")
-    # #variable storing the generated playlist;
-
-    # playlist_url = send_playlist_id(generated_playlist=playlist, account_name='test')
-    # #variable storing the playlist url from spotify api to be embedded in webpage
-    # st.write(playlist_url)
-
-    st.markdown('<iframe src="https://open.spotify.com/embed/playlist/0HI7czcgdxj4bPu3eRlc2C?utm_source=generator"\
-    width="500" height="400"></iframe>',
+    st.markdown(f'<iframe src={playlist_url} width="500" height="400"></iframe>',
     unsafe_allow_html=True)
 
+    #reset button for re-generation
+    if 'reset_button' not in st.session_state:
+        st.session_state['reset_button'] = False
 
+    if st.button('Reset', key='Restart Playlist Generation'):
+        reset_app()
+
+#---------------------------------------------------
+#               APP RESET FUNCTION
+#---------------------------------------------------
+
+def reset_app():
+    # Clear Streamlit cache
+    st.session_state.clear()
+
+    # Remove the saved file
+    if os.path.exists(output_video_path):
+        for file in os.listdir(output_video_path):
+            file_path = os.path.join(output_video_path, file)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+        st.write("Successful Session Restart")
+    else:
+        st.write("Session Not Restarted")
 
 
 #------------------------------------
@@ -181,6 +213,7 @@ with col1:
         submit_button = st.form_submit_button("Generate Playlist", args=[image_captured, uploaded_image])
         #submit button as entry for file extraction to image/video model pipe
 
+        #to do: add a buttton to clear all images
 
     if submit_button:
         if image_captured:
@@ -207,32 +240,28 @@ with col3:
     if image_captured or uploaded_image:
         # Assuming some functions like image_to_video and extract_emotion exist
         user_image = image_captured if image_captured else uploaded_image
-        st.image(user_image)
+        #transform jpeg file into byte file
         byte_image = is_image(user_image)
         #entry point for model input;
         input_file = image_to_video(image=byte_image,
                                     output_video_path=output_video_path,
                                     duration_seconds=duration)
 
-        st.write(input_file)
-
-        # video_file = process_media_file(input_file=input_file,
-        #                                 output_directory=output_video_path,
-        #                                 duration_seconds=duration)
-
         if input_file:
-            st.write("image converted into video file...")
+            st.subheader(" ")
+            st.write("Image converted into video file...")
             time.sleep(2)
-            # emotion = extract_emotion(input_file=input_file)
+            emotion = extract_emotion(input_file=input_file)
 
-            # if emotion:
-            #     st.write("Emotion Extracted...")
+            if emotion:
+                st.write(f"Emotion Extracted: {emotion[0].keys()}")
 
-            #playlist generation for camera capture
+            #playlist generation function
             with st.spinner("Transforming Emotions into Melodies..."):
                 # to improve: change into progress bar/ specify state after merging other functions
                 time.sleep(3)  # simulate playlist generation time
-                # gen_playlist_ui()
+                gen_playlist_ui(emotion)
+
 
     else:
         st.subheader(" ")
