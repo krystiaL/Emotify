@@ -10,7 +10,6 @@ opencv-python
 xdg
 #xdg-utils
 
-
 #########################
 #------------------------
 # for the face_detect_module

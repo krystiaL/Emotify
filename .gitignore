@@ -2,19 +2,14 @@
 .envrc
 token.txt
 
-playlist_module/__pycache__/
-playlist_module/create_df.py
-face_detect_module/__pycache__/
-interface/__pycache__/
+**/pycache/**
 
 .ipynb_checkpoints/
 .python-version
 
 .streamlit
 interface/ui_drafts
-interface/__pycache__
 
-face_detect_module/__pycache__
 #########################
 #------------------------
 # data folders
