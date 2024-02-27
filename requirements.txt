@@ -19,8 +19,8 @@ mediapipe
 numpy
 
 torch
-torch.nn
-torch.nn.functional
+#torch.nn
+#torch.nn.functional
 pillow
 torchvision
 #------------------------
