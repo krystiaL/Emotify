@@ -1,6 +1,7 @@
 .env
 .envrc
 token.txt
+
 playlist_module/__pycache__/
 playlist_module/create_df.py
 face_detect_module/__pycache__/
