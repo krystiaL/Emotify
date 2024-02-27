@@ -14,7 +14,8 @@ xdg
 #------------------------
 # for the face_detect_module
 # os
-cv2
+# cv2
+opencv-python
 mediapipe
 numpy
 
