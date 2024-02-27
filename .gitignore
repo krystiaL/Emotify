@@ -10,6 +10,8 @@ playlist_module/create_df.py
 .streamlit
 interface/ui_drafts
 interface/__pycache__
+
+face_detect_module/__pycache__
 #########################
 #------------------------
 # data folders

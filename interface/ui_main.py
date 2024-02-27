@@ -298,6 +298,7 @@ col1.caption("Application Accuracy: <80.56%>")
 with col3:
     st.subheader(" ")
 # Display generated playlist
+    # if submit_button is True:
     if image_captured or uploaded_image:
         user_image = image_captured if image_captured else uploaded_image
 
