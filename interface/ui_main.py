@@ -23,48 +23,6 @@ from playlist_module.generate_playlist import process_emotion, tailor_df
 from playlist_module.generate_playlist import generate_playlist, send_playlist_id
 
 from alternative_input_preproc import is_image, image_to_video
-#---------------------------------------------------
-#           PLAYLIST ELEMENT
-#---------------------------------------------------
-
-moods = {"Emotion": {'Sadness': [0.2,1],
-                    'Surprise': [0.19, 0.2, 0.21, 0.21, 0.2, 0.21, 0.24, 0.23, 0.24, 0.24, 0.24, 0.25, 0.24, 0.22, 0.2,\
-                        0.24, 0.26, 0.29, 0.27, 0.27, 0.27, 0.25, 0.28, 0.32, 0.36, 0.4, 0.43, 0.44, 0.45, 0.43, 0.42, 0.38, 0.34, 0.31, 0.27, 0.24, 0.23, 0.23],
-                    'Anger': [0.21,1,1,1,1],
-                    'Neutral': [0.19,1,1,1,1,1,1,1,1,1,1,1,1]}
-    }
-
-#---------------------------------------------------
-#          PAGE CONFIGURATIONS ETC.
-#---------------------------------------------------
-
-st.set_page_config(page_title="<Music Selector Name>", page_icon=":musical_note:", layout="wide")
-
-#----------------------------------
-#       SIDEBAR
-#----------------------------------
-
-with st.sidebar:
-    st.title("About <Music Selector>") #change to official name
-    st.image("interface/images/Music-cuate.png")
-    #attribute: <a href="https://storyset.com/app">App illustrations by Storyset</a>
-
-    st.subheader("For questions about application usage:")
-    page = st.selectbox("choose a query", ["How to generate your playlist?",
-                                                  "How to add playlist to your Spotify library?",
-                                                 ])
-    #drop down option for Q&As
-
-    if page == "How to generate your playlist?":
-        instructions.instructions_page()
-    if page == "How to add playlist to your Spotify library?":
-        regarding_spotify_interact.spotify_page()
-    #link selectbox to indiv .py file (==individual page)
-    st.subheader("Know more about the creators:")
-    about_us_page = st.button("About Us")
-    #link page button to the individual .py file (==individual page)
-    if about_us_page:
-        about_us.about_us()
 
 #---------------------------------------------------
 #          PATHS AND OTHER VARIABLES
@@ -151,13 +109,44 @@ def reset_app():
     else:
         st.write("Session Not Restarted")
 
+#---------------------------------------------------
+#          PAGE CONFIGURATIONS ETC.
+#---------------------------------------------------
+
+st.set_page_config(page_title="<Music Selector Name>", page_icon=":musical_note:", layout="wide")
+
+#----------------------------------
+#       SIDEBAR
+#----------------------------------
+
+with st.sidebar:
+    st.title("About <Music Selector>") #change to official name
+    st.image("interface/images/Music-cuate.png")
+    #attribute: <a href="https://storyset.com/app">App illustrations by Storyset</a>
+
+    st.subheader("For questions about application usage:")
+    page = st.selectbox("choose a query", ["How to generate your playlist?",
+                                                  "How to add playlist to your Spotify library?",
+                                                 ])
+    #drop down option for Q&As
+
+    if page == "How to generate your playlist?":
+        instructions.instructions_page()
+    if page == "How to add playlist to your Spotify library?":
+        regarding_spotify_interact.spotify_page()
+    #link selectbox to indiv .py file (==individual page)
+    st.subheader("Know more about the creators:")
+    about_us_page = st.button("About Us")
+    #link page button to the individual .py file (==individual page)
+    if about_us_page:
+        about_us.about_us()
 
 #------------------------------------
 #      HEADER AND DESCRIPTION
 #------------------------------------
 #custom title page using html for bigger font size
 st.markdown("""
-<h1 style="font-size: 80px; color: #E9FBFF; text-align: center">
+<h1 style="font-size: 80px; color: #E9FBFF; text-align: center; font-family: Trebuchet MS">
 Music Selector Project &#9835
 </h1>
 """, unsafe_allow_html=True) #official name still hasn't been decided
@@ -170,7 +159,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
     # st.title("🤗😭😌🤩  ➫  💽🎧")
 st.markdown("""
-    <h1 style="font-size: 30px; text-align: center; color: #faaa0b">
+    <h1 style="font-size: 30px; text-align: center; color: #faaa0b; font-family: Trebuchet MS">
     Tune in your Emotions, Transform out your Playlist!
     </h1>
     """, unsafe_allow_html=True)
@@ -180,7 +169,7 @@ st.subheader(" ")
 #    CREATE TABS SEPARATING IMAGE AND VIDEO INPUT INTERFACE
 #--------------------------------------------------------------
 
-image_tab, video_tab, text_tab = st.tabs(["📸 Face Capture", "🎥 Face Recording", "Text Tab"])
+image_tab, video_tab = st.tabs(["📸 Face Capture", "🎥 Face Recording"])
 
 #--------------------##----------------------
 #    SPLIT TAB LAYOUT FOR CAMERA CAPTURE
@@ -380,42 +369,6 @@ with col3_vid:
         Just chillin' for now...
         </h1>
         """, unsafe_allow_html=True)
-
-#--------------------##----------------------
-#    SPLIT TAB LAYOUT FOR DROP DOWN
-#--------------------------------------------
-
-col1_text, col2_text, col3_text = text_tab.columns([2.8, 0.3, 3])
-col1.write(" ") #line break
-
-
-#--------------------------------------------
-#   DUMMY TAB FOR MODULE CONNECTION CHECK
-#--------------------------------------------
-with col1_text:
-    # text input form
-    st.subheader("Select your current mood")
-    with st.form("text_input"):
-        mood = st.selectbox("Choose an emotion:", list(moods.keys()))
-        st.session_state["mood"] = None
-        submit_button= st.form_submit_button("Submit Emotion")
-        if submit_button:
-            st.write("Emotion selected")
-            st.session_state["mood"] = moods["Emotion"]
-
-
-
-# Display generated playlist
-with col3_text:
-    st.write(" ")
-    if st.session_state.get("mood"):
-        st.session_state["mood"] = mood
-        mood_dict = moods["Emotion"]
-        st.write(f"Selected emotion: {mood}")
-        with st.spinner("Transforming Emotions into Melodies..."):
-            time.sleep(5)  # simulate playlist generation time
-        # gen_playlist_ui(mood_dict=mood_dict) #playlist generation
-
 
 
 ############################################
