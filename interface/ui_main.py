@@ -357,7 +357,11 @@ with col1_vid:
     #------------Camera Recoding-------------#
     st.write("Record a short video of your face showing your current emotion")
 
-    ctx = webrtc_streamer(key="face_rec", video_processor_factory=VideoRecorder)
+    ctx = webrtc_streamer(key="face_rec",
+                          video_processor_factory=VideoRecorder,
+                          )
+    #to do: check ctx object if its returning an openable video
+    # >>> modify webcam.py module
 
     #create start and stop buttons in seprate colums
     start = st.button('🔴 Start Face Recording',
@@ -371,6 +375,8 @@ with col1_vid:
     #--------------------------------------#
     #            RECORDING
     #--------------------------------------#
+    #define video recording variable
+    video_cap = None
 
     if start:
         #start recording webcam stream
@@ -394,29 +400,25 @@ with col1_vid:
 
     #------------video file submission-------------#
     with st.form("video_input"):
-        uploaded_video = st.file_uploader("Choose a video:", type=["mp4", "avi"])
+        uploaded_video = st.file_uploader("or upload a video showing your face:", type=["mp4", "avi"])
         st.session_state["uploaded_video"] = None
 
-        vid_col_submit, vid_col_blank, vid_col_reset_img = st.columns([2, 1, 3])
+        vid_col_submit, vid_col_blank, vid_col_reset = st.columns([2, 1, 3])
 
         #submit button as trigger for emotion extraction to playlist generation
-        vid_submit_button = col_submit.form_submit_button("▶ Generate Playlist",
-                                                      args=[video_cap, uploaded_video],
+        vid_submit_button = vid_col_submit.form_submit_button("▶ Generate Playlist",
+                                                      args=[uploaded_video],
                                                       )
 
         #buttton to clear all video/s created or uploaded
-        vid_reset_button = col_reset_img.form_submit_button("↺ Clear Image and Reset Form",
+        vid_reset_button = vid_col_reset.form_submit_button("↺ Clear Image and Reset Form",
                                                         args=[image_captured, uploaded_image],
                                                         on_click=reset_img_form,
                                                         use_container_width=True)
 
 
     if vid_submit_button:
-        if video_cap:
-            # st.session_state["image_captured"] = image_captured
-            st.write("Reading emotion from webcam recording...")
-
-        elif uploaded_video:
+        if uploaded_video:
             uploaded_vid_file = save_uploaded_file(uploaded_video)
             st.write("Reading emotion from uploaded video...")
 
@@ -425,13 +427,14 @@ with col1_vid:
             st.write("Please choose one of the designated image extraction methods above (🎥 or 📥). ")
             #default message when submit button was pressed but no file was fed.
 
-    if reset_button:
-            st.write("✅ Reset image objects successful")
-            st.write("Record a webcam face stream 🎥 or upload an image 📥 and click \" ▶️ Generate Playlist \".")
+    if vid_reset_button:
+            st.write("✅ Reset media objects successful")
+            st.write("Record a webcam face stream 🎥 or upload a video 📥 and click \" ▶️ Generate Playlist \".")
 
 
-col1.caption("Application Accuracy: <80.56%>")
+col1_vid.caption("Application Accuracy: <80.56%>")
 #to do: change metric to appropriate score result
+
 #--------------------------------------------
 #       VIDEO TAB, COLUMN 3 ELEMENTS
 #--------------------------------------------
@@ -439,34 +442,47 @@ col1.caption("Application Accuracy: <80.56%>")
 with col3_vid:
     st.subheader(" ")
 # Display generated playlist
-    if image_captured or uploaded_image:
-        user_image = image_captured if image_captured else uploaded_image
+    if video_cap:
 
-        #transform jpeg file into byte file
-        byte_image = is_image(user_image)
-        #entry point for model input;
-        input_file = image_to_video(image=byte_image,
-                                    output_video_path=OUTPUT_VIDEO_PATH,
-                                    duration_seconds=duration)
+        input_file = video_cap
 
         if input_file:
             st.subheader(" ")
-            st.write("Image converted into video file...")
-            time.sleep(2)
-            emotion = extract_emotion(input_file=input_file)
+            with st.spinner("Reading emotion from webcam recording..."):
+                time.sleep(2)
+                emotion = extract_emotion(input_file=input_file)
 
-            if emotion:
-                emo_key = next(iter(emotion[0]))
-                st.write(f"Emotion Extracted: {emo_key}")
+                if emotion:
+                    emo_key = next(iter(emotion[0]))
+                    st.write(f"Emotion Extracted: {emo_key}")
 
-            #playlist generation function
-                with st.spinner("Transforming Emotions into Melodies..."):
-                    # to improve: change into progress bar/ specify state after merging other functions
-                    time.sleep(3)  # simulate playlist generation time
-                    playlist, playlist_url = gen_playlist_ui(emotion)
-                    show_playlist(playlist=playlist, playlist_url=playlist_url)
+                #playlist generation function
+                    with st.spinner("Transforming Emotions into Melodies..."):
+                        # to improve: change into progress bar/ specify state after merging other functions
+                        time.sleep(3)  # simulate playlist generation time
+                        playlist, playlist_url = gen_playlist_ui(emotion)
+                        show_playlist(playlist=playlist, playlist_url=playlist_url)
 
+    elif uploaded_video:
 
+        input_file_upload = uploaded_vid_file
+
+        if input_file_upload:
+            st.subheader(" ")
+            with st.spinner("Starting playlist generation..."):
+                time.sleep(2)
+                emotion = extract_emotion(input_file=input_file_upload)
+
+                if emotion:
+                    emo_key = next(iter(emotion[0]))
+                    st.write(f"Emotion Extracted: {emo_key}")
+
+                #playlist generation function
+                    with st.spinner("Transforming Emotions into Melodies..."):
+                        # to improve: change into progress bar/ specify state after merging other functions
+                        time.sleep(3)  # simulate playlist generation time
+                        playlist, playlist_url = gen_playlist_ui(emotion)
+                        show_playlist(playlist=playlist, playlist_url=playlist_url)
     else:
         st.subheader(" ")
         st.image("interface/images/Playlist-amico (1).png")
@@ -477,41 +493,3 @@ with col3_vid:
         Just chillin' for now...
         </h1>
         """, unsafe_allow_html=True)
-
-
-############################################
-#------------------------------------------#
-############################################
-
-# #video stuff
-# st.title("Play Uploaded File")
-
-# uploaded_file = st.file_uploader("Choose a video...", type=["mp4"])
-# temporary_location = False
-
-# if uploaded_file is not None:
-#     temporary_location = write_to_disk(uploaded_file)
-
-# if temporary_location:
-#     video_stream = cv2.VideoCapture(temporary_location)
-#     # Check if camera opened successfully
-#     if (video_stream.isOpened() == False):
-#         print("Error opening video  file")
-#     else:
-#         # Read until video is completed
-#         while (video_stream.isOpened()):
-#             # Capture frame-by-frame
-#             ret, image = video_stream.read()
-#             if ret:
-#                 # Display the resulting frame
-#                 st.image(image, channels="BGR", use_column_width=True)
-#             else:
-#                 break
-#         video_stream.release()
-#         cv2.destroyAllWindows()
-
-# def write_to_disk(uploaded_file):
-#     """Writes an uploaded video file to disk and returns the file path."""
-#     with tempfile.NamedTemporaryFile(delete=False) as out:
-#         out.write(uploaded_file.read())
-#         return out.name
