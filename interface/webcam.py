@@ -1,25 +1,56 @@
 import cv2
+import os
+import streamlit as st
+import numpy as np
 
-class WebcamRecorder:
+class VideoRecorder:
     def __init__(self):
         self.recording = False
+        self.frame_count = 0
         self.frames = []
-        self.output_file = "recorded_video.avi"
-        self.out = None
+        self.path = os.environ.get("VIDEO_PATH")
+
+    def recv(self, frame):
+        if self.recording:
+            self.frames.append(frame.to_ndarray(format="bgr24"))
+            self.frame_count += 1
+
+            # Update the progress bar
+            st.progress_bar.progress(self.frame_count / 30)
+
+        return frame
 
     def start_recording(self):
         self.recording = True
+        self.frame_count = 0
         self.frames = []
-        fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        self.out = cv2.VideoWriter(self.output_file, fourcc, 20.0, (640, 480))
 
     def stop_recording(self):
         self.recording = False
-        if self.out is not None:
-            self.out.release()
+        if self.frame_count > 0:
+            # Define the frame variable
+            frame = self.frames[0]
 
-    def record(self, frame, progress_bar):
-        if self.recording:
-            self.frames.append(frame)
-            self.out.write(cv2.cvtColor(frame, cv2.COLOR_RGB2BGR))
-            progress_bar.progress(len(self.frames) / 100)  # Update progress bar
+            # Get the width and height of the frame
+            width, height = frame.shape[:2]
+
+            if os.path.isdir(self.path):
+                output_video_name = os.path.join(self.path, "recorded_vid_stream.mp4")
+            else:
+                output_video_name = self.path
+
+            # Save the recorded frames to a video file using OpenCV
+            fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+            out = cv2.VideoWriter(output_video_name, fourcc, 30, (width, height))
+            video_frames = self.frames
+            for frame in video_frames:
+                out.write(frame)
+            out.release()
+
+            # Get the video file path
+            video_file_path = os.path.abspath("recorded_vid_stream.mp4")
+
+            # Reset the frames list
+            self.frames = []
+
+            return video_file_path

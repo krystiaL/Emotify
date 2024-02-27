@@ -56,18 +56,12 @@ def image_to_video(image, output_video_path, duration_seconds):
         print("Error creating video file")
         return None
 
-def process_media_file(input_file, output_directory, duration_seconds):
-    if isinstance(input_file, str):  # Check if input_file is already a file path
-        image_path = input_file
-    else:
-        # Save the uploaded file to a temporary location
-        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-            temp_file.write(input_file.read())
-            image_path = temp_file.name
-
-    # Read the image file
-    image = cv2.imread(image_path)
-    # Convert image to video
-    output_video_name = os.path.join(output_directory, "output_video.mp4")
-    vid = image_to_video(image, output_video_name, duration_seconds)
-    return vid
+def save_uploaded_file(uploaded_file):
+    if uploaded_file is not None:
+        # Create a directory to store uploaded files if it doesn't exist
+        os.makedirs('uploads', exist_ok=True)
+        # Save the file to the uploads directory
+        with open(os.path.join("uploads", uploaded_file.name), "wb") as f:
+            f.write(uploaded_file.getbuffer())
+        return os.path.join("uploads", uploaded_file.name)
+    return None
