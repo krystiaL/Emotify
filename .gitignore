@@ -11,7 +11,10 @@ interface/__pycache__/
 .python-version
 
 .streamlit
+interface/ui_drafts
+interface/__pycache__
 
+face_detect_module/__pycache__
 #########################
 #------------------------
 # data folders

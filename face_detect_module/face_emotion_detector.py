@@ -2,6 +2,7 @@
 # to be converted to package later on...
 
 import os
+import tensorflow as tf
 
 import cv2
 import mediapipe as mp #face detector
@@ -15,9 +16,10 @@ warnings.simplefilter("ignore", UserWarning)
 import torch
 import torch.nn as  nn
 import torch.nn.functional as F
-from pillow import Image
+from PIL import Image
 from torchvision import transforms
 
+from interface.alternative_input_preproc import image_to_video
 
 ########################################################################
 #-----------------------------------------------------------------------
@@ -319,10 +321,12 @@ def input_file_proc(input_file):
     ]
 
     # Determine input file type (video or photo)
-    ## If input is a photo, convert to video and save as input_file.avi
-    if input_file[dot_locate:] in READABLE_IMGS:
+    # If input is a photo, convert to video and save as input_file.avi
+    if input_file[dot_locate:] in READABLE_IMGS :
+        # image = Image.open(input_file)
+        # image_array = np.array(image)
         img_array = []
-        img = cv2.imread(input_file)
+        img = cv2.imread(input_file) #cv2.imread(input_file, cv2.IMREAD_COLOR)
         height, width, layers = img.shape
         size = (width,height)
         img_array.append(img)
@@ -337,7 +341,7 @@ def input_file_proc(input_file):
         return 'input_file.avi'
     else: return input_file
 
-def extract_emotion(input_file, pth_backbone_model, lstm_features):
+def extract_emotion(input_file):
     """
     The input video is analyzed by the model detecting face emotion/s.
     Returns a tuple of dictionaries:
@@ -351,72 +355,164 @@ def extract_emotion(input_file, pth_backbone_model, lstm_features):
                 list of probability values of the key;
                 each item corresponds to 1 photo/frame in the video.
     """
-    time_limit = 10  # seconds
+    #-------------PROCESS MEDIA FILE FOR READING-------------#
+
+    time_limit = 10  # set media file duration
     start_time = time.time()
 
+    #initializes a video capture object (prepare for file reading etc.)
     cap = cv2.VideoCapture(input_file)
 
+    #retrieve width (property) of the frames in the cap object (video)
     w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+
+    #retrieve height (property) of the frames in the cap object (video)
     h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+    #retrieve frame per second (property) of the frames in the cap object (video)
     fps = np.round(cap.get(cv2.CAP_PROP_FPS))
+
+    # Initialize lstm_features
+    lstm_features = []
+
+#--------------------------------------------------------#
+
+    #----------EMOTION LABELS DICTIONARY------------#
+
+    DICT_EMO = {
+    0: 'Neutral',
+    1: 'Happiness',
+    2: 'Sadness',
+    3: 'Surprise',
+    4: 'Fear',
+    5: 'Disgust',
+    6: 'Anger'
+    }
+
+#-------------------------------------------------#
+
+    #----------RETURN DICTIONARY VARIABLES------------#
 
     # dictionary histogram of the indentified face emotion
     video_emotions = {}
     # dictionary with value for each identified face emotion
     emotions_weight = {}
 
+#-------------------------------------------------#
+
+
+    #----------------LOAD MODELS----------------#
+
+    #store model file path
+    name_backbone_model = 'face_detect_module/model_files/FER_static_ResNet50_AffectNet.pt'
+
+    #instanciate ResNet50 model (used for initial image input)
+    pth_backbone_model = ResNet50(7, channels=3)
+
+    #Load trained weights into the model
+    pth_backbone_model.load_state_dict(torch.load(name_backbone_model))
+
+    # Set model to evaluation mode (disables dropout layers and batch normalization layers )
+    pth_backbone_model.eval()
+
+    #initialize Face Mesh solution from MediaPipe to perform facial landmark detection and tracking using the Face Mesh model
+    mp_face_mesh = mp.solutions.face_mesh
+
+    #initialize an instance of the LSTMPyTorch model (used for processed video input)
+    pth_LSTM_model = LSTMPyTorch()
+
+    #initialize lstm model name
+    name_LSTM_model = 'Aff-Wild2'
+
+    #load the trained state dictionary into model
+    pth_LSTM_model.load_state_dict(torch.load('face_detect_module/model_files/FER_dinamic_LSTM_{0}.pt'.format(name_LSTM_model)))
+
+    #disables dropout and batch normalization layers
+    pth_LSTM_model.eval()
+#------------------------------------------#
+
+    ''' initializes a face detection model from the MediaPipe library and set parameters:
+            max_num_faces = maximum number of faces to detect;
+            refine_landmarks = whether to refine landmark positions;
+            min_detection_confidence = minimum confidence threshold for face detection;
+            min_tracking_confidence = minimum confidence threshold for landmark tracking'''
     with mp_face_mesh.FaceMesh(
     max_num_faces=1,
     refine_landmarks=False,
     min_detection_confidence=0.5,
     min_tracking_confidence=0.5) as face_mesh:
         while cap.isOpened() and (time.time() - start_time) < time_limit:
+            '''initiate loop that runs as long as the video capture (cap object) is open
+            and the time elapsed since start_time is less than time_limit.'''
             t1 = time.time()
-            success, frame = cap.read()
+            success, frame = cap.read() #Reads a frame from the video capture (cap object)
             if frame is None:
+                # indicate the end of the video or a problem with reading the frameit breaks out of the loop.
                 break
+
+            '''Create a copy of the frame, disables writeability to prevent accidental modification,
+            and converts the frame from BGR (OpenCV's default color format) to RGB format,
+            which is the format expected by the face mesh model.'''
             frame_copy = frame.copy()
             frame_copy.flags.writeable = False
             frame_copy = cv2.cvtColor(frame_copy, cv2.COLOR_BGR2RGB)
+
+            '''Process the frame using the face mesh model to detect facial landmarks.
+            It then re-enables writeability of the frame copy.'''
             results = face_mesh.process(frame_copy)
             frame_copy.flags.writeable = True
 # Note: process photos directly when time permits.
             if results.multi_face_landmarks:
+                '''Checks if any face landmarks are detected.
+                If so, iterate over each set of landmarks and
+                extracts the bounding box around the detected face.'''
                 for fl in results.multi_face_landmarks:
                     startX, startY, endX, endY  = get_box(fl, w, h)
                     cur_face = frame_copy[startY:endY, startX: endX]
+
+                    #Preprocesses the extracted face region using pth_processing function
                     cur_face = pth_processing(Image.fromarray(cur_face))
+
                     # features = torch.nn.functional.relu(pth_backbone_model.extract_features(cur_face)).detach().numpy()
+                    '''Extracts features from the preprocessed face image using
+                    the backbone neural network model (pth_backbone_model).
+                    ReLU activation is applied to the extracted features.
+                    The .detach().numpy() converts the features from
+                    a PyTorch tensor to a NumPy array.'''
                     features = F.relu(
                         pth_backbone_model.extract_features(
                             cur_face
                             )
                         ).detach().numpy()
 
+                    '''Maintains a rolling window of features for input into a Long Short-Term Memory (LSTM) neural network.
+                    If the window is empty, it initializes it with 10 copies of the current features.
+                    Otherwise, it updates the window by removing the oldest feature vector and appending the newest one.'''
                     if len(lstm_features) == 0:
                         lstm_features = [features]*10
                     else:
                         lstm_features = lstm_features[1:] + [features]
+
+                    '''Converts the rolling window of features into a PyTorch
+                    tensor and reshapes it to have a batch dimension of 1.'''
                     lstm_f = torch.from_numpy(np.vstack(lstm_features))
                     lstm_f = torch.unsqueeze(lstm_f, 0)
+
+                    '''Passes the reshaped features through an LSTM model (pth_LSTM_model) to predict an emotion label.
+                    The .detach().numpy() converts the output from a PyTorch tensor to a NumPy array.'''
                     output = pth_LSTM_model(lstm_f).detach().numpy()
+
+                    '''Determines the predicted emotion label by finding the index of the maximum value
+                    in the output array and using it to index into a dictionary (DICT_EMO) that
+                    maps label indices to emotion names.'''
                     cl = np.argmax(output)
                     label = DICT_EMO[cl]
 
-                    # populate the dictionaries
+                    '''Updates dictionaries to track the count of each emotion label (video_emotions)
+                    and the corresponding prediction confidence (emotions_weight).'''
                     video_emotions[label] = video_emotions.get(label, 0) + 1
                     emotions_weight[label] = emotions_weight.get(label, []) + [round(output[0][cl], 2)]
 
-                    frame = display_EMO_PRED(frame, (startX, startY, endX, endY), label+' {0:.1%}'.format(output[0][cl]), line_width=3)
-
-            t2 = time.time()
-
-            frame = display_FPS(frame, 'FPS: {0:.1f}'.format(1 / (t2 - t1)), box_scale=.5)  # Upper right corner tag display "FPS: x.x"
-
-            cv2.imshow('Webcam', frame)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                print("quit")
-                break
 
         ######################################################
         ################ F O R    S A N I T Y ################
@@ -433,9 +529,7 @@ def extract_emotion(input_file, pth_backbone_model, lstm_features):
         ######################################################
         ######################################################
 
-        cap.release()
-        cv2.destroyAllWindows()
-    return video_emotions, emotions_weight
+    return (video_emotions, emotions_weight)
 #-----------------------------------------------------------------------#
 #########################################################################
 #|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||#
@@ -443,36 +537,37 @@ def extract_emotion(input_file, pth_backbone_model, lstm_features):
 #-----------------------------------------------------------------------#
 
 # if __name__ == '__main__': # To do later on...
-mp_face_mesh = mp.solutions.face_mesh
+# mp_face_mesh = mp.solutions.face_mesh
 
-name_backbone_model = 'model_files/FER_static_ResNet50_AffectNet.pt'
-# name_LSTM_model = 'IEMOCAP'
-# name_LSTM_model = 'CREMA-D'
-# name_LSTM_model = 'RAMAS'
-# name_LSTM_model = 'RAVDESS'
-# name_LSTM_model = 'SAVEE'
-name_LSTM_model = 'Aff-Wild2'
+
+# name_backbone_model = 'face_detect_module/model_files/FER_static_ResNet50_AffectNet.pt'
+# # name_LSTM_model = 'IEMOCAP'
+# # name_LSTM_model = 'CREMA-D'
+# # name_LSTM_model = 'RAMAS'
+# # name_LSTM_model = 'RAVDESS'
+# # name_LSTM_model = 'SAVEE'
+# name_LSTM_model = 'Aff-Wild2'
 
 # torch
 
-pth_backbone_model = ResNet50(7, channels=3)
-pth_backbone_model.load_state_dict(torch.load(name_backbone_model))
-pth_backbone_model.eval()
+# pth_backbone_model = ResNet50(7, channels=3)
+# pth_backbone_model.load_state_dict(torch.load(name_backbone_model))
+# pth_backbone_model.eval()
 
-pth_LSTM_model = LSTMPyTorch()
-pth_LSTM_model.load_state_dict(torch.load('model_files/FER_dinamic_LSTM_{0}.pt'.format(name_LSTM_model)))
-pth_LSTM_model.eval()
+# pth_LSTM_model = LSTMPyTorch()
+# pth_LSTM_model.load_state_dict(torch.load('face_detect_module/model_files/FER_dinamic_LSTM_{0}.pt'.format(name_LSTM_model)))
+# pth_LSTM_model.eval()
 
 
-DICT_EMO = {
-    0: 'Neutral',
-    1: 'Happiness',
-    2: 'Sadness',
-    3: 'Surprise',
-    4: 'Fear',
-    5: 'Disgust',
-    6: 'Anger'
-}
+# DICT_EMO = {
+#     0: 'Neutral',
+#     1: 'Happiness',
+#     2: 'Sadness',
+#     3: 'Surprise',
+#     4: 'Fear',
+#     5: 'Disgust',
+#     6: 'Anger'
+# }
 
 #-----------------------------------------------------------------------#
 #########################################################################
@@ -491,15 +586,17 @@ DICT_EMO = {
 ## test files: # for delete later on...
 # to access the file, please refer to code/Atsuto-T/Music_Selector_Project/Music_Selector_Project/raw_data
 # or you may use any face picture or video file you have
-input_file = 'IMG_0535.mov'  # 'facess.png'  # 'face.tif'  # 'face.jpg'  # 'face.png'  # 'IMG_5221.MOV'  # IMG_0509.MOV  # image_file
 
-# Received from Krystia's UI
-input_file = input_file
-lstm_features = []
+# input_file = 'face_detect_module/model_files/IMG_0535.MOV'  # 'facess.png'  # 'face.tif'  # 'face.jpg'  # 'face.png'  # 'IMG_5221.MOV'  # IMG_0509.MOV  # image_file
 
-input_file = input_file_proc(input_file)  # video version of the photo or just the video input as is
 
-extract_emotion(input_file, pth_backbone_model, lstm_features)
+# # Received from Krystia's UI
+# input_file = input_file
+# lstm_features = []
+
+# input_file = input_file_proc(input_file)  # video version of the photo or just the video input as is
+
+# extract_emotion(input_file, pth_backbone_model, lstm_features)
 
 #-----------------------------------------------------------------------#
 #########################################################################
@@ -507,19 +604,23 @@ extract_emotion(input_file, pth_backbone_model, lstm_features)
 #########################################################################
 #-----------------------------------------------------------------------#
 ###Edited by Atsuto-T###
-def export_emotion():
-    lstm_features = [] #Provided by UI module
-    input_file = 'model_files/IMG_0535.mov'
+def export_emotion(input_file, lstm_features=None):
+
+    if lstm_features is None:
+        lstm_features = []
+
+    input_file = input_file
+    #this input file should be a video file; or an image converted to a video file already.
+
+
     #picture
     pth_backbone_model = ResNet50(7, channels=3)
-    pth_backbone_model.load_state_dict(torch.load('model_files/FER_static_ResNet50_AffectNet.pt'))
+    pth_backbone_model.load_state_dict(torch.load('face_detect_module/model_files/FER_static_ResNet50_AffectNet.pt'))
     pth_backbone_model.eval()
     #video
     pth_LSTM_model = LSTMPyTorch()
-    pth_LSTM_model.load_state_dict(torch.load('model_files/FER_dinamic_LSTM_{0}.pt'.format(name_LSTM_model)))
+    pth_LSTM_model.load_state_dict(torch.load('face_detect_module/model_files/FER_dinamic_LSTM_{0}.pt'.format(name_LSTM_model)))
     pth_LSTM_model.eval()
 
-    input_file = input_file_proc(input_file=input_file) #provided by UI module
-
-    emotion_weight = extract_emotion(input_file=input_file, pth_backbone_model=pth_backbone_model, lstm_features=lstm_features)
+    emotion_weight = extract_emotion(input_file=input_file)
     return emotion_weight
