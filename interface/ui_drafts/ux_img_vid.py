@@ -8,9 +8,9 @@ import os
 import tempfile
 
 
-import instructions
-import regarding_spotify_interact
-import about_us
+from interface import instructions
+from interface import regarding_spotify_interact
+from interface import about_us
 
 #---------------------------------------------------
 #          PAGE CONFIGURATIONS ETC.
