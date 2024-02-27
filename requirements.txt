@@ -7,7 +7,9 @@ requests
 pandas
 datetime
 opencv-python
+
 xdg-utils
+
 
 #########################
 #------------------------
