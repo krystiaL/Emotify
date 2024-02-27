@@ -38,7 +38,7 @@ from alternative_input_preproc import is_image, image_to_video
 # temp_file = tempfile.NamedTemporaryFile()
 # downloads_path = temp_file.name
 
-output_video_path = "/root/code/Atsuto-T/Music_Selector_Project/interface/vid_recs"
+OUTPUT_VIDEO_PATH = os.environ.get("VIDEO_PATH")
 duration = 10
 
 #---------------------------------------------------
@@ -100,9 +100,9 @@ def reset_app():
     st.session_state.clear()
 
     # Remove the saved file
-    if os.path.exists(output_video_path):
-        for file in os.listdir(output_video_path):
-            file_path = os.path.join(output_video_path, file)
+    if os.path.exists(OUTPUT_VIDEO_PATH):
+        for file in os.listdir(OUTPUT_VIDEO_PATH):
+            file_path = os.path.join(OUTPUT_VIDEO_PATH, file)
             if os.path.isfile(file_path):
                 os.remove(file_path)
         st.write("Successful Session Restart")
@@ -236,7 +236,7 @@ with col3:
         byte_image = is_image(user_image)
         #entry point for model input;
         input_file = image_to_video(image=byte_image,
-                                    output_video_path=output_video_path,
+                                    output_video_path=OUTPUT_VIDEO_PATH,
                                     duration_seconds=duration)
 
         if input_file:
