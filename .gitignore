@@ -3,6 +3,8 @@
 token.txt
 playlist_module/__pycache__/
 playlist_module/create_df.py
+face_detect_module/__pycache__/
+interface/__pycache__/
 
 .ipynb_checkpoints/
 .python-version

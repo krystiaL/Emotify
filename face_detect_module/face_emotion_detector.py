@@ -2,6 +2,7 @@
 # to be converted to package later on...
 
 import os
+import tensorflow as tf
 
 import cv2
 import mediapipe as mp #face detector
@@ -538,6 +539,7 @@ def extract_emotion(input_file):
 # if __name__ == '__main__': # To do later on...
 # mp_face_mesh = mp.solutions.face_mesh
 
+
 # name_backbone_model = 'face_detect_module/model_files/FER_static_ResNet50_AffectNet.pt'
 # # name_LSTM_model = 'IEMOCAP'
 # # name_LSTM_model = 'CREMA-D'
@@ -584,7 +586,9 @@ def extract_emotion(input_file):
 ## test files: # for delete later on...
 # to access the file, please refer to code/Atsuto-T/Music_Selector_Project/Music_Selector_Project/raw_data
 # or you may use any face picture or video file you have
+
 # input_file = 'face_detect_module/model_files/IMG_0535.MOV'  # 'facess.png'  # 'face.tif'  # 'face.jpg'  # 'face.png'  # 'IMG_5221.MOV'  # IMG_0509.MOV  # image_file
+
 
 # # Received from Krystia's UI
 # input_file = input_file

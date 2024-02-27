@@ -4,7 +4,9 @@ from spotipy.oauth2 import SpotifyOAuth
 from playlist_module.params import *
 from playlist_module.genre import get_genre
 from sklearn.metrics import mean_squared_error
+
 # from face_detect_module.face_emotion_detector import export_emotion
+
 
 # emotion = {'Sadness': [0.2,1],
 #                     'Surprise': [0.19, 0.2, 0.21, 0.21, 0.2, 0.21, 0.24, 0.23, 0.24, 0.24, 0.24, 0.25, 0.24, 0.22, 0.2,\
@@ -15,6 +17,7 @@ from sklearn.metrics import mean_squared_error
 def process_emotion(emotion):
     '''This function imports emotion_weights from face_detect_module and outputs
     which emotion was dominant in the video clip.'''
+
     import_emotion = emotion
 
     # imported_emotion = {key:len(value) for key,value in import_emotion.items()}
@@ -25,6 +28,7 @@ def process_emotion(emotion):
                 imported_emotion[key] = len(value)
             else:
                 imported_emotion[key] = value
+
     imported_emotion = {key:value/sum(imported_emotion.values()) for key,value in imported_emotion.items()}
 
     emotion_variation = ['Neutral','Happiness','Sadness','Surprise','Fear','Disgust','Anger']
