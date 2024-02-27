@@ -8,7 +8,6 @@ playlist_module/create_df.py
 .python-version
 
 .streamlit
-interface/vid_recs
 interface/ui_drafts
 interface/__pycache__
 #########################
