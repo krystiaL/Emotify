@@ -9,6 +9,7 @@ datetime
 opencv-python
 xdg
 #xdg-utils
+pyarrow==4.0.0
 
 #########################
 #------------------------
