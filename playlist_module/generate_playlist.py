@@ -171,7 +171,8 @@ def generate_playlist(emotion_df, account_name):
 def send_playlist_id(generated_playlist, account_name):
     '''This function returns the url of the generated playlist on Spotify webpage.
     -The url will be fed to UX module.'''
-    playlist_object = generated_playlist #generate_playlist(emotion_df=emotion_df, account_name=account_name)
+    #generate_playlist(emotion_df=emotion_df, account_name=account_name)
+    playlist_object = generated_playlist
     playlist_name = playlist_object[0]
     sp = playlist_object[1]
 
