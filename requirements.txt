@@ -13,4 +13,4 @@ torchvision
 #
 opencv-python-headless
 streamlit
-streamlit_webrtc
+streamlit-webrtc
