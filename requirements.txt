@@ -16,6 +16,7 @@ xdg
 # os
 # cv2
 libgl1
+
 opencv-python-headless
 opencv-contrib-python
 mediapipe
