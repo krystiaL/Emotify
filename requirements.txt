@@ -16,8 +16,7 @@ xdg
 # os
 # cv2
 
-opencv-python-headless
-opencv-contrib-python
+opencv-python
 mediapipe
 numpy
 
