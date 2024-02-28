@@ -114,9 +114,9 @@ def generate_playlist(emotion_df, account_name):
 
     ###Give playlist a title
     if dominant_emotion == 'mood_Calm':
-        playlist_title = random.choice(['Sooth your mind',"Serenity Soundscape",
+        playlist_title = random.choice(['Sooth Your Mind',"Serenity Soundscape",
                                         "Calm Canvas Collection","Peaceful Playlist",
-                                        "Mellow Moments Melodies","Zen Zephyr Zone",
+                                        "Serenade of Solitude","Zen Zephyr Zone",
                                         "Gentle Grooves Gathering","Soothing Soundwaves",
                                         "Harmony Haven","Tranquility Tunes"])
 
@@ -129,7 +129,7 @@ def generate_playlist(emotion_df, account_name):
 
     elif dominant_emotion == 'mood_Happy':
         playlist_title = random.choice(["Joyful Jams","Sunshine Serenade",
-                                        "Smile Sessions","Happy Beats Bonanza",
+                                        "Smile Sessions","Dance of Delight",
                                         "Cheerful Melodies Mix","Positive Vibes Playlist",
                                         "Uplifting Utopia","Ecstatic Euphony",
                                         "Radiant Rhythms","Blissful Beats"])
