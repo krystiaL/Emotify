@@ -1,5 +1,6 @@
 import spotipy
 import pandas as pd
+import random
 from spotipy.oauth2 import SpotifyOAuth
 from playlist_module.params import *
 from playlist_module.genre import get_genre
@@ -110,10 +111,40 @@ def generate_playlist(emotion_df, account_name):
     user_emotion = tailor_object[1]
 
     dominant_emotion = max(user_emotion, key=user_emotion.get)
+
+    ###Give playlist a title
+    if dominant_emotion == 'mood_Calm':
+        playlist_title = random.choice(['Sooth your mind',"Serenity Soundscape",
+                                        "Calm Canvas Collection","Peaceful Playlist",
+                                        "Mellow Moments Melodies","Zen Zephyr Zone",
+                                        "Gentle Grooves Gathering","Soothing Soundwaves",
+                                        "Harmony Haven","Tranquility Tunes"])
+
+    elif dominant_emotion == 'mood_Energetic':
+        playlist_title = random.choice(["High Voltage Hits","Energetic Explosion",
+                                        "Powerhouse Playlist","Adrenaline Anthem Asylum",
+                                        "Vibrant Vitality Vibes","Dynamic Drive",
+                                        "Pulsating Power Tracks","Fired Up Frenzy",
+                                        "Epic Energy Ensemble","Revved-Up Rhythms"])
+
+    elif dominant_emotion == 'mood_Happy':
+        playlist_title = random.choice(["Joyful Jams","Sunshine Serenade",
+                                        "Smile Sessions","Happy Beats Bonanza",
+                                        "Cheerful Melodies Mix","Positive Vibes Playlist",
+                                        "Uplifting Utopia","Ecstatic Euphony",
+                                        "Radiant Rhythms","Blissful Beats"])
+    elif dominant_emotion == 'mood_Sad':
+        playlist_title = random.choice(["Melancholy Melodies","Heartache Harmony",
+                                        "Sorrowful Symphony","Gloomy Groove Gallery",
+                                        "Tearful Tunes","Somber Serenade",
+                                        "Emotional Echoes","Lonely Lamentations",
+                                        "Pensive Playlist","Wistful Waters"])
+
+    ###
     dominant_percentage = int(user_emotion[dominant_emotion] * 100)
 
     # title = f"Calm:{int(user_emotion['mood_Calm']*100)}% Energetic:{int(user_emotion['mood_Energetic']*100)}% Happy:{int(user_emotion['mood_Happy']*100)}% Sad:{int(user_emotion['mood_Sad']*100)}%"
-    title = f"TuneOut: {dominant_emotion}"
+    title = f"TuneOut: {playlist_title}"
 
     new_playlist = sp.user_playlist_create(user=user_id, name=title, public=True,
                                       description=None)
@@ -140,7 +171,7 @@ def generate_playlist(emotion_df, account_name):
 def send_playlist_id(generated_playlist, account_name):
     '''This function returns the url of the generated playlist on Spotify webpage.
     -The url will be fed to UX module.'''
-    playlist_object = generated_playlist#generate_playlist(emotion_df=emotion_df, account_name=account_name)
+    playlist_object = generated_playlist #generate_playlist(emotion_df=emotion_df, account_name=account_name)
     playlist_name = playlist_object[0]
     sp = playlist_object[1]
 
@@ -162,10 +193,3 @@ def send_playlist_id(generated_playlist, account_name):
         print(f"Playlist '{playlist_name}' not found in your account.")
 
     return playlist_url
-
-
-# if __name__=="__main__":
-
-#     # Account_name will be fed from UX module.
-#     # Emotion will be fed from Facial Recognition module.
-#     send_playlist_id(generated_playlist=generate_playlist, account_name=account_name)
