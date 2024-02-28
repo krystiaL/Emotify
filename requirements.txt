@@ -1,15 +1,10 @@
 spotipy
 tensorflow
-streamlit
-streamlit-webrtc
 requests
 pandas
 datetime
-opencv-python
 xdg
-libgl1-mesa-dev
-opencv-python
-opencv-contrib-python
+
 mediapipe
 numpy
 torch
