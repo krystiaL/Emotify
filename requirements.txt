@@ -16,6 +16,7 @@ xdg
 # os
 # cv2
 opencv-python
+opencv-contrib-python
 mediapipe
 numpy
 
