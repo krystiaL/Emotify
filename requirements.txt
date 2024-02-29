@@ -18,7 +18,7 @@ xdg
 libgl1-mesa-dev
 opencv-python
 opencv-contrib-python
-mediapipe
+mediapipe　#version: 0.10.9
 numpy
 
 torch
@@ -26,5 +26,6 @@ torch
 #torch.nn.functional
 pillow
 torchvision
+streamlit-webrtc
 #------------------------
 #########################
