@@ -7,21 +7,23 @@ requests
 pandas
 datetime
 opencv-python
-
-xdg-utils
-
+xdg
+#xdg-utils
 
 #########################
 #------------------------
 # for the face_detect_module
 # os
 # cv2
+libgl1-mesa-dev
+opencv-python
+opencv-contrib-python
 mediapipe
 numpy
 
 torch
-torch.nn
-torch.nn.functional
+#torch.nn
+#torch.nn.functional
 pillow
 torchvision
 streamlit-webrtc
