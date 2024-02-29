@@ -26,5 +26,6 @@ torch
 #torch.nn.functional
 pillow
 torchvision
+streamlit-webrtc
 #------------------------
 #########################

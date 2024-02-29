@@ -1,0 +1,4 @@
+emotion_recognition_model/* filter=lfs diff=lfs merge=lfs -text
+*.h5 filter=lfs diff=lfs merge=lfs -text
+emotion_recognition_model/first_model/my_h5_model_epoch50/variables/variables.data-00000-of-00001 filter=lfs diff=lfs merge=lfs -text
+*.data-00000-of-00001 filter=lfs diff=lfs merge=lfs -text
