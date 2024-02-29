@@ -4,6 +4,7 @@ requests
 pandas
 datetime
 xdg
+sklearn
 
 mediapipe
 numpy
