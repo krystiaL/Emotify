@@ -40,7 +40,7 @@ from interface.alternative_input_preproc import is_image, image_to_video, save_u
 
 #OUTPUT_VIDEO_PATH = os.environ.get("VIDEO_PATH")
 ##Changed above code to run on Streamlit Cloud
-OUTPUT_VIDEO_PATH = st.secrets["VIDEO_PATH"]
+OUTPUT_VIDEO_PATH = "interface/vid_recs"
 
 duration = 10
 
