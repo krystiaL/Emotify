@@ -6,26 +6,24 @@ import streamlit as st
 
 import time
 import os
-import sys
 
-sys.path.append('..')
 # import base64
 # import tempfile
 
 from streamlit_webrtc import webrtc_streamer
 
-import instructions
-import regarding_spotify_interact
-import about_us
+import interface.instructions
+import interface.regarding_spotify_interact
+import interface.about_us
 
-from webcam import VideoRecorder
+from interface.webcam import VideoRecorder
 
 from face_detect_module.face_emotion_detector import extract_emotion
 
 from playlist_module.generate_playlist import process_emotion, tailor_df
 from playlist_module.generate_playlist import generate_playlist, send_playlist_id
 
-from alternative_input_preproc import is_image, image_to_video, save_uploaded_file
+from interface.alternative_input_preproc import is_image, image_to_video, save_uploaded_file
 
 #---------------------------------------------------
 #          PATHS AND OTHER VARIABLES
@@ -192,15 +190,15 @@ with st.sidebar:
     #drop down option for Q&As
 
     if page == "How to generate your playlist?":
-        instructions.instructions_page()
+        interface.instructions.instructions_page()
     if page == "How to add playlist to your Spotify library?":
-        regarding_spotify_interact.spotify_page()
+        interface.regarding_spotify_interact.spotify_page()
     #link selectbox to indiv .py file (==individual page)
     st.subheader("Know more about the creators:")
     about_us_page = st.button("About Us")
     #link page button to the individual .py file (==individual page)
     if about_us_page:
-        about_us.about_us()
+        interface.about_us.about_us()
 
 #------------------------------------
 #      HEADER AND DESCRIPTION

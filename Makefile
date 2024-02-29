@@ -22,7 +22,7 @@ install_requirements:
 # ----------------------------------
 
 streamlit_main_ui:
-	-@streamlit run interface/ui_main.py --server.port 8503
+	-@streamlit run app.py --server.port 8503
 
 # ----------------------------------
 #    LOCAL INSTALL COMMANDS
