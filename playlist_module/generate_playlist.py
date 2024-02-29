@@ -6,15 +6,6 @@ from playlist_module.params import *
 from playlist_module.genre import get_genre
 from sklearn.metrics import mean_squared_error
 
-# from face_detect_module.face_emotion_detector import export_emotion
-
-
-# emotion = {'Sadness': [0.2,1],
-#                     'Surprise': [0.19, 0.2, 0.21, 0.21, 0.2, 0.21, 0.24, 0.23, 0.24, 0.24, 0.24, 0.25, 0.24, 0.22, 0.2,\
-#                         0.24, 0.26, 0.29, 0.27, 0.27, 0.27, 0.25, 0.28, 0.32, 0.36, 0.4, 0.43, 0.44, 0.45, 0.43, 0.42, 0.38, 0.34, 0.31, 0.27, 0.24, 0.23, 0.23],
-#                     'Anger': [0.21,1,1,1,1],
-#                     'Neutral': [0.19,1,1,1,1,1,1,1,1,1,1,1,1]}
-
 def process_emotion(emotion):
     '''This function imports emotion_weights from face_detect_module and outputs
     which emotion was dominant in the video clip.'''

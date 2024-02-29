@@ -38,7 +38,10 @@ from interface.alternative_input_preproc import is_image, image_to_video, save_u
 # temp_file = tempfile.NamedTemporaryFile()
 # downloads_path = temp_file.name
 
-OUTPUT_VIDEO_PATH = os.environ.get("VIDEO_PATH")
+#OUTPUT_VIDEO_PATH = os.environ.get("VIDEO_PATH")
+##Changed above code to run on Streamlit Cloud
+OUTPUT_VIDEO_PATH = st.secrets["VIDEO_PATH"]
+
 duration = 10
 
 #---------------------------------------------------
