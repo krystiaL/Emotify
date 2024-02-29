@@ -6,6 +6,9 @@ import streamlit as st
 
 import time
 import os
+import sys
+
+sys.path.append('..')
 # import base64
 # import tempfile
 
