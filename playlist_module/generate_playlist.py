@@ -143,16 +143,20 @@ def generate_playlist(emotion_df, account_name):
                             client_secret=SPOTIFY_SECRET,
                             redirect_uri=REDIRECT_URI,
                             scope='playlist-modify-public')
-
+    st.session_state["sp_oauth"] = sp_oauth
     ###Added###
     if 'code' not in st.session_state:
         st.title('Spotify Authentication')
         auth_url = sp_oauth.get_authorize_url()
-        st.write(f"[Click here to authenticate with Spotify]({auth_url})")
+        #st.write(f"[Click here to authenticate with Spotify]({auth_url})")
+
+        link_html = " <a target=\"_self\" href=\"{url}\" >{msg}</a> ".format(
+        url=auth_url,msg="Click me to authenticate!")
+        st.markdown(link_html, unsafe_allow_html=True)
 
         auth_code = st.text_input("")
         #st.session_state.code = st.text_input("Enter the code from the callback URL:")
-        print(auth_code)
+
         token_info = sp_oauth.get_access_token(auth_code)
         access_token = token_info['access_token']
         sp = spotipy.Spotify(auth=access_token)
