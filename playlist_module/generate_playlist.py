@@ -168,65 +168,65 @@ def generate_playlist(emotion_df, account_name):
             st.success("Successfully authenticated with Spotify!")
     ###
 
-    user_id = sp.current_user()["id"]
-    tailor_object = emotion_df #tailor_df()
-    user_emotion = tailor_object[1]
+        user_id = sp.current_user()["id"]
+        tailor_object = emotion_df #tailor_df()
+        user_emotion = tailor_object[1]
 
-    dominant_emotion = max(user_emotion, key=user_emotion.get)
+        dominant_emotion = max(user_emotion, key=user_emotion.get)
 
-    ###Give playlist a title
-    if dominant_emotion == 'mood_Calm':
-        playlist_title = random.choice(['Sooth Your Mind',"Serenity Soundscape",
-                                        "Calm Canvas Collection","Peaceful Playlist",
-                                        "Serenade of Solitude","Zen Zephyr Zone",
-                                        "Gentle Grooves Gathering","Soothing Soundwaves",
-                                        "Harmony Haven","Tranquility Tunes"])
+        ###Give playlist a title
+        if dominant_emotion == 'mood_Calm':
+            playlist_title = random.choice(['Sooth Your Mind',"Serenity Soundscape",
+                                            "Calm Canvas Collection","Peaceful Playlist",
+                                            "Serenade of Solitude","Zen Zephyr Zone",
+                                            "Gentle Grooves Gathering","Soothing Soundwaves",
+                                            "Harmony Haven","Tranquility Tunes"])
 
-    elif dominant_emotion == 'mood_Energetic':
-        playlist_title = random.choice(["High Voltage Hits","Energetic Explosion",
-                                        "Powerhouse Playlist","Adrenaline Anthem Asylum",
-                                        "Vibrant Vitality Vibes","Dynamic Drive",
-                                        "Pulsating Power Tracks","Fired Up Frenzy",
-                                        "Epic Energy Ensemble","Revved-Up Rhythms"])
+        elif dominant_emotion == 'mood_Energetic':
+            playlist_title = random.choice(["High Voltage Hits","Energetic Explosion",
+                                            "Powerhouse Playlist","Adrenaline Anthem Asylum",
+                                            "Vibrant Vitality Vibes","Dynamic Drive",
+                                            "Pulsating Power Tracks","Fired Up Frenzy",
+                                            "Epic Energy Ensemble","Revved-Up Rhythms"])
 
-    elif dominant_emotion == 'mood_Happy':
-        playlist_title = random.choice(["Joyful Jams","Sunshine Serenade",
-                                        "Smile Sessions","Dance of Delight",
-                                        "Cheerful Melodies Mix","Positive Vibes Playlist",
-                                        "Uplifting Utopia","Ecstatic Euphony",
-                                        "Radiant Rhythms","Blissful Beats"])
-    elif dominant_emotion == 'mood_Sad':
-        playlist_title = random.choice(["Melancholy Melodies","Heartache Harmony",
-                                        "Sorrowful Symphony","Gloomy Groove Gallery",
-                                        "Tearful Tunes","Somber Serenade",
-                                        "Emotional Echoes","Lonely Lamentations",
-                                        "Pensive Playlist","Wistful Waters"])
+        elif dominant_emotion == 'mood_Happy':
+            playlist_title = random.choice(["Joyful Jams","Sunshine Serenade",
+                                            "Smile Sessions","Dance of Delight",
+                                            "Cheerful Melodies Mix","Positive Vibes Playlist",
+                                            "Uplifting Utopia","Ecstatic Euphony",
+                                            "Radiant Rhythms","Blissful Beats"])
+        elif dominant_emotion == 'mood_Sad':
+            playlist_title = random.choice(["Melancholy Melodies","Heartache Harmony",
+                                            "Sorrowful Symphony","Gloomy Groove Gallery",
+                                            "Tearful Tunes","Somber Serenade",
+                                            "Emotional Echoes","Lonely Lamentations",
+                                            "Pensive Playlist","Wistful Waters"])
 
-    ###
-    dominant_percentage = int(user_emotion[dominant_emotion] * 100)
+        ###
+        dominant_percentage = int(user_emotion[dominant_emotion] * 100)
 
-    # title = f"Calm:{int(user_emotion['mood_Calm']*100)}% Energetic:{int(user_emotion['mood_Energetic']*100)}% Happy:{int(user_emotion['mood_Happy']*100)}% Sad:{int(user_emotion['mood_Sad']*100)}%"
-    title = f"TuneOut: {playlist_title}"
+        # title = f"Calm:{int(user_emotion['mood_Calm']*100)}% Energetic:{int(user_emotion['mood_Energetic']*100)}% Happy:{int(user_emotion['mood_Happy']*100)}% Sad:{int(user_emotion['mood_Sad']*100)}%"
+        title = f"TuneOut: {playlist_title}"
 
-    new_playlist = sp.user_playlist_create(user=user_id, name=title, public=True,
-                                      description=None)
-    new_playlist_id = new_playlist["id"]
+        new_playlist = sp.user_playlist_create(user=user_id, name=title, public=True,
+                                        description=None)
+        new_playlist_id = new_playlist["id"]
 
-    # Randomly select music from tailored df.
-    title_list = list(tailor_object[0].sample(10)['name'])
+        # Randomly select music from tailored df.
+        title_list = list(tailor_object[0].sample(10)['name'])
 
-    uri_list = []
-    for value in range(10):
-        spotify_result = sp.search(q=f"track:{title_list[value]}",type="track", market="US")
-        try:
-            result_uri = spotify_result["tracks"]["items"][0]["uri"]
-        except IndexError:
-            pass
-        else:
-            uri_list.append(result_uri)
+        uri_list = []
+        for value in range(10):
+            spotify_result = sp.search(q=f"track:{title_list[value]}",type="track", market="US")
+            try:
+                result_uri = spotify_result["tracks"]["items"][0]["uri"]
+            except IndexError:
+                pass
+            else:
+                uri_list.append(result_uri)
 
-    sp.user_playlist_add_tracks(user=user_id, playlist_id=new_playlist_id, tracks=uri_list)
-    return [title, sp, title_list, dominant_emotion]
+        sp.user_playlist_add_tracks(user=user_id, playlist_id=new_playlist_id, tracks=uri_list)
+        return [title, sp, title_list, dominant_emotion]
 
 # generate_playlist = generate_playlist(emotion_df=emotion_df, account_name=account_name)
 
