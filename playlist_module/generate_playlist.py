@@ -140,7 +140,7 @@ def generate_playlist(emotion_df, account_name):
 
     #Changed to fit Streamlit Cloud
     ###Added###
-    if 'sp_oauth' not in st.session_state:
+    if 'code' not in st.session_state:
         sp_oauth = SpotifyOAuth(client_id=SPOTIFY_CLIENT_ID,
                                 client_secret=SPOTIFY_SECRET,
                                 redirect_uri=REDIRECT_URI,
