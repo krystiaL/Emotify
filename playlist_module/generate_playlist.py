@@ -1,6 +1,7 @@
 import spotipy
 import pandas as pd
 import random
+import streamlit as st
 from spotipy.oauth2 import SpotifyOAuth
 from playlist_module.params import *
 from playlist_module.genre import get_genre
@@ -76,6 +77,49 @@ def tailor_df(process_emo_out):
 # emotion_df = tailor_df(process_emo_out=process_emo)
 # account_name = "test"
 
+###Edited###
+# def app_get_token(oauth):
+#     try:
+#         token = oauth.get_access_token(st.session_state["code"], as_dict=False, check_cache=False)
+#     # remove cached token saved in directory
+#         os.remove(".cache")
+
+#     except Exception as e:
+#         st.error("An error occurred during token retrieval!")
+#         st.write("The error is as follows:")
+#         st.write(e)
+#     else:
+#         st.session_state["cached_token"] = token
+#     return token
+
+# # get current url (stored as dict)
+# sp = playlist[1]
+# url_params = st.query_params()
+# # attempt sign in with cached token
+# if st.session_state["cached_token"] != "":
+#     pass
+# # if no token, but code in url, get code, parse token, and sign in
+# elif "code" in url_params:
+# # all params stored as lists, see doc for explanation
+#     st.session_state["code"] = url_params["code"][0]
+#     token = app_get_token(oauth=sp)
+#     sp = spotipy.Spotify(auth=token)
+# # otherwise, prompt for redirect
+# else:
+
+#     auth_url = sp.get_autorize_url()
+#     link_html = " <a target=\"_self\" href=\"{url}\" >{msg}</a> ".format(url=auth_url,
+#             msg="Click me to authenticate!")
+
+
+#     if not st.session_state["signed_in"]:
+#         st.write(" ".join(["No tokens found for this session. Please log in by",
+#         "clicking the link below."]))
+#         st.markdown(link_html, unsafe_allow_html=True)
+
+###Edit end###
+
+
 def generate_playlist(emotion_df, account_name):
     '''This function will access Spotify API and add playlist to the developer's account.
     -The songs will be chosen randomly from the provided df.
@@ -89,13 +133,19 @@ def generate_playlist(emotion_df, account_name):
             client_id=SPOTIFY_CLIENT_ID,
             client_secret=SPOTIFY_SECRET,
             show_dialog=True,
-            cache_path=TOKEN_TXT,##
+            #cache_path="token.txt",
             username=SPOTIFY_USERNAME,
         )
     )
 
-    # access_token = sp.get_access_token()
-    # refresh_token = sp.get_refresh_token()
+    ###Added###
+    if 'code' not in st.session_state:
+        st.title('Spotify Authentication')
+        auth_url = sp.get_authorize_url()
+        st.write(f"[Click here to authenticate with Spotify]({auth_url})")
+
+        st.session_state.code = st.text_input("Enter the code from the callback URL:")
+    ###
 
     user_id = sp.current_user()["id"]
     tailor_object = emotion_df #tailor_df()
