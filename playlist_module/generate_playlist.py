@@ -139,23 +139,22 @@ def generate_playlist(emotion_df, account_name):
     # )
 
     #Changed to fit Streamlit Cloud
-
-
     ###Added###
-    if 'code' not in st.session_state:
+    if 'sp_oauth' not in st.session_state:
         sp_oauth = SpotifyOAuth(client_id=SPOTIFY_CLIENT_ID,
-                            client_secret=SPOTIFY_SECRET,
-                            redirect_uri=REDIRECT_URI,
-                            username=SPOTIFY_USERNAME,
-                            scope='playlist-modify-public')
+                                client_secret=SPOTIFY_SECRET,
+                                redirect_uri=REDIRECT_URI,
+                                username=SPOTIFY_USERNAME,
+                                scope='playlist-modify-public')
         st.session_state["sp_oauth"] = sp_oauth
+        st.markdown("""<h1 style="font-size: 20px; text-align: center; color: #faaa0b">
+        'Spotify Authentication'
+        </h1>""",unsafe_allow_html=True)
 
-
-        st.title('Spotify Authentication')
         auth_url = sp_oauth.get_authorize_url()
         st.write(f"[Click here to authenticate with Spotify]({auth_url})")
 
-        auth_code = st.text_input("")
+        auth_code = st.text_input("Please enter the code below:")
 
         # Retrieve access token using the authorization code
         token_info = sp_oauth.get_access_token(auth_code)
@@ -163,18 +162,15 @@ def generate_playlist(emotion_df, account_name):
 
         # Use the access token to create a Spotify object
         sp = spotipy.Spotify(auth=access_token)
-
-        # Now you can use 'sp' to interact with the Spotify API
         st.success("Successfully authenticated with Spotify!")
-    ###
 
     user_id = sp.current_user()["id"]
-    tailor_object = emotion_df #tailor_df()
+    tailor_object = emotion_df
     user_emotion = tailor_object[1]
 
     dominant_emotion = max(user_emotion, key=user_emotion.get)
 
-    ###Give playlist a title
+    #Give playlist a title
     if dominant_emotion == 'mood_Calm':
         playlist_title = random.choice(['Sooth Your Mind',"Serenity Soundscape",
                                         "Calm Canvas Collection","Peaceful Playlist",
@@ -202,7 +198,6 @@ def generate_playlist(emotion_df, account_name):
                                         "Emotional Echoes","Lonely Lamentations",
                                         "Pensive Playlist","Wistful Waters"])
 
-    ###
     dominant_percentage = int(user_emotion[dominant_emotion] * 100)
 
     # title = f"Calm:{int(user_emotion['mood_Calm']*100)}% Energetic:{int(user_emotion['mood_Energetic']*100)}% Happy:{int(user_emotion['mood_Happy']*100)}% Sad:{int(user_emotion['mood_Sad']*100)}%"
