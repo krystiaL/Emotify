@@ -139,27 +139,33 @@ def generate_playlist(emotion_df, account_name):
     # )
 
     #Changed to fit Streamlit Cloud
-    sp_oauth = SpotifyOAuth(client_id=SPOTIFY_CLIENT_ID,
+
+
+    ###Added###
+    if 'code' not in st.session_state:
+        sp_oauth = SpotifyOAuth(client_id=SPOTIFY_CLIENT_ID,
                             client_secret=SPOTIFY_SECRET,
                             redirect_uri=REDIRECT_URI,
                             scope='playlist-modify-public')
-    st.session_state["sp_oauth"] = sp_oauth
-    ###Added###
-    if 'code' not in st.session_state:
+        st.session_state["sp_oauth"] = sp_oauth
+
+
         st.title('Spotify Authentication')
         auth_url = sp_oauth.get_authorize_url()
-        #st.write(f"[Click here to authenticate with Spotify]({auth_url})")
-
-        link_html = " <a target=\"_self\" href=\"{url}\" >{msg}</a> ".format(
-        url=auth_url,msg="Click me to authenticate!")
-        st.markdown(link_html, unsafe_allow_html=True)
+        st.write(f"[Click here to authenticate with Spotify]({auth_url})")
 
         auth_code = st.text_input("")
-        #st.session_state.code = st.text_input("Enter the code from the callback URL:")
 
-        token_info = sp_oauth.get_access_token(auth_code)
-        access_token = token_info['access_token']
-        sp = spotipy.Spotify(auth=access_token)
+        if auth_code:
+        # Retrieve access token using the authorization code
+            token_info = sp_oauth.get_access_token(auth_code)
+            access_token = token_info['access_token']
+
+        # Use the access token to create a Spotify object
+            sp = spotipy.Spotify(auth=access_token)
+
+        # Now you can use 'sp' to interact with the Spotify API
+            st.success("Successfully authenticated with Spotify!")
     ###
 
     user_id = sp.current_user()["id"]
