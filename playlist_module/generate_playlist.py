@@ -126,25 +126,34 @@ def generate_playlist(emotion_df, account_name):
     -ID of the playlist will be fed to send_playlist_id function
     -title_list will be fed to UX module.'''
 
-    sp = spotipy.Spotify(
-        auth_manager=SpotifyOAuth(
-            scope="playlist-modify-public",
-            redirect_uri=REDIRECT_URI,
-            client_id=SPOTIFY_CLIENT_ID,
-            client_secret=SPOTIFY_SECRET,
-            show_dialog=True,
-            #cache_path="token.txt",
-            username=SPOTIFY_USERNAME,
-        )
-    )
+    # sp = spotipy.Spotify(
+    #     auth_manager=SpotifyOAuth(
+    #         scope="playlist-modify-public",
+    #         redirect_uri=REDIRECT_URI,
+    #         client_id=SPOTIFY_CLIENT_ID,
+    #         client_secret=SPOTIFY_SECRET,
+    #         show_dialog=True,
+    #         cache_path="token.txt",
+    #         username=SPOTIFY_USERNAME,
+    #     )
+    # )
+
+    #Changed to fit Streamlit Cloud
+    sp_oauth = SpotifyOAuth(client_id=SPOTIFY_CLIENT_ID,
+                            client_secret=SPOTIFY_SECRET,
+                            redirect_uri=REDIRECT_URI,
+                            scope='playlist-modify-public')
 
     ###Added###
     if 'code' not in st.session_state:
         st.title('Spotify Authentication')
-        auth_url = sp.get_authorize_url()
+        auth_url = sp_oauth.get_authorize_url()
         st.write(f"[Click here to authenticate with Spotify]({auth_url})")
 
         st.session_state.code = st.text_input("Enter the code from the callback URL:")
+        token_info = sp_oauth.get_access_token(st.session_state.code)
+        access_token = token_info['access_token']
+        sp = spotipy.Spotify(auth=access_token)
     ###
 
     user_id = sp.current_user()["id"]
