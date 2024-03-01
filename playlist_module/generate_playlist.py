@@ -150,7 +150,7 @@ def generate_playlist(emotion_df, account_name):
         auth_url = sp_oauth.get_authorize_url()
         st.write(f"[Click here to authenticate with Spotify]({auth_url})")
 
-        auth_code = st.text_input("Enter the code",placeholder=st.session_state.placeholder)
+        auth_code = st.text_input("")
         #st.session_state.code = st.text_input("Enter the code from the callback URL:")
         print(auth_code)
         token_info = sp_oauth.get_access_token(auth_code)
