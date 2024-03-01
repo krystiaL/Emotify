@@ -8,7 +8,7 @@ class VideoRecorder:
         self.recording = False
         self.frame_count = 0
         self.frames = []
-        self.path = os.environ.get("VIDEO_PATH")
+        self.path = st.secrets['VIDEO_PATH']
 
     def recv(self, frame):
         if self.recording:
