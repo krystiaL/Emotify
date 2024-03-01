@@ -6,6 +6,7 @@ import streamlit as st
 
 import time
 import os
+import spotipy
 
 # import base64
 # import tempfile
@@ -328,6 +329,47 @@ with col3:
                     # to improve: change into progress bar/ specify state after merging other functions
                     time.sleep(3)  # simulate playlist generation time
                     playlist, playlist_url = gen_playlist_ui(emotion)
+###Edited###
+                    def app_get_token(oauth):
+                        try:
+                            token = oauth.get_access_token(st.session_state["code"], as_dict=False, check_cache=False)
+                        # remove cached token saved in directory
+                            os.remove(".cache")
+
+                        except Exception as e:
+                            st.error("An error occurred during token retrieval!")
+                            st.write("The error is as follows:")
+                            st.write(e)
+                        else:
+                            st.session_state["cached_token"] = token
+                        return token
+
+                    # get current url (stored as dict)
+                    sp = playlist[1]
+                    url_params = st.experimental_get_query_params()
+                    # attempt sign in with cached token
+                    if st.session_state["cached_token"] != "":
+                        pass
+                    # if no token, but code in url, get code, parse token, and sign in
+                    elif "code" in url_params:
+                    # all params stored as lists, see doc for explanation
+                        st.session_state["code"] = url_params["code"][0]
+                        token = app_get_token(oauth=sp)
+                        sp = spotipy.Spotify(auth=token)
+                    # otherwise, prompt for redirect
+                    else:
+
+                        auth_url = sp.get_autorize_url()
+                        link_html = " <a target=\"_self\" href=\"{url}\" >{msg}</a> ".format(url=auth_url,
+                                msg="Click me to authenticate!")
+
+
+                        if not st.session_state["signed_in"]:
+                            st.write(" ".join(["No tokens found for this session. Please log in by",
+                            "clicking the link below."]))
+                            st.markdown(link_html, unsafe_allow_html=True)
+
+###Edit end###
                     show_playlist(playlist=playlist, playlist_url=playlist_url)
 
 
