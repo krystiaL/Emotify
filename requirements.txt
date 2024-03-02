@@ -10,8 +10,8 @@ numpy
 torch
 pillow
 torchvision
+torchsummary
 streamlit
 streamlit-webrtc
 opencv-contrib-python==4.9.0.80
 opencv-python==4.9.0.80
-
