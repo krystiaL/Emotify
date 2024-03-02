@@ -1,31 +1,17 @@
 spotipy
-# os
 tensorflow
-streamlit
-streamlit-webrtc
 requests
 pandas
 datetime
-opencv-python
 xdg
-#xdg-utils
-
-#########################
-#------------------------
-# for the face_detect_module
-# os
-# cv2
-libgl1-mesa-dev
-opencv-python
-opencv-contrib-python
+scikit-learn
 mediapipe
 numpy
-
 torch
-#torch.nn
-#torch.nn.functional
 pillow
 torchvision
+streamlit
 streamlit-webrtc
-#------------------------
-#########################
+opencv-contrib-python==4.9.0.80
+opencv-python==4.9.0.80
+
