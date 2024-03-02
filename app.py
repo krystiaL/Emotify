@@ -61,59 +61,57 @@ def gen_playlist_ui(mood_dict):
 
     return playlist, playlist_url
 
-def show_playlist(playlist, playlist_url):
+def show_playlist(playlist_url):
     #shows the embedded playlist preview from spotify
-    #------------emotions-------------------
-    user_emotion = {
-        'mood_Calm': "Serene",
-        'mood_Energetic': "Dynamic",
-        'mood_Happy': "Blissful",
-        'mood_Sad': "Melancholic"
-        }
 #-------------------------------------------
-    dominant_emotion = playlist[3]
-    emotion_title = user_emotion.get(dominant_emotion, "Unknown Emotion")
-    st.subheader(f"Here's a {emotion_title} playlist for you!")
+    st.subheader(f"Here's your playlist!")
     #to do: change identified emotion to emotion returned from emotion_detect function
 
     #embedd to spotify interface; to do: check if there are other ways to do this
-    st.write("Add this playlist to your Spotify library!")
+    st.write("Click \"...\" to redirect to your Spotify library!")
 
-    st.markdown(f'<iframe src={playlist_url} width="500" height="400"></iframe>',
-    unsafe_allow_html=True)
+    # Create HTML to display the iframe with centered alignment
+    embedd_playlist = f'''
+    <div style="display: flex; justify-content: center;">
+        <iframe src="{playlist_url}" width="850" height="400"></iframe>
+    </div>
+    '''
+
+    # Display the HTML using st.markdown()
+    st.markdown(embedd_playlist, unsafe_allow_html=True)
 
     st.write(" ")
 
-    col_regen, col_blank1, col_reset = st.columns([2,1,3])
+    # col_regen, col_blank1, col_reset = st.columns([2,1,3])
 
-    with col_regen:
-        #regenerate playlist using the same image
-        if st.button("🔂 Regenerate Playlist",
-                     key="regenerate",
-                     use_container_width=True):
-            regen_playlist()
+    # with col_regen:
+    #     #regenerate playlist using the same image
+    #     if st.button("🔂 Regenerate Playlist",
+    #                  key="regenerate",
+    #                  use_container_width=True):
+    #         regen_playlist()
 
-    with col_reset:
-        #reset entire playlist generation process
-        if st.button('⌛ Reset Entire Generation Process',
-                     key='reset',
-                     use_container_width=True):
-            # revert session state variables to none
-            st.session_state["playlist"] = None
-            st.session_state["playlist_url"] = None
-            st.session_state["emotion"] = None
-            st.session_state["input_file"] = None
-            st.session_state["byte_image"] = None
-            reset_app()
-            clear_vidrec_folder()
+    # with col_reset:
+    #     #reset entire playlist generation process
+    #     if st.button('⌛ Reset Entire Generation Process',
+    #                  key='reset',
+    #                  use_container_width=True):
+    #         # revert session state variables to none
+    #         st.session_state["playlist"] = None
+    #         st.session_state["playlist_url"] = None
+    #         st.session_state["emotion"] = None
+    #         st.session_state["input_file"] = None
+    #         st.session_state["byte_image"] = None
+    #         reset_app()
+    #         clear_vidrec_folder()
         #---------------------------------------------------
 #           APP RESET AND REGEN FUNCTIONS
 #---------------------------------------------------
 
-def regen_playlist():
-    # Clear Streamlit cache
-    st.session_state.clear()
-    st.write("generated a new playlist")
+# def regen_playlist():
+#     # Clear Streamlit cache
+#     st.session_state.clear()
+#     st.write("generated a new playlist")
 
 def reset_img():
     # Reset uploaded image
