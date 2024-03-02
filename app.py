@@ -2,27 +2,27 @@
 #          LIBRARY AND MODULE IMPORTS
 #---------------------------------------------------
 import streamlit as st
-import threading
+# import threading
 import time
 import os
 from PIL import Image
 import base64
 # import tempfile
 
-from streamlit_webrtc import webrtc_streamer, WebRtcMode, WebRtcStreamerContext
+# from streamlit_webrtc import webrtc_streamer, WebRtcMode, WebRtcStreamerContext
 
-import instructions
-import regarding_spotify_interact
-import about_us
+from interface import instructions
+from interface import regarding_spotify_interact
+from interface import about_us
 
-from webcam import VideoRecorder
+# from webcam import VideoRecorder
 
 from face_detect_module.face_emotion_detector import extract_emotion
 
 from playlist_module.generate_playlist import process_emotion, tailor_df
 from playlist_module.generate_playlist import generate_playlist, send_playlist_id
 
-from alternative_input_preproc import is_image, image_to_video, save_uploaded_file
+from interface.alternative_input_preproc import is_image, image_to_video, save_uploaded_file
 
 #---------------------------------------------------
 #          PATHS AND OTHER VARIABLES
@@ -40,13 +40,13 @@ from alternative_input_preproc import is_image, image_to_video, save_uploaded_fi
 OUTPUT_VIDEO_PATH = os.environ.get("VIDEO_PATH")
 duration = 10
 
-lock = threading.Lock()
-img_container = {"img": None}
+# lock = threading.Lock()
+# img_container = {"img": None}
 
-MEDIA_STREAM_CONSTRAINTS = {
-    "video": True,  # Capture video
-    "audio": False,  # Disable audio
-}
+# MEDIA_STREAM_CONSTRAINTS = {
+#     "video": True,  # Capture video
+#     "audio": False,  # Disable audio
+# }
 
 emotion_emoji = {
     'Neutral': "https://giphy.com/embed/WtUJnCSEWWCAdHb90r/giphy.gif",
@@ -199,19 +199,19 @@ def reset_app():
 #           CAMERA CAPTURE FUNCTIONS
 #---------------------------------------------------
 #function to flip the camera image
-def flip_image(image):
-    return image.rotate(180)
+# def flip_image(image):
+#     return image.rotate(180)
 
 
 #---------------------------------------------------
 #           VIDEO RECORDING FUNCTIONS
 #---------------------------------------------------
-def video_frame_callback(frame):
-    img = frame.to_ndarray(format="bgr24")
-    with lock:
-        img_container["img"] = img
+# def video_frame_callback(frame):
+#     img = frame.to_ndarray(format="bgr24")
+#     with lock:
+#         img_container["img"] = img
 
-    return frame
+#     return frame
 
 #---------------------------------------------------
 #           FORM SUBMIT FUNCTIONS
@@ -281,13 +281,13 @@ st.subheader(" ")
 #    CREATE TABS SEPARATING IMAGE AND VIDEO INPUT INTERFACE
 #--------------------------------------------------------------
 
-image_tab, video_tab = st.tabs(["📸 Face Capture", "🎥 Face Recording"])
+# image_tab, video_tab = st.tabs(["📸 Face Capture", "🎥 Face Recording"])
 
 #--------------------##----------------------
 #    SPLIT TAB LAYOUT FOR CAMERA CAPTURE
 #--------------------------------------------
 
-col1, col2,  col3 = image_tab.columns([2.8, 0.3, 3])
+col1, col2,  col3 = st.columns([2.8, 0.3, 3])
 col1.write(" ") #line break
 
 #--------------------------------------------
@@ -419,17 +419,17 @@ with col3:
 #    SPLIT TAB LAYOUT FOR VIDEO RECORDING
 #--------------------------------------------
 
-col1_vid, col2_vid, col3_vid = video_tab.columns([2.8, 0.3, 3])
-col1.write(" ") #line break
+# col1_vid, col2_vid, col3_vid = video_tab.columns([2.8, 0.3, 3])
+# col1.write(" ") #line break
 
 #-------------------##-----------------------
 #       VIDEO TAB, COLUMN 1 ELEMENTS
 #--------------------------------------------
-with col1_vid:
-    #might need to add a container
+# with col1_vid:
+#     #might need to add a container
 
-    st.subheader("Upload a face recording!")
-    #user input panel subheader
+#     st.subheader("Upload a face recording!")
+#     #user input panel subheader
 
     #------------Camera Recoding-------------#
     st.write("Choose a pre-recorded video of your face showing your current emotion and upload it below!")
@@ -488,41 +488,41 @@ with col1_vid:
     # progress_bar.progress(0)
 
     #------------video file submission-------------#
-    with st.form("video_input"):
-        uploaded_video = st.file_uploader("or upload a video showing your face:", type=["mp4", "avi"])
-        st.session_state["uploaded_video"] = None
+#     with st.form("video_input"):
+#         uploaded_video = st.file_uploader("or upload a video showing your face:", type=["mp4", "avi"])
+#         st.session_state["uploaded_video"] = None
 
-        vid_col_submit, vid_col_blank, vid_col_reset = st.columns([2, 2, 1.2])
+#         vid_col_submit, vid_col_blank, vid_col_reset = st.columns([2, 2, 1.2])
 
-        #submit button as trigger for emotion extraction to playlist generation
-        vid_submit_button = vid_col_submit.form_submit_button("▶ Generate Playlist",
-                                                      args=[uploaded_video],
-                                                      )
+#         #submit button as trigger for emotion extraction to playlist generation
+#         vid_submit_button = vid_col_submit.form_submit_button("▶ Generate Playlist",
+#                                                       args=[uploaded_video],
+#                                                       )
 
-        #buttton to clear all video/s created or uploaded
-        vid_reset_button = vid_col_reset.form_submit_button("↺ Reset",
-                                                        args=[image_captured, uploaded_image],
-                                                        on_click=reset_img_form,
-                                                        use_container_width=True)
-
-
-    if vid_submit_button:
-        if uploaded_video:
-            uploaded_vid_file = save_uploaded_file(uploaded_video)
-            st.write("Reading emotion from uploaded video...")
-
-        else:
-            st.write("No input detected 😵")
-            st.write("Please choose one of the designated image extraction methods above (🎥 or 📥). ")
-            #default message when submit button was pressed but no file was fed.
-
-    if vid_reset_button:
-            st.write("✅ Reset media objects successful")
-            st.write("Record a webcam face stream 🎥 or upload a video 📥 and click \" ▶️ Generate Playlist \".")
+#         #buttton to clear all video/s created or uploaded
+#         vid_reset_button = vid_col_reset.form_submit_button("↺ Reset",
+#                                                         args=[image_captured, uploaded_image],
+#                                                         on_click=reset_img_form,
+#                                                         use_container_width=True)
 
 
-col1_vid.caption("Application Accuracy: <80.56%>")
-#to do: change metric to appropriate score result
+#     if vid_submit_button:
+#         if uploaded_video:
+#             uploaded_vid_file = save_uploaded_file(uploaded_video)
+#             st.write("Reading emotion from uploaded video...")
+
+#         else:
+#             st.write("No input detected 😵")
+#             st.write("Please choose one of the designated image extraction methods above (🎥 or 📥). ")
+#             #default message when submit button was pressed but no file was fed.
+
+#     if vid_reset_button:
+#             st.write("✅ Reset media objects successful")
+#             st.write("Record a webcam face stream 🎥 or upload a video 📥 and click \" ▶️ Generate Playlist \".")
+
+
+# col1_vid.caption("Application Accuracy: <80.56%>")
+# #to do: change metric to appropriate score result
 
 #--------------------------------------------
 #       VIDEO TAB, COLUMN 3 ELEMENTS
