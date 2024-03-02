@@ -2,21 +2,27 @@
 #          LIBRARY AND MODULE IMPORTS
 #---------------------------------------------------
 import streamlit as st
+import threading
 import time
 import os
-from streamlit_webrtc import webrtc_streamer
-from interface import instructions
-from interface import regarding_spotify_interact
-from interface import about_us
+from PIL import Image
+import base64
+# import tempfile
 
-from interface.webcam import VideoRecorder
+from streamlit_webrtc import webrtc_streamer, WebRtcMode, WebRtcStreamerContext
 
-from face_detect_module.face_emotion_detector_DIY import extract_emotion
+import instructions
+import regarding_spotify_interact
+import about_us
+
+from webcam import VideoRecorder
+
+from face_detect_module.face_emotion_detector import extract_emotion
 
 from playlist_module.generate_playlist import process_emotion, tailor_df
 from playlist_module.generate_playlist import generate_playlist, send_playlist_id
 
-from interface.alternative_input_preproc import is_image, image_to_video, save_uploaded_file
+from alternative_input_preproc import is_image, image_to_video, save_uploaded_file
 
 #---------------------------------------------------
 #          PATHS AND OTHER VARIABLES
@@ -31,11 +37,37 @@ from interface.alternative_input_preproc import is_image, image_to_video, save_u
 # temp_file = tempfile.NamedTemporaryFile()
 # downloads_path = temp_file.name
 
-#OUTPUT_VIDEO_PATH = os.environ.get("VIDEO_PATH")
-##Changed above code to run on Streamlit Cloud
-OUTPUT_VIDEO_PATH = st.secrets["VIDEO_PATH"]
-
+OUTPUT_VIDEO_PATH = os.environ.get("VIDEO_PATH")
 duration = 10
+
+lock = threading.Lock()
+img_container = {"img": None}
+
+MEDIA_STREAM_CONSTRAINTS = {
+    "video": True,  # Capture video
+    "audio": False,  # Disable audio
+}
+
+emotion_emoji = {
+    'Neutral': "https://giphy.com/embed/WtUJnCSEWWCAdHb90r/giphy.gif",
+    'Happiness': "https://media.giphy.com/media/DIgT73ICZOOZqNCNs7/giphy.gif",
+    'Sadness': "https://giphy.com/embed/jTwn7gnUDBLf84cKdn/giphy.gif",
+    'Surprise': "https://giphy.com/embed/JIFYGMimGZhbxMh6J5/giphy.gif",
+    'Fear': "https://giphy.com/embed/cURhR2qbi437KbcuuP/giphy.gif",
+    'Disgust': "https://giphy.com/embed/0xslhbGyYaBudd8Ke9/giphy.gif",
+    'Anger': "https://giphy.com/embed/On3RvLqXiRIxW/giphy.gif"
+    }
+
+#---------------------------------------------------
+#gif embedding:
+
+#Neutral: <iframe src="https://giphy.com/embed/WtUJnCSEWWCAdHb90r" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/SportsManias-emoji-sportsmanias-animated-emojis-WtUJnCSEWWCAdHb90r">via GIPHY</a></p>
+#Happy: <iframe src="https://giphy.com/embed/DIgT73ICZOOZqNCNs7" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/smile-smiling-smiley-DIgT73ICZOOZqNCNs7">via GIPHY</a></p>
+#Sadness: <iframe src="https://giphy.com/embed/jTwn7gnUDBLf84cKdn" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/sad-face-cute-grumpy-jTwn7gnUDBLf84cKdn">via GIPHY</a></p>
+#Surprise: <iframe src="https://giphy.com/embed/JIFYGMimGZhbxMh6J5" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/SAZKA-loterie-lotery-sportkamicek-JIFYGMimGZhbxMh6J5">via GIPHY</a></p>
+#Fear: <iframe src="https://giphy.com/embed/cURhR2qbi437KbcuuP" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/smiley-peur-cURhR2qbi437KbcuuP">via GIPHY</a></p>
+#Disgust: <iframe src="https://giphy.com/embed/0xslhbGyYaBudd8Ke9" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/vomit-barf-spew-0xslhbGyYaBudd8Ke9">via GIPHY</a></p>
+#Anger: <iframe src="https://giphy.com/embed/On3RvLqXiRIxW" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/fire-mad-anger-On3RvLqXiRIxW">via GIPHY</a></p>
 
 #---------------------------------------------------
 #            PLAYLIST GENERATION FUNCTION
@@ -132,7 +164,6 @@ def reset_img():
     )
 
 
-
 def clear_vidrec_folder():
     #check of the vid_recs folder exist
     if os.path.exists(OUTPUT_VIDEO_PATH):
@@ -164,6 +195,23 @@ def reset_app():
     # Reload the entire page
     st.experimental_rerun()
 
+#---------------------------------------------------
+#           CAMERA CAPTURE FUNCTIONS
+#---------------------------------------------------
+#function to flip the camera image
+def flip_image(image):
+    return image.rotate(180)
+
+
+#---------------------------------------------------
+#           VIDEO RECORDING FUNCTIONS
+#---------------------------------------------------
+def video_frame_callback(frame):
+    img = frame.to_ndarray(format="bgr24")
+    with lock:
+        img_container["img"] = img
+
+    return frame
 
 #---------------------------------------------------
 #           FORM SUBMIT FUNCTIONS
@@ -176,6 +224,7 @@ def reset_img_form(image_captured, uploaded_image):
 #          PAGE CONFIGURATIONS ETC.
 #---------------------------------------------------
 
+#this is seen in the tab bar of the webpage
 st.set_page_config(page_title="<Music Selector Name>", page_icon=":musical_note:", layout="wide")
 
 #----------------------------------
@@ -364,6 +413,7 @@ with col3:
         Just chillin' for now...
         </h1>
         """, unsafe_allow_html=True)
+
 
 #--------------------##----------------------
 #    SPLIT TAB LAYOUT FOR VIDEO RECORDING
