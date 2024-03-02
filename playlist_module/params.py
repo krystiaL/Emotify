@@ -14,7 +14,7 @@ SPOTIFY_CLIENT_ID = st.secrets["SPOTIFY_CLIENT_ID"]
 SPOTIFY_SECRET = st.secrets["SPOTIFY_SECRET"]
 SPOTIFY_USERNAME = st.secrets["SPOTIFY_USERNAME"]
 REDIRECT_URI = st.secrets["REDIRECT_URI"]
-#ACCOUNT_NAME = st.secrets["ACCOUNT_NAME"]
+ACCOUNT_NAME = st.secrets["ACCOUNT_NAME"]
 
 if not all([SPOTIFY_CLIENT_ID, SPOTIFY_SECRET, SPOTIFY_USERNAME, REDIRECT_URI]):
     raise ValueError("One or more required environment variables are not set.")
