@@ -553,33 +553,33 @@ with col3_vid:
     #                     playlist, playlist_url = gen_playlist_ui(emotion)
     #                     show_playlist(playlist_url=playlist_url)
 
-    if uploaded_video:
+    # if uploaded_video:
 
-        input_file_upload = uploaded_vid_file
+    #     input_file_upload = uploaded_vid_file
 
-        if input_file_upload:
-            st.subheader(" ")
-            with st.spinner("Starting playlist generation..."):
-                time.sleep(2)
-                emotion = extract_emotion(input_file=input_file_upload)
+    #     if input_file_upload:
+    #         st.subheader(" ")
+    #         with st.spinner("Starting playlist generation..."):
+    #             time.sleep(2)
+    #             emotion = extract_emotion(input_file=input_file_upload)
 
-                if emotion:
-                    emo_key = next(iter(emotion[0]))
-                    st.write(f"Emotion Extracted: {emo_key}")
+    #             if emotion:
+    #                 emo_key = next(iter(emotion[0]))
+    #                 st.write(f"Emotion Extracted: {emo_key}")
 
-                #playlist generation function
-                    with st.spinner("Transforming Emotions into Melodies..."):
-                        # to improve: change into progress bar/ specify state after merging other functions
-                        time.sleep(3)  # simulate playlist generation time
-                        playlist, playlist_url = gen_playlist_ui(emotion)
-                        show_playlist(playlist=playlist, playlist_url=playlist_url)
-    else:
-        st.subheader(" ")
-        st.image("interface/images/Playlist-amico (1).png")
-        #image attribute: <a href="https://storyset.com/app">App illustrations by Storyset</a>
+    #             #playlist generation function
+    #                 with st.spinner("Transforming Emotions into Melodies..."):
+    #                     # to improve: change into progress bar/ specify state after merging other functions
+    #                     time.sleep(3)  # simulate playlist generation time
+    #                     playlist, playlist_url = gen_playlist_ui(emotion)
+    #                     show_playlist(playlist=playlist, playlist_url=playlist_url)
+    # else:
+    #     st.subheader(" ")
+    #     st.image("interface/images/Playlist-amico (1).png")
+    #     #image attribute: <a href="https://storyset.com/app">App illustrations by Storyset</a>
 
-        st.markdown("""
-        <h1 style="font-size: 20px; text-align: center; color: #faaa0b">
-        Just chillin' for now...
-        </h1>
-        """, unsafe_allow_html=True)
+    #     st.markdown("""
+    #     <h1 style="font-size: 20px; text-align: center; color: #faaa0b">
+    #     Just chillin' for now...
+    #     </h1>
+    #     """, unsafe_allow_html=True)
