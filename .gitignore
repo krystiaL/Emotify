@@ -8,3 +8,4 @@ interface/__pycache__/
 .python-version
 .streamlit
 interface/ui_drafts
+emotion_recognition_model
