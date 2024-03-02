@@ -647,24 +647,3 @@ def extract_emotion(input_file):
 #|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||#
 #########################################################################
 #-----------------------------------------------------------------------#
-###Edited by Atsuto-T###
-# def export_emotion(input_file, lstm_features=None):
-
-#     if lstm_features is None:
-#         lstm_features = []
-
-#     input_file = input_file
-#     #this input file should be a video file; or an image converted to a video file already.
-
-
-#     #picture
-#     pth_backbone_model = ResNet50(7, channels=3)
-#     pth_backbone_model.load_state_dict(torch.load('face_detect_module/model_files/FER_static_ResNet50_AffectNet.pt'))
-#     pth_backbone_model.eval()
-#     #video
-#     pth_LSTM_model = LSTMPyTorch()
-#     pth_LSTM_model.load_state_dict(torch.load('face_detect_module/model_files/FER_dinamic_LSTM_{0}.pt'.format(name_LSTM_model)))
-#     pth_LSTM_model.eval()
-
-#     emotion_weight = extract_emotion(input_file=input_file)
-#     return emotion_weight
