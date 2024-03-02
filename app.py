@@ -2,19 +2,9 @@
 #          LIBRARY AND MODULE IMPORTS
 #---------------------------------------------------
 import streamlit as st
-
 import time
 import os
-<<<<<<< HEAD:app.py
-=======
-import spotipy
-
-# import base64
-# import tempfile
->>>>>>> bec922bd01ca4e2c4122bd9308d7a5f4e6aaee11:interface/ui_main.py
-
 from streamlit_webrtc import webrtc_streamer
-
 import interface.instructions
 import interface.regarding_spotify_interact
 import interface.about_us
