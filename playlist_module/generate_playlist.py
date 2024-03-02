@@ -6,7 +6,6 @@ from spotipy.oauth2 import SpotifyOAuth
 from playlist_module.params import *
 from sklearn.metrics import mean_squared_error
 
-
 def process_emotion(emotion):
     '''This function imports emotion_weights from face_detect_module and outputs
     which emotion was dominant in the video clip.'''
