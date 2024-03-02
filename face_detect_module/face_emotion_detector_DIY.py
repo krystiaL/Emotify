@@ -432,7 +432,7 @@ def extract_emotion(input_file):
     # summary(pth_backbone_model, (3, 224, 224))
 
     #store model file path
-    model_path = "face_detect_module/model_files/vgg_512.h5"
+    model_path = "face_detect_module/model_files/DIY_1st.h5"
 
     #Load trained weights into the model (DIY model)
     DIY_model = keras.models.load_model(model_path, custom_objects={'BatchNormalization': tf.keras.layers.BatchNormalization, 'f1_score': f1_score})
@@ -647,24 +647,3 @@ def extract_emotion(input_file):
 #|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||#
 #########################################################################
 #-----------------------------------------------------------------------#
-###Edited by Atsuto-T###
-def export_emotion(input_file, lstm_features=None):
-
-    if lstm_features is None:
-        lstm_features = []
-
-    input_file = input_file
-    #this input file should be a video file; or an image converted to a video file already.
-
-
-    #picture
-    pth_backbone_model = ResNet50(7, channels=3)
-    pth_backbone_model.load_state_dict(torch.load('face_detect_module/model_files/FER_static_ResNet50_AffectNet.pt'))
-    pth_backbone_model.eval()
-    #video
-    pth_LSTM_model = LSTMPyTorch()
-    pth_LSTM_model.load_state_dict(torch.load('face_detect_module/model_files/FER_dinamic_LSTM_{0}.pt'.format(name_LSTM_model)))
-    pth_LSTM_model.eval()
-
-    emotion_weight = extract_emotion(input_file=input_file)
-    return emotion_weight

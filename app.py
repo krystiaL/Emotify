@@ -2,24 +2,16 @@
 #          LIBRARY AND MODULE IMPORTS
 #---------------------------------------------------
 import streamlit as st
-# import numpy as np
-
 import time
 import os
-import spotipy
-
-# import base64
-# import tempfile
-
 from streamlit_webrtc import webrtc_streamer
-
 import interface.instructions
 import interface.regarding_spotify_interact
 import interface.about_us
 
 from interface.webcam import VideoRecorder
 
-from face_detect_module.face_emotion_detector import extract_emotion
+from face_detect_module.face_emotion_detector_DIY import extract_emotion
 
 from playlist_module.generate_playlist import process_emotion, tailor_df
 from playlist_module.generate_playlist import generate_playlist, send_playlist_id
