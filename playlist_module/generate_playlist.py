@@ -11,8 +11,6 @@ def process_emotion(emotion):
     which emotion was dominant in the video clip.'''
 
     import_emotion = emotion
-
-    # imported_emotion = {key:len(value) for key,value in import_emotion.items()}
     imported_emotion = {}
     for dictionary in import_emotion:
         for key, value in dictionary.items():
@@ -39,14 +37,12 @@ def process_emotion(emotion):
 
     return dominant_emotion,user_emotion
 
-# process_emo = process_emotion(emotion=emotion)
-
 def tailor_df(process_emo_out):
     '''This function takes emotion input from facial recognition
     and outputs a dataframe tailored for that emotion'''
 
     df = pd.read_csv('raw_data/new_df_labeled.csv')
-    user_emotion = process_emo_out[1] #process_emotion()[1]
+    user_emotion = process_emo_out[1]
     emotion_target = user_emotion.values()
 
     df['target_distance'] = 0.00
@@ -56,68 +52,7 @@ def tailor_df(process_emo_out):
     mood_df = df.sort_values('target_distance').head(50)
     print(mood_df['name'].head())
 
-    #Select genres that user likes
-    # user_genre = get_genre()
-
-    # def check_genre(list,set=user_genre):
-    #     boolean_list=[]
-    #     for element in list:
-    #         if not element:
-    #             boolean_list.append(element in set)
-    #     if sum(boolean_list) >= 1:
-    #         return True
-
-    # df = df[df['track_genre_split'].apply(check_genre)]
-
-    # print(df.shape)
-
     return mood_df,user_emotion
-
-# emotion_df = tailor_df(process_emo_out=process_emo)
-# account_name = "test"
-
-###Edited###
-# def app_get_token(oauth):
-#     try:
-#         token = oauth.get_access_token(st.session_state["code"], as_dict=False, check_cache=False)
-#     # remove cached token saved in directory
-#         os.remove(".cache")
-
-#     except Exception as e:
-#         st.error("An error occurred during token retrieval!")
-#         st.write("The error is as follows:")
-#         st.write(e)
-#     else:
-#         st.session_state["cached_token"] = token
-#     return token
-
-# # get current url (stored as dict)
-# sp = playlist[1]
-# url_params = st.query_params()
-# # attempt sign in with cached token
-# if st.session_state["cached_token"] != "":
-#     pass
-# # if no token, but code in url, get code, parse token, and sign in
-# elif "code" in url_params:
-# # all params stored as lists, see doc for explanation
-#     st.session_state["code"] = url_params["code"][0]
-#     token = app_get_token(oauth=sp)
-#     sp = spotipy.Spotify(auth=token)
-# # otherwise, prompt for redirect
-# else:
-
-#     auth_url = sp.get_autorize_url()
-#     link_html = " <a target=\"_self\" href=\"{url}\" >{msg}</a> ".format(url=auth_url,
-#             msg="Click me to authenticate!")
-
-
-#     if not st.session_state["signed_in"]:
-#         st.write(" ".join(["No tokens found for this session. Please log in by",
-#         "clicking the link below."]))
-#         st.markdown(link_html, unsafe_allow_html=True)
-
-###Edit end###
-
 
 def generate_playlist(emotion_df, account_name):
     '''This function will access Spotify API and add playlist to the developer's account.
@@ -125,20 +60,6 @@ def generate_playlist(emotion_df, account_name):
     -ID of the playlist will be fed to send_playlist_id function
     -title_list will be fed to UX module.'''
 
-    # sp = spotipy.Spotify(
-    #     auth_manager=SpotifyOAuth(
-    #         scope="playlist-modify-public",
-    #         redirect_uri=REDIRECT_URI,
-    #         client_id=SPOTIFY_CLIENT_ID,
-    #         client_secret=SPOTIFY_SECRET,
-    #         show_dialog=True,
-    #         cache_path="token.txt",
-    #         username=SPOTIFY_USERNAME,
-    #     )
-    # )
-
-    #Changed to fit Streamlit Cloud
-    ###Added###
     if 'code' not in st.session_state:
         sp_oauth = SpotifyOAuth(client_id=SPOTIFY_CLIENT_ID,
                                 client_secret=SPOTIFY_SECRET,
@@ -173,8 +94,8 @@ def generate_playlist(emotion_df, account_name):
     if dominant_emotion == 'mood_Calm':
         playlist_title = random.choice(['Sooth Your Mind',"Serenity Soundscape",
                                         "Calm Canvas Collection","Peaceful Playlist",
-                                        "Serenade of Solitude","Zen Zephyr Zone",
-                                        "Gentle Grooves Gathering","Soothing Soundwaves",
+                                        "Calm the Storm Within","Melodies of Peace",
+                                        "Embrace Serenity","Soothing Soundwaves",
                                         "Harmony Haven","Tranquility Tunes"])
 
     elif dominant_emotion == 'mood_Energetic':
@@ -198,8 +119,6 @@ def generate_playlist(emotion_df, account_name):
                                         "Pensive Playlist","Wistful Waters"])
 
     dominant_percentage = int(user_emotion[dominant_emotion] * 100)
-
-    # title = f"Calm:{int(user_emotion['mood_Calm']*100)}% Energetic:{int(user_emotion['mood_Energetic']*100)}% Happy:{int(user_emotion['mood_Happy']*100)}% Sad:{int(user_emotion['mood_Sad']*100)}%"
     title = f"TuneOut: {playlist_title}"
 
     new_playlist = sp.user_playlist_create(user=user_id, name=title, public=True,
@@ -227,7 +146,7 @@ def generate_playlist(emotion_df, account_name):
 def send_playlist_id(generated_playlist, account_name):
     '''This function returns the url of the generated playlist on Spotify webpage.
     -The url will be fed to UX module.'''
-    #generate_playlist(emotion_df=emotion_df, account_name=account_name)
+
     playlist_object = generated_playlist
     playlist_name = playlist_object[0]
     sp = playlist_object[1]
