@@ -2,20 +2,13 @@
 #          LIBRARY AND MODULE IMPORTS
 #---------------------------------------------------
 import streamlit as st
-# import threading
 import time
 import os
-from PIL import Image
-import base64
-# import tempfile
-
-# from streamlit_webrtc import webrtc_streamer, WebRtcMode, WebRtcStreamerContext
 
 from interface import instructions
 from interface import regarding_spotify_interact
 from interface import about_us
-
-# from webcam import VideoRecorder
+from interface import reset_instruction
 
 from face_detect_module.face_emotion_detector_DIY import extract_emotion
 
@@ -28,26 +21,9 @@ from interface.alternative_input_preproc import is_image, image_to_video, save_u
 #          PATHS AND OTHER VARIABLES
 #---------------------------------------------------
 
-# Get the path of the downloads folder
-# downloads_path = os.path.join(os.path.expanduser("~"), "Downloads")
-
-# # # Set the downloads_path as an environment variable
-# # os.environ["DOWNLOADS_PATH"] = downloads_path
-
-# temp_file = tempfile.NamedTemporaryFile()
-# downloads_path = temp_file.name
-
 #OUTPUT_VIDEO_PATH = os.environ.get("VIDEO_PATH")
 OUTPUT_VIDEO_PATH = st.secret['VIDEO_PATH']
 duration = 10
-
-# lock = threading.Lock()
-# img_container = {"img": None}
-
-# MEDIA_STREAM_CONSTRAINTS = {
-#     "video": True,  # Capture video
-#     "audio": False,  # Disable audio
-# }
 
 emotion_emoji = {
     'Neutral': "https://giphy.com/embed/WtUJnCSEWWCAdHb90r/giphy.gif",
@@ -59,8 +35,7 @@ emotion_emoji = {
     'Anger': "https://giphy.com/embed/On3RvLqXiRIxW/giphy.gif"
     }
 
-#---------------------------------------------------
-#gif embedding:
+#-------------------# gif embeddings #--------------------
 
 #Neutral: <iframe src="https://giphy.com/embed/WtUJnCSEWWCAdHb90r" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/SportsManias-emoji-sportsmanias-animated-emojis-WtUJnCSEWWCAdHb90r">via GIPHY</a></p>
 #Happy: <iframe src="https://giphy.com/embed/DIgT73ICZOOZqNCNs7" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/smile-smiling-smiley-DIgT73ICZOOZqNCNs7">via GIPHY</a></p>
@@ -76,7 +51,6 @@ emotion_emoji = {
 
 def gen_playlist_ui(mood_dict):
     #This function takes the extracted emotion dictionary and uses the generate_playlist
-    #module for the playlist generation process of the application
 
     emotion_out = process_emotion(mood_dict)
     #variable storing the dominant emotion of the file;
@@ -95,8 +69,7 @@ def gen_playlist_ui(mood_dict):
     return playlist, playlist_url
 
 def show_playlist(playlist_url):
-    #shows the embedded playlist preview from spotify
-#-------------------------------------------
+    #This function shows the embedded playlist preview from spotify
     st.subheader(f"Here's your playlist!")
     #to do: change identified emotion to emotion returned from emotion_detect function
 
@@ -115,38 +88,14 @@ def show_playlist(playlist_url):
 
     st.write(" ")
 
-    # col_regen, col_blank1, col_reset = st.columns([2,1,3])
-
-    # with col_regen:
-    #     #regenerate playlist using the same image
-    #     if st.button("🔂 Regenerate Playlist",
-    #                  key="regenerate",
-    #                  use_container_width=True):
-    #         regen_playlist()
-
-    # with col_reset:
-    #     #reset entire playlist generation process
-    #     if st.button('⌛ Reset Entire Generation Process',
-    #                  key='reset',
-    #                  use_container_width=True):
-    #         # revert session state variables to none
-    #         st.session_state["playlist"] = None
-    #         st.session_state["playlist_url"] = None
-    #         st.session_state["emotion"] = None
-    #         st.session_state["input_file"] = None
-    #         st.session_state["byte_image"] = None
-    #         reset_app()
-    #         clear_vidrec_folder()
-        #---------------------------------------------------
+#---------------------------------------------------
 #           APP RESET AND REGEN FUNCTIONS
 #---------------------------------------------------
 
-# def regen_playlist():
-#     # Clear Streamlit cache
-#     st.session_state.clear()
-#     st.write("generated a new playlist")
-
 def reset_img():
+    #This function clears the session states for image upload and image capture
+    #This also clears all saved image files and reloads the application to reset the UI
+
     # Reset uploaded image
     st.session_state["image_captured"] = None
     st.session_state["uploaded_image"] = None
@@ -186,15 +135,6 @@ def clear_uploads_folder():
         # Optionally, remove the uploads folder itself
         os.rmdir("uploads")
 
-def reset_app():
-    # clear image uploaded/taken and reset session states
-    reset_img()
-
-    #clear all session states
-    st.session_state.clear()
-
-    # Reload the entire page
-    st.experimental_rerun()
 
 #---------------------------------------------------
 #           CAMERA CAPTURE FUNCTIONS
@@ -202,17 +142,6 @@ def reset_app():
 #function to flip the camera image
 # def flip_image(image):
 #     return image.rotate(180)
-
-
-#---------------------------------------------------
-#           VIDEO RECORDING FUNCTIONS
-#---------------------------------------------------
-# def video_frame_callback(frame):
-#     img = frame.to_ndarray(format="bgr24")
-#     with lock:
-#         img_container["img"] = img
-
-#     return frame
 
 #---------------------------------------------------
 #           FORM SUBMIT FUNCTIONS
@@ -229,7 +158,7 @@ def reset_img_form(image_captured, uploaded_image):
 st.set_page_config(page_title="<Music Selector Name>", page_icon=":musical_note:", layout="wide")
 
 #----------------------------------
-#       SIDEBAR
+#            SIDEBAR
 #----------------------------------
 
 with st.sidebar:
@@ -238,14 +167,18 @@ with st.sidebar:
     #attribute: <a href="https://storyset.com/app">App illustrations by Storyset</a>
 
     st.subheader("For questions about application usage:")
-    page = st.selectbox("choose a query", ["How to use this application?",
-                                            "Is the playlist saved immediately in Spotify library?",
+    page = st.selectbox("frequently asked questions:", ["-choose a query-"
+                                            "How to use this application?",
+                                            "How to reset the application?",
+                                            "Can I save the playlist to my Spotify library?",
                                                  ])
     #drop down option for Q&As
 
     if page == "How to use this application?":
         instructions.instructions_page()
-    if page == "How to add playlist to your Spotify library?":
+    if page == "How to reset the application?":
+        reset_instruction.how_to_reset()
+    if page == "Can I save the playlist to my Spotify library?":
         regarding_spotify_interact.spotify_page()
     #link selectbox to indiv .py file (==individual page)
     st.subheader("Know more about the creators:")
@@ -278,12 +211,6 @@ st.markdown("""
     """, unsafe_allow_html=True)
 st.subheader(" ")
 
-#--------------------------------------------------------------
-#    CREATE TABS SEPARATING IMAGE AND VIDEO INPUT INTERFACE
-#--------------------------------------------------------------
-
-# image_tab, video_tab = st.tabs(["📸 Face Capture", "🎥 Face Recording"])
-
 #--------------------##----------------------
 #    SPLIT TAB LAYOUT FOR CAMERA CAPTURE
 #--------------------------------------------
@@ -292,7 +219,7 @@ col1, col2,  col3 = st.columns([2.8, 0.3, 3])
 col1.write(" ") #line break
 
 #--------------------------------------------
-#       IMAGE TAB, COLUMN 1 ELEMENTS
+#       IMAGE INPUT, COLUMN 1 ELEMENTS
 #--------------------------------------------
 
 with col1:
@@ -349,7 +276,7 @@ col1.caption("Application Accuracy: <80.56%>")
 #to do: change metric to appropriate score result
 
 #--------------------------------------------
-#       IMAGE TAB, COLUMN 3 ELEMENTS
+#       IMAGE INPUT, COLUMN 3 ELEMENTS
 #--------------------------------------------
 with col3:
     st.subheader(" ")
@@ -398,7 +325,6 @@ with col3:
             #playlist generation function
                 st.subheader(" ")
                 with st.spinner("Transforming Emotions into Melodies..."):
-                    # to improve: change into progress bar/ specify state after merging other functions
                     time.sleep(1)  # simulate playlist generation time
                     playlist, playlist_url = gen_playlist_ui(emotion)
                     show_playlist(playlist_url=playlist_url)
@@ -414,173 +340,3 @@ with col3:
         Just chillin' for now...
         </h1>
         """, unsafe_allow_html=True)
-
-
-# #--------------------##----------------------
-# #    SPLIT TAB LAYOUT FOR VIDEO RECORDING
-# #--------------------------------------------
-
-# # col1_vid, col2_vid, col3_vid = video_tab.columns([2.8, 0.3, 3])
-# # col1.write(" ") #line break
-
-# #-------------------##-----------------------
-# #       VIDEO TAB, COLUMN 1 ELEMENTS
-# #--------------------------------------------
-# # with col1_vid:
-# #     #might need to add a container
-
-# #     st.subheader("Upload a face recording!")
-# #     #user input panel subheader
-
-#     #------------Camera Recoding-------------#
-#     st.write("Choose a pre-recorded video of your face showing your current emotion and upload it below!")
-
-#     #initialize video recording
-#     # video_recorder = VideoRecorder()
-
-#     # video_recorder = VideoRecorder()
-
-#     # ctx = webrtc_streamer(key="sendonly-video",
-#     #                     video_frame_callback=video_recorder.recv,
-#     #                     video_processor_factory=lambda: video_recorder)
-#     # #to do: check ctx object if its returning an openable video
-#     # # >>> modify webcam.py module
-
-#     # #create start and stop buttons in seprate colums
-#     # start = st.button('🔴 Start Face Recording',
-#     #                                use_container_width=True)
-#     # stop = st.button('🟢 Stop Face Recording',
-#     #                               use_container_width=True)
-
-#     # #progress bar to show start and stop of video recording
-#     # progress_bar = st.progress(0)
-
-#     #--------------------------------------#
-#     #            RECORDING
-#     #--------------------------------------#
-#     # while ctx.state.playing:
-#     #     with lock:
-#     #         img = img_container["img"]
-#     #     if img is None:
-#     #         continue
-
-#     #define video recording variable
-#     # video_cap = None
-
-#     # if start:
-#     #     video_recorder.start_recording()
-#     #     st.write("🎥 Recording in Session...")
-
-#     # if stop:
-#     #     video_file_path = video_recorder.stop_recording()
-#     #     if video_file_path:
-#     #         st.write("💾 Recording Saved!")  # Indicate successful saving
-#     #     else:
-#     #         st.write("Recording is not started!")  # Indicate no recording started
-
-#     # while True:
-#     #     if video_recorder.recording:
-#     #         time.sleep(1)
-#     #         progress_bar.progress(video_recorder.frame_count / 30)
-#     #     else:
-#     #         break
-
-#     # # Reset the progress bar
-#     # progress_bar.progress(0)
-
-#     #------------video file submission-------------#
-# #     with st.form("video_input"):
-# #         uploaded_video = st.file_uploader("or upload a video showing your face:", type=["mp4", "avi"])
-# #         st.session_state["uploaded_video"] = None
-
-# #         vid_col_submit, vid_col_blank, vid_col_reset = st.columns([2, 2, 1.2])
-
-# #         #submit button as trigger for emotion extraction to playlist generation
-# #         vid_submit_button = vid_col_submit.form_submit_button("▶ Generate Playlist",
-# #                                                       args=[uploaded_video],
-# #                                                       )
-
-# #         #buttton to clear all video/s created or uploaded
-# #         vid_reset_button = vid_col_reset.form_submit_button("↺ Reset",
-# #                                                         args=[image_captured, uploaded_image],
-# #                                                         on_click=reset_img_form,
-# #                                                         use_container_width=True)
-
-
-# #     if vid_submit_button:
-# #         if uploaded_video:
-# #             uploaded_vid_file = save_uploaded_file(uploaded_video)
-# #             st.write("Reading emotion from uploaded video...")
-
-# #         else:
-# #             st.write("No input detected 😵")
-# #             st.write("Please choose one of the designated image extraction methods above (🎥 or 📥). ")
-# #             #default message when submit button was pressed but no file was fed.
-
-# #     if vid_reset_button:
-# #             st.write("✅ Reset media objects successful")
-# #             st.write("Record a webcam face stream 🎥 or upload a video 📥 and click \" ▶️ Generate Playlist \".")
-
-
-# # col1_vid.caption("Application Accuracy: <80.56%>")
-# # #to do: change metric to appropriate score result
-
-# #--------------------------------------------
-# #       VIDEO TAB, COLUMN 3 ELEMENTS
-# #--------------------------------------------
-# # Display generated playlist
-# # with col3_vid:
-# #     st.subheader(" ")
-# # Display generated playlist
-#     # if video_cap:
-
-#     #     input_file = video_cap
-
-#     #     if input_file:
-#     #         st.subheader(" ")
-#     #         with st.spinner("Reading emotion from webcam recording..."):
-#     #             time.sleep(2)
-#     #             emotion = extract_emotion(input_file=input_file)
-
-#     #             if emotion:
-#     #                 emo_key = next(iter(emotion[0]))
-#     #                 st.write(f"Emotion Extracted: {emo_key}")
-
-
-#     #             #playlist generation function
-#     #                 with st.spinner("Transforming Emotions into Melodies..."):
-#     #                     # to improve: change into progress bar/ specify state after merging other functions
-#     #                     time.sleep(3)  # simulate playlist generation time
-#     #                     playlist, playlist_url = gen_playlist_ui(emotion)
-#     #                     show_playlist(playlist_url=playlist_url)
-
-#     # if uploaded_video:
-
-#     #     input_file_upload = uploaded_vid_file
-
-#     #     if input_file_upload:
-#     #         st.subheader(" ")
-#     #         with st.spinner("Starting playlist generation..."):
-#     #             time.sleep(2)
-#     #             emotion = extract_emotion(input_file=input_file_upload)
-
-#     #             if emotion:
-#     #                 emo_key = next(iter(emotion[0]))
-#     #                 st.write(f"Emotion Extracted: {emo_key}")
-
-#     #             #playlist generation function
-#     #                 with st.spinner("Transforming Emotions into Melodies..."):
-#     #                     # to improve: change into progress bar/ specify state after merging other functions
-#     #                     time.sleep(3)  # simulate playlist generation time
-#     #                     playlist, playlist_url = gen_playlist_ui(emotion)
-#     #                     show_playlist(playlist=playlist, playlist_url=playlist_url)
-#     # else:
-#     #     st.subheader(" ")
-#     #     st.image("interface/images/Playlist-amico (1).png")
-#     #     #image attribute: <a href="https://storyset.com/app">App illustrations by Storyset</a>
-
-#     #     st.markdown("""
-#     #     <h1 style="font-size: 20px; text-align: center; color: #faaa0b">
-#     #     Just chillin' for now...
-#     #     </h1>
-#     #     """, unsafe_allow_html=True)
