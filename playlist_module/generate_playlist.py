@@ -4,7 +4,6 @@ import random
 import streamlit as st
 from spotipy.oauth2 import SpotifyOAuth
 from playlist_module.params import *
-from playlist_module.genre import get_genre
 from sklearn.metrics import mean_squared_error
 
 def process_emotion(emotion):
