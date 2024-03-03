@@ -38,7 +38,7 @@ from interface.alternative_input_preproc import is_image, image_to_video, save_u
 # downloads_path = temp_file.name
 
 #OUTPUT_VIDEO_PATH = os.environ.get("VIDEO_PATH")
-OUTPUT_VIDEO_PATH = st.secret['VIDEO_PATH']
+OUTPUT_VIDEO_PATH = st.secrets['VIDEO_PATH']
 duration = 10
 
 # lock = threading.Lock()
