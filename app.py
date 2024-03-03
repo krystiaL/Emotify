@@ -224,18 +224,22 @@ col1.write(" ") #line break
 
 with col1:
 
-    st.subheader("Take a selfie!")
+    st.subheader("Give us a selfie!")
     #user input panel subheader
 
     #--------------Camera Image---------------#
     with st.form("image_input"):
         #form submission for image input
 
-        image_captured = st.camera_input("Take a picture of your face showing your current emotion")
+        image_captured = st.camera_input("image capture",
+                                         help="Make sure that your face is visible before clicking on \" Take photo \".",
+                                         label_visibility="hidden")
         # camera widget; will return a jpeg file once image is taken.
         st.session_state["image_captured"] = None
 
-        uploaded_image = st.file_uploader("or upload an image of your face:", type=["png", "jpeg", "jpg"])
+        uploaded_image = st.file_uploader("image upload",
+                                          type=["png", "jpeg", "jpg"],
+                                          label_visibility="hidden")
         #image_upload function using file_uploader widget
         st.session_state["upload_image"] = None
 
