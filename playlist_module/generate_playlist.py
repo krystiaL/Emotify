@@ -43,11 +43,17 @@ def tailor_df(process_emo_out):
 
     df = pd.read_csv('raw_data/new_df_labeled.csv')
     user_emotion = process_emo_out[1]
+    dominant_emotion = process_emo_out[0]
     emotion_target = user_emotion.values()
 
     df['target_distance'] = 0.00
     for x in range(df.shape[0]):
         df.loc[x,'target_distance'] = float(mean_squared_error(df[['mood_Calm', 'mood_Energetic', 'mood_Happy', 'mood_Sad']].iloc[x],list(emotion_target)))
+
+    if dominant_emotion=='mood_Calm' or 'mood_Sad':
+        df = df[df['valence']<=0.5]
+    elif dominant_emotion=='mood_Energetic' or 'mood_Happy':
+        df = df[df['valence']>0.5]
 
     mood_df = df.sort_values('target_distance').head(50)
     print(mood_df['name'].head())
