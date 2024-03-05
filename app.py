@@ -167,7 +167,7 @@ with st.sidebar:
     #attribute: <a href="https://storyset.com/app">App illustrations by Storyset</a>
 
     st.subheader("For questions about application usage:")
-    page = st.selectbox("frequently asked questions:", ["-choose a query-"
+    page = st.selectbox("frequently asked questions:", ["-choose a query-",
                                             "How to use this application?",
                                             "How to reset the application?",
                                             "Can I save the playlist to my Spotify library?",
