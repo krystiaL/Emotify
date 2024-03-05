@@ -26,13 +26,13 @@ OUTPUT_VIDEO_PATH = st.secrets['VIDEO_PATH']
 duration = 10
 
 emotion_emoji = {
-    'Neutral': "https://giphy.com/embed/WtUJnCSEWWCAdHb90r/giphy.gif",
+    'Neutral': "https://media.giphy.com/media/WtUJnCSEWWCAdHb90r/giphy.gif",
     'Happiness': "https://media.giphy.com/media/DIgT73ICZOOZqNCNs7/giphy.gif",
-    'Sadness': "https://giphy.com/embed/jTwn7gnUDBLf84cKdn/giphy.gif",
-    'Surprise': "https://giphy.com/embed/JIFYGMimGZhbxMh6J5/giphy.gif",
-    'Fear': "https://giphy.com/embed/cURhR2qbi437KbcuuP/giphy.gif",
-    'Disgust': "https://giphy.com/embed/0xslhbGyYaBudd8Ke9/giphy.gif",
-    'Anger': "https://giphy.com/embed/On3RvLqXiRIxW/giphy.gif"
+    'Sadness': "https://media.giphy.com/media/11xVhnKOKtAj5e/giphy.gif",
+    'Surprise': "https://media.giphy.com/media/JIFYGMimGZhbxMh6J5/giphy.gif",
+    'Fear': "https://media.giphy.com/media/cURhR2qbi437KbcuuP/giphy.gif",
+    'Disgust': "https://media.giphy.com/media/0xslhbGyYaBudd8Ke9/giphy.gif",
+    'Anger': "https://media.giphy.com/media/On3RvLqXiRIxW/giphy.gif"
     }
 
 #-------------------# gif embeddings #--------------------
