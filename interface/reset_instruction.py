@@ -12,4 +12,8 @@ def how_to_reset():
     reset_img.image("interface/images/reset_icon.png")
 
     for step, instruction in reset.items():
-        st.write(f"Step {step}: {instruction}")
+        st.markdown(f"""
+                    <h1 style="font-size: 15px; text-align: left">
+                    Step {step}: {instruction}
+                    </h1>
+                    """, unsafe_allow_html=True)
