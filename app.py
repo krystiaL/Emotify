@@ -155,23 +155,27 @@ def reset_img_form(image_captured, uploaded_image):
 #---------------------------------------------------
 
 #this is seen in the tab bar of the webpage
-st.set_page_config(page_title="<Music Selector Name>", page_icon=":musical_note:", layout="wide")
+# st.set_page_config(page_title="<Music Selector Name>", page_icon=":musical_note:", layout="wide")
+## from the above:
+st.set_page_config(page_title="Emotify", page_icon=":musical_note:", layout="wide")
 
 #----------------------------------
 #            SIDEBAR
 #----------------------------------
 
 with st.sidebar:
-    st.title("About <Music Selector>") #change to official name
+    st.title("About Emotify") #change to official name  ## from <Music Selector>
     st.image("interface/images/Music-cuate.png")
     #attribute: <a href="https://storyset.com/app">App illustrations by Storyset</a>
 
-    st.subheader("For questions about application usage:")
-    page = st.selectbox("frequently asked questions:", ["-choose a query-",
-                                            "How to use this application?",
-                                            "How to reset the application?",
-                                            "Can I save the playlist to my Spotify library?",
-                                                 ])
+    st.subheader("Frequently asked questions::")
+    page = st.selectbox("",
+                            ["-choose a query-",
+                            "How to use this application?",
+                            "How to reset the application?",
+                            "Can I save the playlist to my Spotify library?",
+                            ]
+                        )
     #drop down option for Q&As
 
     if page == "How to use this application?":
@@ -276,7 +280,7 @@ with col1:
             st.write("Take a photo 📸 or upload an image 📥 and click \" ▶️ Generate Playlist \".")
 
 
-col1.caption("Application Accuracy: <80.56%>")
+## col1.caption("Application Accuracy: <80.56%>")
 #to do: change metric to appropriate score result
 
 #--------------------------------------------
