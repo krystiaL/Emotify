@@ -432,7 +432,8 @@ def extract_emotion(input_file):
     # summary(pth_backbone_model, (3, 224, 224))
 
     #store model file path
-    model_path = "face_detect_module/model_files/DIY_1st.h5"
+    # model_path = "face_detect_module/model_files/DIY_1st.h5"
+    model_path = "face_detect_module/face_emotion_detector_DIY.py"
 
     #Load trained weights into the model (DIY model)
     DIY_model = keras.models.load_model(model_path, custom_objects={'BatchNormalization': tf.keras.layers.BatchNormalization, 'f1_score': f1_score})

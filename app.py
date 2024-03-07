@@ -164,7 +164,7 @@ st.set_page_config(page_title="Emotify", page_icon=":musical_note:", layout="wid
 #----------------------------------
 
 with st.sidebar:
-    st.title("About Emotify") #change to official name  ## from <Music Selector>
+    st.title("Emotify") #change to official name  ## from <Music Selector>
     st.image("interface/images/Music-cuate.png")
     #attribute: <a href="https://storyset.com/app">App illustrations by Storyset</a>
 
@@ -228,7 +228,7 @@ col1.write(" ") #line break
 
 with col1:
 
-    st.subheader("Give us a selfie!")
+    st.subheader("Load a selfie!")
     #user input panel subheader
 
     #--------------Camera Image---------------#
