@@ -192,8 +192,8 @@ with st.sidebar:
 #------------------------------------
 #custom title page using html for bigger font size
 st.markdown("""
-<h1 style="font-size: 80px; color: #E9FBFF; text-align: center; font-family: Trebuchet MS">
-Music Selector Project &#9835
+<h1 style="font-size: 80px; text-align: center; font-family: Trebuchet MS">
+Emotify &#9835
 </h1>
 """, unsafe_allow_html=True) #official name still hasn't been decided
 
