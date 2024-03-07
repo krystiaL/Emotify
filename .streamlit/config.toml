@@ -1,0 +1,9 @@
+# Set the theme to "dark"
+theme = "dark"
+
+# Customize the colors for the "dark" theme
+[theme]
+base="dark"
+primaryColor="#ffbf27"
+backgroundColor="#1a506b"
+secondaryBackgroundColor="#153548"
