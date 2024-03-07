@@ -162,7 +162,7 @@ st.set_page_config(page_title="<Music Selector Name>", page_icon=":musical_note:
 #----------------------------------
 
 with st.sidebar:
-    st.title("About <Music Selector>") #change to official name
+    st.title("About Emotify") #change to official name
     st.image("interface/images/Music-cuate.png")
     #attribute: <a href="https://storyset.com/app">App illustrations by Storyset</a>
 
