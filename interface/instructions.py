@@ -15,7 +15,6 @@ def instructions_page():
     #step 2
     step2_blank1, step2_img, step2_blank2 = st.columns([1, 2, 1])
 
-    st.subheader(" ")
     step2_img.image("interface/images/click_generate.png")
     st.markdown(f"""
                     <h1 style="font-size: 15px; text-align: center">
@@ -26,8 +25,7 @@ def instructions_page():
     #step 3
     step3_blank1, step3_img, step3_blank2 = st.columns([1, 2, 1])
 
-    st.title(" ")
-    st.subheader(" ")
+
     step3_img.image("interface/images/emoji_icons.png")
     st.markdown(f"""
                     <h1 style="font-size: 15px; text-align: center">
@@ -38,9 +36,6 @@ def instructions_page():
     #step 4
     step4_blank1, step4_img, step4_blank2 = st.columns([1, 2, 1])
 
-    st.title(" ")
-    st.title(" ")
-    st.subheader(" ")
     step4_img.image("interface/images/processing_icon.png")
     st.markdown(f"""
                     <h1 style="font-size: 15px; text-align: center">
@@ -51,9 +46,6 @@ def instructions_page():
     #step 5
     step5_blank1, step5_img, step5_blank2 = st.columns([1, 2, 1])
 
-    st.title(" ")
-    st.title(" ")
-    st.subheader(" ")
     step5_img.image("interface/images/musical_notes_icon.png")
     st.markdown(f"""
                     <h1 style="font-size: 15px; text-align: center">
