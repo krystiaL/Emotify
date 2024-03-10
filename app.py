@@ -164,7 +164,7 @@ st.set_page_config(page_title="Emotify", page_icon=":musical_note:", layout="wid
 #----------------------------------
 
 with st.sidebar:
-    st.title("Emotify") #change to official name  ## from <Music Selector>
+    st.title("About Emotify") #change to official name
     st.image("interface/images/Music-cuate.png")
     #attribute: <a href="https://storyset.com/app">App illustrations by Storyset</a>
 
@@ -196,8 +196,8 @@ with st.sidebar:
 #------------------------------------
 #custom title page using html for bigger font size
 st.markdown("""
-<h1 style="font-size: 80px; color: #E9FBFF; text-align: center; font-family: Trebuchet MS">
-Music Selector Project &#9835
+<h1 style="font-size: 80px; text-align: center; font-family: Trebuchet MS">
+Emotify &#9835
 </h1>
 """, unsafe_allow_html=True) #official name still hasn't been decided
 

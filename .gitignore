@@ -10,7 +10,7 @@ interface/__pycache__/
 interface/ui_drafts
 emotion_recognition_model
 # face_detect_module/model_files/DIY_1st.h5
-face_detect_module/model_files/DIY_2nd.h5
+# face_detect_module/model_files/DIY_2nd.h5
 # face_detect_module/model_files/FER_dinamic_LSTM_Aff-Wild2.pt
 face_detect_module/model_files/FER_static_ResNet50_AffectNet.pt
 interface/images
