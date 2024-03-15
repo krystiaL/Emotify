@@ -2,7 +2,6 @@
 ### Tune in your emotion 😄😭😱😡😌, tune out your playlist 📀
 *An automated playlist generation from facial emotion.*
 
-<br/><br/>
 ## Project Overview
 As a team of four music enthusiast, this application was created to 
 *recognize emotion from a face image and generate a befitting playlist based on the extracted emotion*. 
