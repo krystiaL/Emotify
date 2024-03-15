@@ -21,7 +21,7 @@ This application is a **Multimodal Emotion Recognition and Playlist Generation S
 - [Application Features](#application-features)
 - [Package Summary](#package-summary)
 - [Getting Started](#setting-up-the-project)
-- [Models and Project Architecture](#models-and-project-architecture)
+- [System Pipelines](#system-pipelines)
   
 <br/><br/>
 ## Application Features
@@ -37,5 +37,5 @@ This application is a **Multimodal Emotion Recognition and Playlist Generation S
 ## Setting up the project
 -tba
 <br/><br/>  
-## Models and Project Architecture
+## System Pipelines
 -tba
