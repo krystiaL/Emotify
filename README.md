@@ -1,13 +1,17 @@
 # Emotify
 ### Tune in your emotion 😄😭😱😡😌, tune out your playlist 📀
-*An automated playlist generation from facial emotion.*
+*An automated playlist generation system based on an identified facial emotion.*
 
 ## Project Overview
-As a team of four music enthusiast, this application was created to 
-*recognize emotion from a face image and generate a befitting playlist based on the extracted emotion*. 
+As a team of four music enthusiast, this application was created to personalize music selection based on the emotional responses.<br/>
 
-This project uses a **multimodal deep learning model** (or also known as a multimodal neural network) for facial analysis and emotion classification,
-and a song selection function from our **DIY music databse with emotion score and labels** which calls on to the **Spotify web API** to generate the playlist and embedding. 
+
+This application is a **Multimodal Emotion Recognition and Playlist Generation System** that is built with a comprehensive machine learning pipeline that incorporates:
+   1. **Facial Expression Analysis System** 
+        - A pipeline for detecting and interpreting emotional cues from facial movements. 
+   2. **Music labeling Function** 
+        - A pipeline that uses music metadata to label emotion scores and dominant emotion of each song in a music dataset.
+   3. **External data integration** (Spotify API) for playlist generation
 
 ## Demo 
 
