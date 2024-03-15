@@ -35,7 +35,7 @@ This application is a **Multimodal Emotion Recognition and Playlist Generation S
 - tba
 <br/><br/>  
 ## Setting up the project
--tba
+- tba
 <br/><br/>  
 ## System Pipelines
--tba
+- tba
