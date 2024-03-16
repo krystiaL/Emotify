@@ -47,3 +47,5 @@ This application is a **Multimodal Emotion Recognition and Playlist Generation S
      - Re-trained on FER-2013 face emotion image dataset comprising of 35, 887 images.
 - LSTM
      - RNN to handle frame sequences of a video input.
+
+[back to top](#emotify)
