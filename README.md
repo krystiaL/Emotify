@@ -38,4 +38,12 @@ This application is a **Multimodal Emotion Recognition and Playlist Generation S
 - tba
 <br/><br/>  
 ## System Pipelines
-- tba
+**Facial Expression Analysis System** 
+- Face Mesh by MediaPipe
+     - Model that detects facial landmarks and extracts facial features.
+- VGG16 from Keras
+     - A pre-trained VGGNet model variant for object detection.
+     - Optimized (tuned) the network architecture to output 7 targets (emotion categories).
+     - Re-trained on FER-2013 face emotion image dataset comprising of 35, 887 images.
+- LSTM
+     - RNN to handle frame sequences of a video input.
