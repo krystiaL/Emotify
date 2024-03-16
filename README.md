@@ -20,6 +20,7 @@ This application is a **Multimodal Emotion Recognition and Playlist Generation S
 ## Table of Contents
 - [Application Features](#application-features)
 - [Package Summary](#package-summary)
+- [Dependencies](#dependecies)
 - [Getting Started](#setting-up-the-project)
 - [System Pipelines](#system-pipelines)
   
@@ -32,8 +33,18 @@ This application is a **Multimodal Emotion Recognition and Playlist Generation S
   - **Embedded playlist**: You can play songs from the spotify embedding or get redirected to your Spotify library.
 
 ## Package Summary
+- face_detect_module
+- interface
+- notebooks
+- playlist_module
+- raw_data
+- tests
+- app.py
+- requirements.txt
+
+## Dependencies
 - tba
-<br/><br/>  
+
 ## Setting up the project
 - tba
 <br/><br/>  
@@ -48,4 +59,4 @@ This application is a **Multimodal Emotion Recognition and Playlist Generation S
 - LSTM
      - RNN to handle frame sequences of a video input.
 
-[back to top](#emotify)
+[🔝 back to top](#emotify)
