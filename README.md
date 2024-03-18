@@ -64,7 +64,7 @@ This application is a **Multimodal Emotion Recognition and Playlist Generation S
 1. Download the project by cloning the repository:
    
    ```bash
-   git clone git@github:Atsuto-LeWagon/Emotify.git
+   git clone git@github.com:Atsuto-LeWagon/Emotify.git
    cd Emotify
    ```
 2.  Create a new virtual env for the project directory:
