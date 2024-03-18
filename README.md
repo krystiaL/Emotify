@@ -24,7 +24,7 @@ This application is a **Multimodal Emotion Recognition and Playlist Generation S
 - [Application Features](#application-features)
 - [Package Summary](#package-summary)
 - [Getting Started](#setting-up-the-project)
-- [Application Pipelines](#application-pipelines)
+- [Models](#models)
 
 --- 
 
@@ -83,8 +83,8 @@ This application is a **Multimodal Emotion Recognition and Playlist Generation S
       ```
 --- 
 
-## Application Pipelines
-**Facial Expression Analysis** 
+## Models
+**Facial Expression Analysis Pipe** 
 - Face Mesh by MediaPipe
      - Model that detects facial landmarks and extracts facial features.
 - VGG16 from Keras
@@ -93,7 +93,11 @@ This application is a **Multimodal Emotion Recognition and Playlist Generation S
      - Re-trained on FER-2013 face emotion image dataset comprising of 35, 887 images.
 - LSTM
      - RNN to handle frame sequences of a video input.
-       
+
+**Music labeling Function**
+- DIY music emotion labeling model
+     - Trained on a music dataset with emotion labels to perform music emotion classification task.
+
 --- 
 
 [🔝 back to top](#emotify)
