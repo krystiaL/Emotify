@@ -1,9 +1,11 @@
-# Emotify
-### Tune in your emotion 😄😭😱😡😌, tune out your playlist 📀
-*An automated playlist generation system based on an identified facial emotion.*
+<div>
+   <img src="https://github.com/Atsuto-LeWagon/Emotify/blob/master/interface/images/emotify_banner.png"/>
+</div>
+
 
 ## Project Overview
-As a team of four music enthusiast, this application was created to personalize music selection based on the emotional responses.<br/>
+As a team of four music enthusiast, this application was created to personalize music selection based on the emotional responses. <br/>
+Specifically, emotify automates playlist generation based on an identified emotion from a face image. <br/>
 
 
 This application is a **Multimodal Emotion Recognition and Playlist Generation System** that is built with a comprehensive machine learning pipeline that incorporates:
