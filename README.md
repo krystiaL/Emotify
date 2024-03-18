@@ -7,11 +7,12 @@ As a team of four music enthusiast, this application was created to personalize 
 
 
 This application is a **Multimodal Emotion Recognition and Playlist Generation System** that is built with a comprehensive machine learning pipeline that incorporates:
-   1. **Facial Expression Analysis System** 
+   1. **Facial Expression Analysis** 
         - A pipeline for detecting and interpreting emotional cues from facial movements. 
    2. **Music labeling Function** 
         - A pipeline that uses music metadata to label emotion scores and dominant emotion of each song in a music dataset.
-   3. **External data integration** (Spotify API) for playlist generation
+   3. **External data integration**
+        - Use of Spotify API for playlist generation. 
 
 ## Demo 
 
@@ -33,8 +34,8 @@ This application is a **Multimodal Emotion Recognition and Playlist Generation S
   - **Embedded playlist**: You can play songs from the spotify embedding or get redirected to your Spotify library.
 
 ## Package Summary
-- face_detect_module
-- interface
+- **face_detect_module**: Contains model files and module for image preprocess and emotion prediction. 
+- **interface**: 
 - notebooks
 - playlist_module
 - raw_data
@@ -43,13 +44,28 @@ This application is a **Multimodal Emotion Recognition and Playlist Generation S
 - requirements.txt
 
 ## Dependencies
-- tba
+- TensorFlow
+- Spotipy
+- OpenCV
+- mediapipe
+- scikit-learn
+- torch
+- pillow
+- torchvision
+- torchsummary
+- Requests
+- pandas
+- datetime
+- xdg
+- numpy
+- streamlit
+- streamlit-webrtc
 
 ## Setting up the project
 - tba
 <br/><br/>  
 ## System Pipelines
-**Facial Expression Analysis System** 
+**Facial Expression Analysis** 
 - Face Mesh by MediaPipe
      - Model that detects facial landmarks and extracts facial features.
 - VGG16 from Keras
