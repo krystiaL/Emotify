@@ -18,13 +18,15 @@ This application is a **Multimodal Emotion Recognition and Playlist Generation S
 
 [Link](https://www.canva.com/design/DAF-UIQAC9E/2Arrd_L3-KkWw7DI3VfYWg/view?utm_content=DAF-UIQAC9E&utm_campaign=share_your_design&utm_medium=link&utm_source=shareyourdesignpanel) to Demo Slides
 
+<br/>
+
 ## Table of Contents
 - [Application Features](#application-features)
 - [Package Summary](#package-summary)
 - [Getting Started](#setting-up-the-project)
 - [Application Pipelines](#application-pipelines)
 
-<br/>
+--- 
 
 ## Application Features
   - **Sidebar FAQs**: contains instruction on application usage, reset, and other interesting facts.
@@ -32,6 +34,8 @@ This application is a **Multimodal Emotion Recognition and Playlist Generation S
     📸 Real time camera capture using device webcam. <br/>
     📥 Image Upload for a specific face image.
   - **Embedded playlist**: You can play songs from the spotify embedding or get redirected to your Spotify library.
+    
+---  
 
 ## Package Summary
 1. **face_detect_module**
@@ -49,11 +53,36 @@ This application is a **Multimodal Emotion Recognition and Playlist Generation S
 13. **app.py**
     > Streamlit application file.  
 15. **requirements.txt**
-    > List of dependencies used to create the application. 
+    > List of dependencies used to create the application.
+    
+--- 
 
 ## Setting up the project
-- tba
-<br/><br/>  
+1. Download the project by cloning the repository:
+   
+   ```bash
+   git clone git@github:Atsuto-LeWagon/Emotify.git
+   cd Emotify
+   ```
+2.  Create a new virtual env for the project directory:
+   
+      ```bash
+      pyenv virtualenv emotify
+      pyenv local emotify
+      ```
+3. Install the required dependencies:
+   
+   ```bash
+   make install_requirements
+   pip list 
+   ```
+4. Run the application with streamlit:
+   
+      ```bash
+      make streamlit_main_ui
+      ```
+--- 
+
 ## Application Pipelines
 **Facial Expression Analysis** 
 - Face Mesh by MediaPipe
@@ -64,5 +93,7 @@ This application is a **Multimodal Emotion Recognition and Playlist Generation S
      - Re-trained on FER-2013 face emotion image dataset comprising of 35, 887 images.
 - LSTM
      - RNN to handle frame sequences of a video input.
+       
+--- 
 
 [🔝 back to top](#emotify)
