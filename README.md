@@ -21,11 +21,11 @@ This application is a **Multimodal Emotion Recognition and Playlist Generation S
 ## Table of Contents
 - [Application Features](#application-features)
 - [Package Summary](#package-summary)
-- [Dependencies](#dependecies)
 - [Getting Started](#setting-up-the-project)
-- [System Pipelines](#system-pipelines)
-  
-<br/><br/>
+- [Application Pipelines](#application-pipelines)
+
+<br/>
+
 ## Application Features
   - **Sidebar FAQs**: contains instruction on application usage, reset, and other interesting facts.
   - **2 input modes**: <br/>
@@ -34,37 +34,27 @@ This application is a **Multimodal Emotion Recognition and Playlist Generation S
   - **Embedded playlist**: You can play songs from the spotify embedding or get redirected to your Spotify library.
 
 ## Package Summary
-- **face_detect_module**: Contains model files and module for image preprocess and emotion prediction. 
-- **interface**: 
-- notebooks
-- playlist_module
-- raw_data
-- tests
-- app.py
-- requirements.txt
-
-## Dependencies
-- TensorFlow
-- Spotipy
-- OpenCV
-- mediapipe
-- scikit-learn
-- torch
-- pillow
-- torchvision
-- torchsummary
-- Requests
-- pandas
-- datetime
-- xdg
-- numpy
-- streamlit
-- streamlit-webrtc
+1. **face_detect_module**
+   > Model files and module for image preprocess and emotion prediction.
+3. **interface**
+   > Streamlit ui drafts, pages, and file handling functions. 
+5. **notebooks**
+   > Jupyter notebooks used for model experiments and data exploration. 
+7. **playlist_module**
+   > Modules for music dataset emotion labelling pipeline, playlist generation functions, and Spotify API params. 
+9. **raw_data**
+    > Includes csv files for original music dataset without emotion labels and DIY music dataset labeled with emotion scores. 
+11. **tests**
+    > Test files to check functionality of extract_emotion function from face_emotion_detector module and playlist generation functions from generate_playlist module.  
+13. **app.py**
+    > Streamlit application file.  
+15. **requirements.txt**
+    > List of dependencies used to create the application. 
 
 ## Setting up the project
 - tba
 <br/><br/>  
-## System Pipelines
+## Application Pipelines
 **Facial Expression Analysis** 
 - Face Mesh by MediaPipe
      - Model that detects facial landmarks and extracts facial features.
