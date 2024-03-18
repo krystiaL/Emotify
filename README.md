@@ -27,6 +27,7 @@ This application is a **Multimodal Emotion Recognition and Playlist Generation S
 - [Package Summary](#package-summary)
 - [Getting Started](#setting-up-the-project)
 - [Models](#models)
+- [Creators](#creators)
 
 --- 
 
@@ -101,5 +102,12 @@ This application is a **Multimodal Emotion Recognition and Playlist Generation S
      - Trained on a music dataset with emotion labels to perform music emotion classification task.
 
 --- 
+
+## Creators
+
+<img src="https://github.com/Atsuto-LeWagon/Emotify/blob/master/interface/images/team_pics/team_photo.png"/>
+
+We are a diverse team of data scientists and alumni of Le Wagon Tokyo's Data Science and AI course (#batch-1384-tokyo). 
+Emotify is our final project to conclude our six-month bootcamp journey which showcases our expertise. 
 
 [🔝 back to top](#emotify)
