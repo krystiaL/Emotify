@@ -101,7 +101,7 @@ This application is a **Multimodal Emotion Recognition and Playlist Generation S
 - DIY music emotion labeling model
      - Neural Network trained on a DIY music dataset with emotion labels to perform music emotion classification task.
 	  - Added a function that calculates the mean squared error between user's emotion probability mixture and an array of probabilty each track has in the predicted dataset from the neural network. 
-     - Selected tracks with the minimum MSE and randomly pick 10 tracks from the selection as an output. 
+- Selected tracks with the minimum MSE and randomly pick 10 tracks from the selection as an output. 
 
 --- 
 
